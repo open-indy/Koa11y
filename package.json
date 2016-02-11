@@ -1,0 +1,59 @@
+{
+    "name": "ugui_pa11y",
+    "version": "1.0.0",
+    "author": "The Jared Wilcurt",
+    "description": "A GUI for running pa11y.",
+    "keywords": [ "Accessibility", "automated", "WCAG" ],
+    "maintainers":[{
+        "name": "TheJaredWilcurt",
+        "email": "TheJaredWilcurt@noreply.github.com",
+        "web": "http://ugui.io"
+    }],
+    "repository": [{
+        "type": "git",
+        "url": "git://github.com/TheJaredWilcurt/UGUI-pa11y.git"
+    }],
+    "bugs": "https://github.com/TheJaredWilcurt/UGUI-pa11y/issues",
+    "main": "index.htm",
+    "window": {
+        "title": "UGUI: pa11y",
+        "icon": "_img/icon32.png",
+        "toolbar": false,
+        "resizable": true,
+        "visible": true,
+        "transparent": false,
+        "width": 900,
+        "height": 550,
+        "min_width": 400,
+        "min_height": 200,
+        "max_width": 8000,
+        "max_height": 8000,
+        "position": "center",
+        "always-on-top": false,
+        "show_in_taskbar": true,
+        "fullscreen": false,
+        "frame": true,
+        "as_desktop": false
+    },
+    "nodejs": true,
+    "single-instance": true,
+    "node-main": "_scripts/node.js",
+    "webkit": {
+        "page-cache": false,
+        "java": false,
+        "plugin": true
+    },
+    "dependencies": {
+        "pa11y": "3.5.1"
+    },
+    "devDependencies": {
+        "nw": "^0.12.3"
+    },
+    "scripts": {
+        "start": "nw ."
+    },
+    "licenses": [{
+        "type": "GPL3, MIT, Etc.",
+        "url": "https://github.com/TheJaredWilcurt/UGUI-pa11y/blob/master/LICENSE"
+    }]
+}
