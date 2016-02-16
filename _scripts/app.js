@@ -6,6 +6,7 @@ $(document).ready( runApp );
 function runApp() {
 
     ugui.helpers.loadSettings();
+    require('nw.gui').Window.get().showDevTools();
 
     var correctSlash = "/";
     if ( process.platform == "win32" ) {
@@ -77,10 +78,6 @@ function runApp() {
         var fileName = ugui.args.output.value;
         var exandargs = "pa11y -r " + filetype + " -s " + standard + " " + url;
 
-        ugui.helpers.runcmd(exandargs, function (data) {
-            ugui.helpers.writeToFile(folderPicker + correctSlash + fileName + ext, data);
-        });
-
         var pa11y = require('pa11y');
 
         var test = pa11y({
@@ -128,11 +125,18 @@ function runApp() {
             $("#button-row .btn-danger span").text(erro);
             $("#button-row .btn-warning span").text(warn);
             $("#button-row .btn-primary span").text(noti);
-        });
 
+            $.get('_markup/template.html', function (data) {
+                var results = $("#results").html();
+                var buttons = $("#button-badges").html();
+                var output = data + url + '</h1><span id="buttons">' + buttons + '</span></div><div class="row">' + results + "</div></div></body></html>";
+                ugui.helpers.writeToFile(folderPicker + correctSlash + fileName + ext, output);
+            });
+        });
     });
 
 
+/*
     var argsForm = [];
     argsForm.push( $("#pa11y *[data-argName]") );
 
@@ -159,6 +163,6 @@ function runApp() {
 
     //On page load have this run once to unlock submit if nothing is required.
     unlockSubmit();
-
+*/
 
 }// end runApp();

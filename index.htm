@@ -95,7 +95,7 @@
 
 
   <!-- Change the class form dev to prod when you're ready to distribute your application. -->
-  <body role="document" class="prod">
+  <body role="document" class="dev">
 
 
 
@@ -252,15 +252,17 @@
 
           <div class="row" id="button-row">
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 text-left" style="vertical-align: middle">
-              <button class="btn btn-sm btn-danger" type="button">
-                Errors <span class="badge">0</span>
-              </button>
-              <button class="btn btn-sm btn-warning" type="button">
-                Warnings <span class="badge">0</span>
-              </button>
-              <button class="btn btn-sm btn-primary" type="button">
-                Notices <span class="badge">0</span>
-              </button>
+              <span id="button-badges">
+                <button class="btn btn-sm btn-danger" type="button">
+                  Errors <span class="badge">0</span>
+                </button>
+                <button class="btn btn-sm btn-warning" type="button">
+                  Warnings <span class="badge">0</span>
+                </button>
+                <button class="btn btn-sm btn-primary" type="button">
+                  Notices <span class="badge">0</span>
+                </button>
+              </span>
               <button type="submit" id="run" class="btn btn-primary pull-right">Run!</button>
             </div>
           </div>

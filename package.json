@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "author": "The Jared Wilcurt",
     "description": "A GUI for running pa11y.",
-    "keywords": [ "Accessibility", "automated", "WCAG" ],
+    "keywords": [ "Accessibility", "standards", "automated", "WCAG" ],
     "maintainers":[{
         "name": "TheJaredWilcurt",
         "email": "TheJaredWilcurt@noreply.github.com",
