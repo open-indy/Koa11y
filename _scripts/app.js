@@ -6,7 +6,7 @@ $(document).ready( runApp );
 function runApp() {
 
     ugui.helpers.loadSettings();
-    require('nw.gui').Window.get().showDevTools();
+    //require('nw.gui').Window.get().showDevTools();
 
     var correctSlash = "/";
     if ( process.platform == "win32" ) {
