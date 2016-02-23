@@ -52,8 +52,9 @@
     "scripts": {
         "start": "nw ."
     },
+    "license": "MIT",
     "licenses": [{
-        "type": "GPL3, MIT, Etc.",
+        "type": "MIT",
         "url": "https://github.com/TheJaredWilcurt/UGUI-pa11y/blob/master/LICENSE"
     }]
 }
