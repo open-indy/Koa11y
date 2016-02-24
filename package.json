@@ -2,7 +2,7 @@
     "name": "ugui_pa11y",
     "version": "1.0.0",
     "author": "The Jared Wilcurt",
-    "description": "A GUI for running pa11y.",
+    "description": "Check if a website has accessibility issues.",
     "keywords": [ "Accessibility", "standards", "automated", "WCAG" ],
     "maintainers":[{
         "name": "TheJaredWilcurt",
