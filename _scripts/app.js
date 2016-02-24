@@ -86,6 +86,21 @@ function runApp() {
         });
 
         test.run(url, function (error, results) {
+            if (error) {
+                if (error.path = "phantomjs") {
+                    console.info("PhantomJS must be installed globally.");
+                    console.info("Install Node, from nodejs.org");
+                    console.info("Then run: npm install -g phantomjs");
+                    $.get("_markup/phantomjs-missing.htm", function (markup) {
+                        $("body").prepend( markup );
+                        ugui.helpers.openDefaultBrowser();
+                    });
+                } else {
+                    console.info("Failed to return data from the page you entered.");
+                    console.error(error.message);
+                }
+                return;
+            }
             $("#results").empty();
             var warn = 0;
             var noti = 0;
