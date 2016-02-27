@@ -79,8 +79,12 @@ function runApp() {
         var exandargs = "pa11y -r " + filetype + " -s " + standard + " " + url;
 
         var pa11y = require('pa11y');
+        var phantomjs = require('phantomjs');
 
         var test = pa11y({
+            'phantomjs': {
+                'path': "node_modules\\phantomjs"
+            },
             'allowedStandards': [standard],
             ignore: [ 'notice' ]
         });
@@ -91,6 +95,7 @@ function runApp() {
                     console.info("PhantomJS must be installed globally.");
                     console.info("Install Node, from nodejs.org");
                     console.info("Then run: npm install -g phantomjs");
+                    console.error(error);
                     $.get("_markup/phantomjs-missing.htm", function (markup) {
                         $("body").prepend( markup );
                         ugui.helpers.openDefaultBrowser();
