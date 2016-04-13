@@ -134,14 +134,14 @@ function runApp() {
                 theContext = theContext.split("<").join("&lt;");
 
                 var entry =
-                  '<div class="panel panel-' + panelColor + '">' +
-                    '<div class="panel-heading">' + results[i].code + '</div>' +
-                    '<div class="panel-body">' +
-                      '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + results[i].message + '<br /><br />' +
-                      '<pre><code>' + theContext + '</code></pre><br />' +
-                    '</div>' +
-                    '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>' +
-                  '</div>';
+                  '<div class="panel panel-' + panelColor + '">\n' +
+                    '<div class="panel-heading">' + results[i].code + '</div>\n' +
+                    '<div class="panel-body">\n' +
+                      '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + results[i].message + '<br /><br />\n' +
+                      '<pre><code>' + theContext + '</code></pre><br />\n' +
+                    '</div>\n' +
+                    '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
+                  '</div>\n';
                 if (theType == "error") {
                     $("#results").prepend(entry);
                 } else {
