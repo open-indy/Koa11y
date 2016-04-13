@@ -155,7 +155,8 @@ function runApp() {
             $.get('_markup/template.html', function (data) {
                 var results = $("#results").html();
                 var buttons = $("#button-badges").html();
-                var output = data + url + '</h1><span id="buttons">' + buttons + '</span></div><div class="row">' + results + "</div></div></body></html>";
+                var imgAlts = $("#imagealts").val();
+                var output = data + url + '</h1>\n<span id="buttons">' + buttons + '</span>\n</div>\n' + imgAlts + '\n<div class="row">' + results + "</div>\n</div>\n</body>\n</html>";
                 ugui.helpers.writeToFile(folderPicker + correctSlash + fileName + ext, output);
             });
         });
