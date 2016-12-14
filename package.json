@@ -44,8 +44,8 @@
         "plugin": true
     },
     "dependencies": {
-        "pa11y": "3.5.1",
-        "phantomjs-prebuilt": "^2.1.4"
+        "pa11y": "4.1.1",
+        "phantomjs-prebuilt": "^2.1.14"
     },
     "devDependencies": {
         "nw": "^0.12.3"

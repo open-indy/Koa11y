@@ -134,17 +134,18 @@ function runApp() {
         var url = ugui.args.url.value;
         var folderPicker = ugui.args.folderPicker.value;
         var fileName = ugui.args.output.value;
-        var exandargs = "pa11y -r " + filetype + " -s " + standard + " " + url;
 
         var pa11y = require('pa11y');
-        var phantomjs = require('phantomjs');
+        var phantomjs = require('phantomjs-prebuilt');
 
         var test = pa11y({
             'phantomjs': {
-                'path': "node_modules\\phantomjs"
+                'path': phantomjs.path
             },
             'allowedStandards': [standard],
-            ignore: [ 'notice' ]
+            'standard': standard,
+            'reporter': filetype,
+            'ignore': [ 'notice' ]
         });
 
         test.run(url, function (error, results) {
@@ -164,54 +165,76 @@ function runApp() {
                 }
                 return;
             }
+
             $("#results").empty();
-            var warn = 0;
-            var noti = 0;
-            var erro = 0;
-            for (var i = 0; i < results.length; i++) {
-                var theType = results[i].type;
-                var panelColor = "default";
-                if (theType == "warning") {
-                    panelColor = "warning";
-                    warn = warn + 1;
-                } else if (theType == "error") {
-                    panelColor = "danger";
-                    erro = erro + 1;
-                } else if (theType == "notice") {
-                    panelColor = "primary";
-                    noti = noti + 1;
-                }
 
-                var theContext = results[i].context;
-                theContext = theContext.split("<").join("&lt;");
-
-                var entry =
-                  '<div class="panel panel-' + panelColor + '">\n' +
-                    '<div class="panel-heading">' + results[i].code + '</div>\n' +
-                    '<div class="panel-body">\n' +
-                      '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + results[i].message + '<br /><br />\n' +
-                      '<pre><code>' + theContext + '</code></pre><br />\n' +
-                    '</div>\n' +
-                    '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
-                  '</div>\n';
-                if (theType == "error") {
-                    $("#results").prepend(entry);
-                } else {
-                    $("#results").append(entry);
-                }
-            }
-            $("#button-row .btn-danger span").text(erro);
-            $("#button-row .btn-warning span").text(warn);
-            $("#button-row .btn-primary span").text(noti);
-
-            $.get('_markup/template.html', function (data) {
-                var results = $("#results").html();
-                var buttons = $("#button-badges").html();
-                var imgAlts = $("#imagealts").val();
-                var output = data + url + '</h1>\n<span id="buttons">' + buttons + '</span>\n</div>\n' + imgAlts + '\n<div class="row">' + results + "</div>\n</div>\n</body>\n</html>";
+            if (ugui.args.outputjson.htmlticked) {
+                var output = {};
+                output.results = results;
+                output = JSON.stringify(output, null, 2);
                 var file = path.join(folderPicker, fileName + ext);
                 ugui.helpers.writeToFile(file, output);
-            });
+                $("#results").html(
+                    '<div class="col-xs-12">' +
+                        '<div class="well">' +
+                            '<h4 class="text-center">' +
+                                '<p>Your JSON file has been saved.</p>' +
+                            '</h4>' +
+                            '<p>' + file + '</p>' +
+                        '</div>' +
+                    '</div>'
+                );
+            }
+
+            if (ugui.args.outputhtml.htmlticked) {
+                var warn = 0;
+                var noti = 0;
+                var erro = 0;
+                for (var i = 0; i < results.length; i++) {
+                    var theType = results[i].type;
+                    var panelColor = "default";
+                    if (theType == "warning") {
+                        panelColor = "warning";
+                        warn = warn + 1;
+                    } else if (theType == "error") {
+                        panelColor = "danger";
+                        erro = erro + 1;
+                    } else if (theType == "notice") {
+                        panelColor = "primary";
+                        noti = noti + 1;
+                    }
+
+                    var theContext = results[i].context;
+                    theContext = theContext.split("<").join("&lt;");
+
+                    var entry =
+                      '<div class="panel panel-' + panelColor + '">\n' +
+                        '<div class="panel-heading">' + results[i].code + '</div>\n' +
+                        '<div class="panel-body">\n' +
+                          '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + results[i].message + '<br /><br />\n' +
+                          '<pre><code>' + theContext + '</code></pre><br />\n' +
+                        '</div>\n' +
+                        '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
+                      '</div>\n';
+                    if (theType == "error") {
+                        $("#results").prepend(entry);
+                    } else {
+                        $("#results").append(entry);
+                    }
+                }
+                $("#button-row .btn-danger span").text(erro);
+                $("#button-row .btn-warning span").text(warn);
+                $("#button-row .btn-primary span").text(noti);
+
+                $.get('_markup/template.html', function (data) {
+                    var results = $("#results").html();
+                    var buttons = $("#button-badges").html();
+                    var imgAlts = $("#imagealts").val();
+                    var output = data + url + '</h1>\n<span id="buttons">' + buttons + '</span>\n</div>\n' + imgAlts + '\n<div class="row">' + results + "</div>\n</div>\n</body>\n</html>";
+                    var file = path.join(folderPicker, fileName + ext);
+                    ugui.helpers.writeToFile(file, output);
+                });
+            }
         });
     });
 
