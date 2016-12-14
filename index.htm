@@ -30,6 +30,13 @@
       #results h4 {
         margin: -2px 0px 2px;
       }
+      #outputFolderIcon {
+        top: -31px;
+        left: -12px;
+        background: #FFF;
+        padding: 4px 0px 0px 6px;
+        cursor: pointer;
+      }
     </style>
 
     <!-- UGUI requires jQuery 1.9.1 or above. -->
@@ -131,19 +138,20 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+            <li><a href="#about">About</a></li>
+            <li><a href="#exit">Exit</a></li>
+            <!--
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">File <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#save" class="save-ugui-settings">Save Settings</a></li>
                 <li><a href="#load" class="load-ugui-settings">Load Settings</a></li>
-                <li><a href="#exit">Exit</a></li>
               </ul>
             </li>
             <li class="dropdown devNav">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#fullscreen">Fullscreen</a></li>
-                <!-- devNav items are hidden when in Production mode -->
                 <li class="devNav"><a href="#console">Console</a></li>
                 <li class="divider"></li>
                 <li class="devNav"><a href="#cmdoutput">Command Line Output</a></li>
@@ -152,10 +160,8 @@
             <li class="dropdown navHelp">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <!-- <a href="#about"> must exist in your app as it contains the credits for UGUI -->
-                <li><a href="#about">About</a></li>
               </ul>
-            </li>
+            </li> -->
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -245,9 +251,13 @@
                 </ul>
             </div>
             <div class="col-xs-6 col-s-6 col-md-6 col-l-6">
-              <label>Output Folder:</label>
-              <input type="file" nwdirectory="nwdirectory" data-argName="folderPicker" required="required" />
+              <label for="folderPicker">Output Folder:</label>
+              <input id="folderPicker" type="text" class="form-control" data-argName="folderPicker" required="required" />
+              <span id="outputFolderIcon" class="glyphicon glyphicon-folder-open pull-right" title="Browse"></span>
+              <input type="file" id="outputFolderBrowse" nwdirectory="nwdirectory" nwworkingdir="..." class="hide" />
             </div>
+
+
           </div>
 
           <div class="row">

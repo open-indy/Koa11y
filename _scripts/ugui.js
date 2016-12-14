@@ -2840,6 +2840,12 @@ function loadSettings(customLocation, callback) {
             console.warn(º+'"' + settingsFile + '"', consoleCode);
             console.warn(º+"Error:", consoleBold);
             console.warn(º+err.message, consoleError);
+            //If a callback function was passed into `saveSettings`, run it
+            if (typeof(callback) === "function") {
+                callback();
+            } else if (typeof(customLocation) === "function") {
+                customLocation();
+            }
             return;
         //Load the file if it's found
         } else {
