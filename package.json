@@ -45,7 +45,8 @@
     },
     "dependencies": {
         "pa11y": "4.1.1",
-        "phantomjs-prebuilt": "^2.1.14"
+        "phantomjs-prebuilt": "^2.1.14",
+        "json2csv": "3.7.3"
     },
     "devDependencies": {
         "nw": "^0.12.3"

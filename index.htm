@@ -79,6 +79,7 @@
     -->
 
     <cmd executable="pa11y">
+    <!--
       <arg>((url))</arg>
 
       <arg>((output))</arg>
@@ -94,6 +95,7 @@
       <arg>((standardwcagaaa))</arg>
 
       <arg>((folderPicker))</arg>
+    -->
     </cmd>
 
   </head>
@@ -231,10 +233,11 @@
                 <div id="output-btn" class="input-group-addon btn-group">
                   <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">HTML<span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <!--<li><input type="radio" name="outputtype" data-argName="outputcsv"  value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>-->
-                    <li><input type="radio" name="outputtype" data-argName="outputhtml" value="html" id="html" checked="checked" /><label for="html" >HTML</label></li>
+                    <li><input type="radio" name="outputtype" data-argName="outputhtml" value="html" id="html" /><label for="html" >HTML</label></li>
+                    <li><input type="radio" name="outputtype" data-argName="outputcsv"  value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
                     <li><input type="radio" name="outputtype" data-argName="outputjson" value="json" id="json" /><label for="json" >JSON</label></li>
-                    <!--<li><input type="radio" name="outputtype" data-argName="outputmd"   value="md"   id="md"   /><label for="md"   >Markdown</label></li>-->
+                    <li><input type="radio" name="outputtype" data-argName="outputmd"   value="md"   id="md"   /><label for="md"   >Markdown</label></li>
+                    <li><input type="radio" name="outputtype" data-argName="outputxml"  value="xml"  id="xml"  /><label for="xml"  >XML</label></li>
                   </ul>
                 </div>
               </div>

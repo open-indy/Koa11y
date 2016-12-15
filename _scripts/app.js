@@ -76,6 +76,22 @@ function runApp() {
     }
     prefillData();
 
+    function successMessage (file, ext) {
+        var filetype = ext.toUpperCase();
+        if (filetype == 'MARKDOWN') {
+            filetype = 'Markdown';
+        }
+        var message =
+            '<div class="col-xs-12">' +
+                '<div class="well">' +
+                    '<h4 class="text-center">' +
+                        '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
+                    '</h4>' +
+                    '<p>' + file + '</p>' +
+                '</div>' +
+            '</div>';
+        $("#results").html(message);
+    }
 
 
     $('#outputFolderIcon').click(function () {
@@ -118,6 +134,9 @@ function runApp() {
         } else if (ugui.args.outputmd.htmlticked) {
             filetype = "markdown";
             ext = ".md";
+        } else if (ugui.args.outputxml.htmlticked) {
+            filetype = "xml";
+            ext = ".xml";
         }
 
         var standard = "WCAG2AA";
@@ -174,16 +193,69 @@ function runApp() {
                 output = JSON.stringify(output, null, 2);
                 var file = path.join(folderPicker, fileName + ext);
                 ugui.helpers.writeToFile(file, output);
-                $("#results").html(
-                    '<div class="col-xs-12">' +
-                        '<div class="well">' +
-                            '<h4 class="text-center">' +
-                                '<p>Your JSON file has been saved.</p>' +
-                            '</h4>' +
-                            '<p>' + file + '</p>' +
-                        '</div>' +
-                    '</div>'
-                );
+                $("#results").html(successMessage(file, filetype));
+            }
+
+            if (ugui.args.outputcsv.htmlticked) {
+                var json2csv = require('json2csv');
+                var fields = [];
+                for (var key in results[0]) {
+                    fields.push(key);
+                }
+                var output = json2csv({
+                    'data': results,
+                    'fields': fields
+                });
+
+                var file = path.join(folderPicker, fileName + ext);
+                ugui.helpers.writeToFile(file, output);
+
+                successMessage(file, filetype);
+            }
+
+            if (ugui.args.outputmd.htmlticked) {
+                var output = '';
+                var hr = '\n* * *\n\n';
+                for (var i = 0; i < results.length; i++) {
+                    var current = results[i];
+                    var code = '**Code:** ' + current.code + '  \n';
+                    var type = '**Type:** ' + current.type + '  \n';
+                    var typeCode = '**Type Code:** ' + current.typeCode + '  \n';
+                    var message = '**Message:** ' + current.message + '  \n';
+                    var selector = '**Selector:** `' + current.selector + '`  \n';
+                    var context = '**Context:**\n```\n' + current.context + '\n```\n';
+                    output = output + code + type + typeCode + message + selector + context;
+                    if (i < results.length - 1) {
+                        output = output + hr;
+                    }
+                }
+
+                var file = path.join(folderPicker, fileName + ext);
+                ugui.helpers.writeToFile(file, output);
+
+                successMessage(file, filetype);
+            }
+
+            if (ugui.args.outputxml.htmlticked) {
+                var output = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
+                for (var i = 0; i < results.length; i++) {
+                    var current = results[i];
+                    var result =
+                        '  <result>\n' +
+                        '    <code>' + current.code + '</code>\n' +
+                        '    <type typecode="' + current.typeCode + '">' + current.type + '</type>\n' +
+                        '    <message>' + current.message + '</message>\n' +
+                        '    <selector><![CDATA[' + current.selector + ']]></selector>\n' +
+                        '    <context><![CDATA[' + current.context + ']]></context>\n' +
+                        '  </result>\n';
+                    output = output + result;
+                }
+                output = output + '</pa11y>\n';
+
+                var file = path.join(folderPicker, fileName + ext);
+                ugui.helpers.writeToFile(file, output);
+
+                successMessage(file, filetype);
             }
 
             if (ugui.args.outputhtml.htmlticked) {
