@@ -40,6 +40,10 @@
         padding: 4px 0px 0px 6px;
         cursor: pointer;
       }
+      #button-badges .disabled {
+        pointer-events: auto;
+        cursor: pointer;
+      }
     </style>
 
     <!-- UGUI requires jQuery 1.9.1 or above. -->
@@ -277,13 +281,13 @@
           <div class="row" id="button-row">
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 text-left" style="vertical-align: middle">
               <span id="button-badges">
-                <button class="btn btn-sm btn-danger" type="button">
+                <button class="btn btn-sm btn-danger" type="button" value="true" data-argName="badgeError">
                   Errors <span class="badge">0</span>
                 </button>
-                <button class="btn btn-sm btn-warning" type="button">
+                <button class="btn btn-sm btn-warning" type="button" value="true" data-argName="badgeWarning">
                   Warnings <span class="badge">0</span>
                 </button>
-                <button class="btn btn-sm btn-primary" type="button">
+                <button class="btn btn-sm btn-primary" type="button" value="true" data-argName="badgeNotice">
                   Notices <span class="badge">0</span>
                 </button>
               </span>

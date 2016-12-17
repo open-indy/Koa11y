@@ -104,6 +104,30 @@ function runApp() {
         ugui.helpers.saveSettings();
     });
 
+    if (ugui.args.badgeError.value == 'false') {
+        $('#button-badges .btn-danger').addClass('disabled');
+    }
+    if (ugui.args.badgeWarning.value == 'false') {
+        $('#button-badges .btn-warning').addClass('disabled');
+    }
+    if (ugui.args.badgeNotice.value == 'false') {
+        $('#button-badges .btn-primary').addClass('disabled');
+    }
+
+    $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
+        if ($(this).hasClass('disabled')) {
+            $(this).removeClass('disabled');
+            $(this).val('true');
+        } else {
+            $(this).addClass('disabled');
+            $(this).find('.badge').html('0');
+            $(this).val('false');
+        }
+        ugui.helpers.buildUGUIArgObject();
+        ugui.helpers.saveSettings();
+    });
+
+
     var clipboard = 'console.clear(),window.xhrWorked=!0;var xhr=new XMLHttpRequest,img=document.getElementsByTagName("img"),imgLen=img.length,altLen=0,bigAlt=imgLen,bigImg=imgLen,imgErr=0,imgSizes=0,i=0;if(imgLen<1)console.log("No images found on this page.");else{for(i=0;i<imgLen;i++)if(img[i].getAttribute("alt")){var currentAlt=img[i].getAttribute("alt"),descriptive=confirm("Is this text descriptive:\\n"+currentAlt);descriptive&&altLen++,currentAlt.length>100&&bigAlt--;try{xhr.open("HEAD",img[i].getAttribute("src"),!1),xhr.onreadystatechange=function(){if(4==xhr.readyState)if(200==xhr.status){var a=xhr.getResponseHeader("Content-Length");imgSizes+=parseInt(a),a>102400&&bigImg--}else imgErr++},xhr.send(null)}catch(a){window.xhrWorked=!1}}var image="images";1==imgErr&&(image="image");var altPercent=Math.round(altLen/imgLen*100),under100KB="?",failPercent="?",sizeUnder100="?",loaded="?",KB="?",good="text-success glyphicon-ok",bad="text-danger glyphicon-remove",warn="text-warning glyphicon-ban-circle",altIcon=good,lengthIcon=good,sizeIcon=warn,errorIcon=warn;altPercent<100&&(altIcon=bad),bigAlt>imgLen&&(lengthIcon=bad),imgErr>0&&(errorIcon=bad),bigAlt>0&&xhrWorked&&(sizeIcon=good,bigImg>0&&(sizeIcon=bad),errorIcon=good,sizeUnder100=bigImg,loaded=imgLen-imgErr,KB=Math.round(imgSizes/1024*10)/10,under100KB=Math.round(bigImg/imgLen*100),failPercent=Math.round((imgLen-imgErr)/imgLen*100)),console.clear();var html=[\'<div class="row">\\r\\n\',\'  <div class="panel panel-primary">\\r\\n\',\'    <div class="panel-heading">Image Accessibility</div>\\r\\n\',\'    <div class="panel-body">\\r\\n\',\'      <p><i class="glyphicon \'+altIcon+\'"></i> <strong>\'+altPercent+"%</strong> of images on the page had descriptive ALT text. <strong>("+altLen+"/"+imgLen+")</strong></p>\\r\\n",\'      <p><i class="glyphicon \'+lengthIcon+\'"></i> <strong>\'+Math.round(bigAlt/imgLen*100)+"%</strong> of ALTs were under 100 characters. <strong>("+bigAlt+"/"+imgLen+")</strong></p>\\r\\n",\'      <p><i class="glyphicon \'+sizeIcon+\'"></i> <strong>\'+under100KB+"%</strong> of images were under 100KB in size. <strong>("+sizeUnder100+"/"+imgLen+")</strong></p>\\r\\n",\'      <p><i class="glyphicon \'+errorIcon+\'"></i> <strong>\'+failPercent+"%</strong> of images loaded with a total image payload of <strong>"+KB+"KB ("+loaded+"/"+imgLen+")</strong></p>\\r\\n","    </div>\\r\\n","  </div>\\r\\n","</div>"],output="";for(i=0;i<html.length;i++)output+=html[i];console.log(output);var dummy=document.createElement("textarea");dummy.setAttribute("id","dummy"),document.body.appendChild(dummy);var dumNode=document.getElementById("dummy");dumNode.value=output,dumNode.select(),document.execCommand("copy"),document.body.removeChild(dumNode),console.log("The above code has been copied to your clipboard")}';
     $('#clipboard').click(function () {
         var dummy = document.createElement("textarea");
@@ -116,8 +140,10 @@ function runApp() {
         document.body.removeChild(dumNode);
     });
 
-    $("#run").click(function (event) {
-        event.preventDefault();
+    $("#run").click(function (evt) {
+        evt.preventDefault();
+        $("#results").empty();
+        $('#button-badges .badge').html('0');
         ugui.helpers.buildUGUIArgObject();
 
         var filetype = "html";
@@ -150,6 +176,17 @@ function runApp() {
             standard = "WCAG2AAA";
         }
 
+        var ignore = [];
+        if ($('#button-badges .btn-danger').hasClass('disabled')) {
+            ignore.push('error');
+        }
+        if ($('#button-badges .btn-warning').hasClass('disabled')) {
+            ignore.push('warning');
+        }
+        if ($('#button-badges .btn-primary').hasClass('disabled')) {
+            ignore.push('notice');
+        }
+
         var url = ugui.args.url.value;
         var folderPicker = ugui.args.folderPicker.value;
         var fileName = ugui.args.output.value;
@@ -164,7 +201,7 @@ function runApp() {
             'allowedStandards': [standard],
             'standard': standard,
             'reporter': filetype,
-            'ignore': [ 'notice' ]
+            'ignore': ignore
         });
 
         test.run(url, function (error, results) {
@@ -185,8 +222,27 @@ function runApp() {
                 return;
             }
 
-            $("#results").empty();
+            // Badges
+            var badges = {
+                'warnings': 0,
+                'notices': 0,
+                'errors': 0
+            };
+            for (var i = 0; i < results.length; i++) {
+                var theType = results[i].type;
+                if (theType == "warning") {
+                    badges.warning = badges.warnings + 1;
+                } else if (theType == "error") {
+                    badges.errors = badges.errors + 1;
+                } else if (theType == "notice") {
+                    badges.notices = badges.notices + 1;
+                }
+            }
+            $("#button-row .btn-danger span").text(badges.errors);
+            $("#button-row .btn-warning span").text(badges.warning);
+            $("#button-row .btn-primary span").text(badges.notices);
 
+            // JSON
             if (ugui.args.outputjson.htmlticked) {
                 var output = {};
                 output.results = results;
@@ -196,6 +252,7 @@ function runApp() {
                 $("#results").html(successMessage(file, filetype));
             }
 
+            // CSV
             if (ugui.args.outputcsv.htmlticked) {
                 var json2csv = require('json2csv');
                 var fields = [];
@@ -213,6 +270,7 @@ function runApp() {
                 successMessage(file, filetype);
             }
 
+            // Markdown
             if (ugui.args.outputmd.htmlticked) {
                 var output = '';
                 var hr = '\n* * *\n\n';
@@ -236,6 +294,7 @@ function runApp() {
                 successMessage(file, filetype);
             }
 
+            // XML
             if (ugui.args.outputxml.htmlticked) {
                 var output = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
                 for (var i = 0; i < results.length; i++) {
@@ -258,22 +317,17 @@ function runApp() {
                 successMessage(file, filetype);
             }
 
+            // HTML
             if (ugui.args.outputhtml.htmlticked) {
-                var warn = 0;
-                var noti = 0;
-                var erro = 0;
                 for (var i = 0; i < results.length; i++) {
                     var theType = results[i].type;
                     var panelColor = "default";
                     if (theType == "warning") {
                         panelColor = "warning";
-                        warn = warn + 1;
                     } else if (theType == "error") {
                         panelColor = "danger";
-                        erro = erro + 1;
                     } else if (theType == "notice") {
                         panelColor = "primary";
-                        noti = noti + 1;
                     }
 
                     var theContext = results[i].context;
@@ -294,9 +348,6 @@ function runApp() {
                         $("#results").append(entry);
                     }
                 }
-                $("#button-row .btn-danger span").text(erro);
-                $("#button-row .btn-warning span").text(warn);
-                $("#button-row .btn-primary span").text(noti);
 
                 $.get('_markup/template.html', function (data) {
                     var results = $("#results").html();

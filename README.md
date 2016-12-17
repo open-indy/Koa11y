@@ -1,6 +1,6 @@
 #A GUI for pa11y
 
-To run this you'll need Node installed on your computer. I tried on 0.10.13 and it wouldn't work. I know the latest (5.7.0) does work.
+To run this you'll need Node (v4.0.0 or above) installed on your computer.
 
 1. Install [Node](http://nodejs.org)
 2. Download or clone this repo
