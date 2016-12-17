@@ -11,40 +11,6 @@
     <link rel="stylesheet" href="_style/ven.bootswatch/flatly.min.css" data-swatch="swapper">
     <link rel="stylesheet" href="_style/ugui-devtools.css">
     <link rel="stylesheet" href="_style/style.css">
-    <style>
-      #output-btn {
-        border: 0px;
-        margin: 0px;
-        padding: 0px;
-      }
-      #output-btn button {
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
-      }
-      #output-btn ul {
-        min-width: 86px;
-      }
-      #button-row .btn-sm {
-        vertical-align: -11px;
-      }
-      #results pre {
-        margin-bottom: 0px;
-      }
-      #results h4 {
-        margin: -2px 0px 2px;
-      }
-      #outputFolderIcon {
-        top: -31px;
-        left: -12px;
-        background: #FFF;
-        padding: 4px 0px 0px 6px;
-        cursor: pointer;
-      }
-      #button-badges .disabled {
-        pointer-events: auto;
-        cursor: pointer;
-      }
-    </style>
 
     <!-- UGUI requires jQuery 1.9.1 or above. -->
     <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
@@ -251,14 +217,14 @@
 
           <div class="row">
             <div class="col-xs-6 col-s-6 col-md-6 col-l-6">
-                <label>Standards Format:</label><br />
-                <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">WCAG2AA <span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                  <li><input type="radio" name="standard" data-argName="standardsection" value="section" id="section" /><label for="section" >Section508</label></li>
-                  <li><input type="radio" name="standard" data-argName="standardwcaga"   value="wcaga"   id="wcaga"   /><label for="wcaga"   >WCAG2A</label></li>
-                  <li><input type="radio" name="standard" data-argName="standardwcagaa"  value="wcagaa"  id="wcagaa" checked="checked" /><label for="wcagaa"  >WCAG2AA (default)</label></li>
-                  <li><input type="radio" name="standard" data-argName="standardwcagaaa" value="wcagaaa" id="wcagaaa" /><label for="wcagaaa" >WCAG2AAA</label></li>
-                </ul>
+              <label>Standards Format:</label><br />
+              <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">WCAG2AA <span class="caret"></span></button>
+              <ul id="standard" class="dropdown-menu">
+                <li><input type="radio" name="standard" data-argName="standardsection" value="section" id="section" /><label for="section" >Section508</label></li>
+                <li><input type="radio" name="standard" data-argName="standardwcaga"   value="wcaga"   id="wcaga"   /><label for="wcaga"   >WCAG2A</label></li>
+                <li><input type="radio" name="standard" data-argName="standardwcagaa"  value="wcagaa"  id="wcagaa" checked="checked" /><label for="wcagaa"  >WCAG2AA (default)</label></li>
+                <li><input type="radio" name="standard" data-argName="standardwcagaaa" value="wcagaaa" id="wcagaaa" /><label for="wcagaaa" >WCAG2AAA</label></li>
+              </ul>
             </div>
             <div class="col-xs-6 col-s-6 col-md-6 col-l-6">
               <label for="folderPicker">Output Folder:</label>

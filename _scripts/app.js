@@ -38,6 +38,7 @@ function runApp () {
     }
 
     function urlKeyup () {
+        reset();
         var url = cleanURL();
         $("#output").val(url);
         ugui.helpers.saveSettings();
@@ -75,6 +76,11 @@ function runApp () {
     }
     prefillData();
 
+    function reset () {
+        $("#results").empty();
+        $('#button-badges .badge').html('0');
+    }
+
     function successMessage (file, ext) {
         var filetype = ext.toUpperCase();
         if (filetype == 'MARKDOWN') {
@@ -98,6 +104,7 @@ function runApp () {
     });
 
     $('#outputFolderBrowse').change(function () {
+        reset();
         var userDir = $(this).val();
         $('#folderPicker').val(userDir);
         ugui.helpers.saveSettings();
@@ -114,20 +121,23 @@ function runApp () {
     }
 
     $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
+        reset();
+
         if ($(this).hasClass('disabled')) {
             $(this).removeClass('disabled');
             $(this).val('true');
         } else {
             $(this).addClass('disabled');
-            $(this).find('.badge').html('0');
             $(this).val('false');
         }
+
         ugui.helpers.buildUGUIArgObject();
         ugui.helpers.saveSettings();
     });
 
 
     $('input[name="standard"], input[name="outputtype"]').change(function () {
+        reset();
         ugui.helpers.saveSettings();
     });
 
@@ -144,13 +154,10 @@ function runApp () {
         document.body.removeChild(dumNode);
     });
 
-
     $("#run").click(function (evt) {
-        evt.preventDefault();
         $('#spinner').fadeIn('slow');
-        $('body').css('overflow','hidden');
-        $("#results").empty();
-        $('#button-badges .badge').html('0');
+        evt.preventDefault();
+        reset();
 
         ugui.helpers.buildUGUIArgObject();
 
@@ -214,7 +221,6 @@ function runApp () {
 
         test.run(url, function (error, results) {
             $('#spinner').fadeOut('slow');
-            $('body').css('overflow','auto');
 
             if (error) {
                 if (error.path = "phantomjs") {
@@ -235,22 +241,23 @@ function runApp () {
 
             // Badges
             var badges = {
+                'errors': 0,
                 'warnings': 0,
-                'notices': 0,
-                'errors': 0
+                'notices': 0
             };
+            console.log(results);
             for (var i = 0; i < results.length; i++) {
                 var theType = results[i].type;
-                if (theType == "warning") {
-                    badges.warning = badges.warnings + 1;
-                } else if (theType == "error") {
+                if (theType == "error") {
                     badges.errors = badges.errors + 1;
+                } else if (theType == "warning") {
+                    badges.warnings = badges.warnings + 1;
                 } else if (theType == "notice") {
                     badges.notices = badges.notices + 1;
                 }
             }
             $("#button-row .btn-danger span").text(badges.errors);
-            $("#button-row .btn-warning span").text(badges.warning);
+            $("#button-row .btn-warning span").text(badges.warnings);
             $("#button-row .btn-primary span").text(badges.notices);
 
             // JSON
