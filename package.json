@@ -49,13 +49,16 @@
         "json2csv": "3.7.3"
     },
     "devDependencies": {
-        "nw": "^0.12.3"
+        "nw": "^0.12.3",
+        "sass-lint": "^1.10.2"
     },
     "scripts": {
         "start": "nw .",
         "phantomjs": "phantomjs",
-        "phantomjs-prebuilt": "phantomjs-prebuilt"
+        "phantomjs-prebuilt": "phantomjs-prebuilt",
+        "sasslint": "node sasslinter.js"
     },
+    "sasslintConfig": ".sass-lint.yml",
     "license": "MIT",
     "licenses": [{
         "type": "MIT",
