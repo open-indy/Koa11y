@@ -245,7 +245,7 @@ function runApp () {
                 'warnings': 0,
                 'notices': 0
             };
-            console.log(results);
+
             for (var i = 0; i < results.length; i++) {
                 var theType = results[i].type;
                 if (theType == "error") {
@@ -268,10 +268,8 @@ function runApp () {
                 var file = path.join(folderPicker, fileName + ext);
                 ugui.helpers.writeToFile(file, output);
                 $("#results").html(successMessage(file, filetype));
-            }
-
             // CSV
-            if (ugui.args.outputcsv.htmlticked) {
+            } else if (ugui.args.outputcsv.htmlticked) {
                 var json2csv = require('json2csv');
                 var fields = [];
                 for (var key in results[0]) {
@@ -286,10 +284,8 @@ function runApp () {
                 ugui.helpers.writeToFile(file, output);
 
                 successMessage(file, filetype);
-            }
-
             // Markdown
-            if (ugui.args.outputmd.htmlticked) {
+            } else if (ugui.args.outputmd.htmlticked) {
                 var output = '';
                 var hr = '\n* * *\n\n';
                 for (var i = 0; i < results.length; i++) {
@@ -310,10 +306,8 @@ function runApp () {
                 ugui.helpers.writeToFile(file, output);
 
                 successMessage(file, filetype);
-            }
-
             // XML
-            if (ugui.args.outputxml.htmlticked) {
+            } else if (ugui.args.outputxml.htmlticked) {
                 var output = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
                 for (var i = 0; i < results.length; i++) {
                     var current = results[i];
@@ -333,10 +327,8 @@ function runApp () {
                 ugui.helpers.writeToFile(file, output);
 
                 successMessage(file, filetype);
-            }
-
             // HTML
-            if (ugui.args.outputhtml.htmlticked) {
+            } else {
                 for (var i = 0; i < results.length; i++) {
                     var theType = results[i].type;
                     var panelColor = "default";

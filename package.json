@@ -18,7 +18,7 @@
     "window": {
         "title": "UGUI: pa11y",
         "icon": "_img/icon32.png",
-        "toolbar": true,
+        "toolbar": false,
         "resizable": true,
         "visible": true,
         "transparent": false,
