@@ -48,8 +48,13 @@ for (var i = 0; i < results.length; i++) {
             if (len > 0) {
                 msg = msg + new Array(len + 1).join(' ');
             }
+            // Some messages are predictably short, so we can remove spaces so the lint rule will fit on the same line
             if (msg == 'Space expected between blocks                   ') {
                 msg = 'Space expected between blocks             ';
+            } else if (msg == 'Space expected around operator                  ') {
+                msg = 'Space expected around operator                ';
+            } else if (msg == 'Selectors must be placed on new lines           ') {
+                msg = 'Selectors must be placed on new lines      ';
             }
 
             location = line + ':' + col + ' ';

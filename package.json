@@ -58,7 +58,6 @@
         "phantomjs-prebuilt": "phantomjs-prebuilt",
         "sasslint": "node sasslinter.js"
     },
-    "sasslintConfig": ".sass-lint.yml",
     "license": "MIT",
     "licenses": [{
         "type": "MIT",
