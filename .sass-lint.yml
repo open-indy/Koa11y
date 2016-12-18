@@ -13,39 +13,46 @@ files:
   include: '_sass/*.s+(a|c)ss'
 # Rule Configuration
 rules:
-  extends-before-mixins: 2
-
-  extends-before-declarations: 2
-
-  placeholder-in-extend: 2
-
-  mixins-before-declarations:
+  attribute-quotes: 2
+  brace-style:
     - 2
-    -
-      exclude:
-        - breakpoint
-        - mq
-
-  no-warn: 1
-
-  no-debug: 1
-
-  no-important: 2
-
+    - allow-single-line: false
+    - style: '1tbs'
+  declarations-before-nesting: 2
+  empty-args:
+    - 2
+    - include: false
+  extends-before-declarations: 2
+  extends-before-mixins: 2
+  final-newline:
+    - 2
+    - include: true
+  hex-length:
+    - 2
+    - style: short
   hex-notation:
     - 2
-    -
-      style: uppercase
-
+    - style: uppercase
   indentation:
     - 2
-    -
-      size: 4
-
+    - size: 4
+  leading-zero:
+    - 2
+    - include: true
+  mixins-before-declarations:
+    - 2
+    - exclude:
+        - breakpoint
+        - mq
+  no-color-keywords: 1
+  no-debug: 1
+  no-duplicate-properties: 2
+  no-important: 2
+  no-warn: 1
+  placeholder-in-extend: 2
   property-sort-order:
     - 1
-    -
-      ignore-custom-properties: true
+    - ignore-custom-properties: true
       order:
         - content
 
@@ -151,6 +158,8 @@ rules:
         - outline
         - outline-offset
         - overflow
+        - perspective
+        - pointer-events
         - -webkit-transform
         - transform
         - -webkit-transition

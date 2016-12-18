@@ -13,6 +13,7 @@ var rule = '';
 var line = '';
 var col = '';
 var len = 0;
+var msgCount = 0;
 
 for (var i = 0; i < results.length; i++) {
     result = results[i];
@@ -22,12 +23,10 @@ for (var i = 0; i < results.length; i++) {
         console.log(hr);
         console.log(file);
         for (var j = 0; j < messages.length; j++) {
+            msgCount = msgCount + 1;
             message = messages[j];
             msg = message.message;
-            rule = ' (Property Sort)';
-            if (message.ruleId != 'property-sort-order') {
-                rule = ' (' + message.ruleId + ')';
-            }
+            rule = ' (' + message.ruleId + ')';
             line = message.line + '';
             col = message.column + '';
 
@@ -49,10 +48,23 @@ for (var i = 0; i < results.length; i++) {
             if (len > 0) {
                 msg = msg + new Array(len + 1).join(' ');
             }
+            if (msg == 'Space expected between blocks                   ') {
+                msg = 'Space expected between blocks             ';
+            }
 
             location = line + ':' + col + ' ';
             output = location + msg + rule;
             console.log(output);
         }
+        console.log(file);
     }
+    if (i == results.length - 1) {
+        console.log(hr);
+    }
+}
+
+if (msgCount > 0) {
+    console.log('Total: ' + msgCount);
+} else {
+    console.log('Sass Lint Passed')
 }
