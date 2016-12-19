@@ -1,0 +1,2 @@
+Without this file github.io ignores files and folders that start with _
+Also on every commit it delays the time it takes before the content on the site updates if you don't have this file.

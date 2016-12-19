@@ -1,0 +1,85 @@
+
+/* The download buttons for specific to each OS */
+
+.linux .dl-btn-win,
+.mac .dl-btn-win,
+.linux.arch32 .dl-btn-lin,
+.linux.arch64 .dl-btn-lin,
+.dl-btn-lin,
+.dl-btn-lin32,
+.dl-btn-lin64,
+.dl-btn-osx
+    display: none
+
+.dl-btn-win,
+.dl-btn-osx,
+.dl-btn-lin32,
+.dl-btn-lin64
+    height: 60px
+
+.dl-btn-win,
+.dl-btn-osx,
+.dl-btn-lin32,
+.dl-btn-lin64,
+.linux .dl-btn-lin
+    background: $button-color
+    margin: 0px auto 16px auto
+    padding: 0px
+    color: #FFF
+    font-family: $main-font
+    font-size: 27px
+    font-weight: 700
+    line-height: 65px
+    text-align: center
+    overflow: hidden
+
+.mac .dl-btn-osx,
+.linux .dl-btn-lin,
+.linux.arch32 .dl-btn-lin32,
+.linux.arch64 .dl-btn-lin64
+    display: block
+
+.linux.arch32 .dl-btn-lin,
+.linux.arch32 .dl-btn-lin64,
+.linux.arch64 .dl-btn-lin,
+.linux.arch64 .dl-btn-lin32
+    display: none !important
+
+.linux .dl-btn-lin
+    padding: 10px 0px 0px 0px
+    font-size: 25px
+
+.dl-btn-lin a
+    display: inline-block
+    width: 50%
+    padding: 2px 0px 6px 0px
+    font-size: 30px
+
+.dl-btn-win:hover,
+.dl-btn-osx:hover,
+.dl-btn-lin32:hover,
+.dl-btn-lin64:hover,
+.dl-btn-lin a:hover
+    background: $button-hover
+
+.dl-btn-win,
+.dl-btn-osx,
+.dl-btn-lin,
+.dl-btn-lin32,
+.dl-btn-lin64
+    a
+        @if lightness($button-color) > lightness(#AAA)
+            color: #000
+        @else
+            color: #FFF
+
+.dl-btn-win,
+.dl-btn-osx,
+.dl-btn-lin,
+.dl-btn-lin32,
+.dl-btn-lin64
+    a:hover,
+    a:active,
+    a:visited,
+    a:focus
+        text-decoration: none

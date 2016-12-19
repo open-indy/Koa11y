@@ -1,14 +1,21 @@
 
-// Supplies mixins and variables that other Sass files can call
+// Supplies mixins and variables that other .sass files can call
+
+$main-font: "Ruda", sans-serif
+
+$page-background: #FFF
+
+$main-color: #18BC9C
+$accent-color: lighten(desaturate(adjust-hue($main-color, 15.5), 31), 13.5)
+
+$button-color: #2C3E50
+$button-hover: darken(desaturate(adjust-hue($button-color, 0.17), 10), 10)
+
+$win: #297FD8
+$lin: #9500BA
+$osx: #FD51B0
 
 @mixin bmp0
     border: 0px
     margin: 0px
     padding: 0px
-
-@mixin user-select-none
-    -webkit-user-select: none
-    user-select: none
-
-$quick: 0.5s ease all
-$uguiTextColor: #333

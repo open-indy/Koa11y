@@ -1,5 +1,5 @@
 
-// The main document, every page refers to this basic document
+// The main document, every page on the site refers to this basic document
 
 *,
 *:before,
@@ -10,39 +10,23 @@ html
     +bmp0
     width: 100%
     height: 100%
+    background: $page-background
 
 body
-    +bmp0
     width: 100%
-    padding-top: 57px
+    border: 0px
+    margin: 0px 0px 100px 0px
+    padding: 0px
 
-input[type="color"]
-    +bmp0
-    width: 3em
-    height: 1.5em
-    background: transparent
+.italic,
+.italics
+    font-style: italic
 
-.truncate
-    text-overflow: ellipsis
-    white-space: nowrap
-    overflow: hidden
+img
+    -ms-interpolation-mode: bicubic
 
-.row
-    margin-top: 8px
-
-.vtop,
-.vmiddle,
-.vcenter,
-.vbottom
-    display: inline-block
-    float: none
-
-.vtop
-    vertical-align: top
-
-.vmiddle,
-.vcenter
-    vertical-align: middle
-
-.vbottom
-    vertical-align: bottom
+.screenshot
+    display: block
+    width: 100%
+    max-width: 509px
+    margin: 0px auto 20px auto
