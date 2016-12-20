@@ -9,6 +9,7 @@ function runApp () {
 
     //require('nw.gui').Window.get().showDevTools();
 
+    var fs = require('fs');
     var path = require('path');
 
     function cleanURL () {
@@ -142,7 +143,8 @@ function runApp () {
     });
 
 
-    var clipboard = 'console.clear(),window.xhrWorked=!0;var xhr=new XMLHttpRequest,img=document.getElementsByTagName("img"),imgLen=img.length,altLen=0,bigAlt=imgLen,bigImg=imgLen,imgErr=0,imgSizes=0,i=0;if(imgLen<1)console.log("No images found on this page.");else{for(i=0;i<imgLen;i++)if(img[i].getAttribute("alt")){var currentAlt=img[i].getAttribute("alt"),descriptive=confirm("Is this text descriptive:\\n"+currentAlt);descriptive&&altLen++,currentAlt.length>100&&bigAlt--;try{xhr.open("HEAD",img[i].getAttribute("src"),!1),xhr.onreadystatechange=function(){if(4==xhr.readyState)if(200==xhr.status){var a=xhr.getResponseHeader("Content-Length");imgSizes+=parseInt(a),a>102400&&bigImg--}else imgErr++},xhr.send(null)}catch(a){window.xhrWorked=!1}}var image="images";1==imgErr&&(image="image");var altPercent=Math.round(altLen/imgLen*100),under100KB="?",failPercent="?",sizeUnder100="?",loaded="?",KB="?",good="text-success glyphicon-ok",bad="text-danger glyphicon-remove",warn="text-warning glyphicon-ban-circle",altIcon=good,lengthIcon=good,sizeIcon=warn,errorIcon=warn;altPercent<100&&(altIcon=bad),bigAlt>imgLen&&(lengthIcon=bad),imgErr>0&&(errorIcon=bad),bigAlt>0&&xhrWorked&&(sizeIcon=good,bigImg>0&&(sizeIcon=bad),errorIcon=good,sizeUnder100=bigImg,loaded=imgLen-imgErr,KB=Math.round(imgSizes/1024*10)/10,under100KB=Math.round(bigImg/imgLen*100),failPercent=Math.round((imgLen-imgErr)/imgLen*100)),console.clear();var html=[\'<div class="row">\\r\\n\',\'  <div class="panel panel-primary">\\r\\n\',\'    <div class="panel-heading">Image Accessibility</div>\\r\\n\',\'    <div class="panel-body">\\r\\n\',\'      <p><i class="glyphicon \'+altIcon+\'"></i> <strong>\'+altPercent+"%</strong> of images on the page had descriptive ALT text. <strong>("+altLen+"/"+imgLen+")</strong></p>\\r\\n",\'      <p><i class="glyphicon \'+lengthIcon+\'"></i> <strong>\'+Math.round(bigAlt/imgLen*100)+"%</strong> of ALTs were under 100 characters. <strong>("+bigAlt+"/"+imgLen+")</strong></p>\\r\\n",\'      <p><i class="glyphicon \'+sizeIcon+\'"></i> <strong>\'+under100KB+"%</strong> of images were under 100KB in size. <strong>("+sizeUnder100+"/"+imgLen+")</strong></p>\\r\\n",\'      <p><i class="glyphicon \'+errorIcon+\'"></i> <strong>\'+failPercent+"%</strong> of images loaded with a total image payload of <strong>"+KB+"KB ("+loaded+"/"+imgLen+")</strong></p>\\r\\n","    </div>\\r\\n","  </div>\\r\\n","</div>"],output="";for(i=0;i<html.length;i++)output+=html[i];console.log(output);var dummy=document.createElement("textarea");dummy.setAttribute("id","dummy"),document.body.appendChild(dummy);var dumNode=document.getElementById("dummy");dumNode.value=output,dumNode.select(),document.execCommand("copy"),document.body.removeChild(dumNode),console.log("The above code has been copied to your clipboard")}';
+    var clipboard = '';
+    clipboard = fs.readFileSync('_scripts/imgalts.min.js', 'binary');
     $('#clipboard').click(function () {
         var dummy = document.createElement("textarea");
         dummy.setAttribute("id", "dummy");
