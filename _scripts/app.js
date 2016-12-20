@@ -38,14 +38,31 @@ function runApp () {
         return url;
     }
 
+    function unlockRun () {
+        ugui.helpers.buildUGUIArgObject();
+        var url = ugui.args.url.value;
+        var dest = ugui.args.folderPicker.value;
+        var file = ugui.args.output.value;
+        if (url && dest && file) {
+            $('#run').prop("disabled", false);
+        } else {
+            $('#run').prop("disabled", true);
+        }
+    }
+    unlockRun();
+
     function urlKeyup () {
         reset();
         var url = cleanURL();
         $("#output").val(url);
         ugui.helpers.saveSettings();
+        unlockRun();
     }
     $("#url").change(urlKeyup);
     $("#url").keyup(urlKeyup);
+
+    $('#output').change(unlockRun);
+    $('#output').keyup(unlockRun);
 
     function prefillURL () {
         $('#url').val('http://google.com');
@@ -136,14 +153,23 @@ function runApp () {
         ugui.helpers.saveSettings();
     });
 
+    function toggleImageAlts () {
+        ugui.helpers.buildUGUIArgObject();
+        if (ugui.args.outputhtml.htmlticked) {
+            $('#imageAltsSection').show();
+        } else {
+            $('#imageAltsSection').hide();
+        }
+    }
+    toggleImageAlts();
 
     $('input[name="standard"], input[name="outputtype"]').change(function () {
         reset();
+        toggleImageAlts();
         ugui.helpers.saveSettings();
     });
 
     function clipboard (data) {
-        console.log(data);
         $('#clipboard').click(function () {
             var dummy = document.createElement("textarea");
             dummy.setAttribute("id", "dummy");
