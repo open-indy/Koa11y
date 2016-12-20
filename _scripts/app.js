@@ -142,18 +142,28 @@ function runApp () {
         ugui.helpers.saveSettings();
     });
 
+    function clipboard (data) {
+        console.log(data);
+        $('#clipboard').click(function () {
+            var dummy = document.createElement("textarea");
+            dummy.setAttribute("id", "dummy");
+            document.body.appendChild(dummy);
+            var dumNode = document.getElementById("dummy")
+            dumNode.value = data;
+            dumNode.select();
+            document.execCommand("copy");
+            document.body.removeChild(dumNode);
+        });
+    }
 
-    var clipboard = '';
-    clipboard = fs.readFileSync('_scripts/imgalts.min.js', 'binary');
-    $('#clipboard').click(function () {
-        var dummy = document.createElement("textarea");
-        dummy.setAttribute("id", "dummy");
-        document.body.appendChild(dummy);
-        var dumNode = document.getElementById("dummy")
-        dumNode.value = clipboard;
-        dumNode.select();
-        document.execCommand("copy");
-        document.body.removeChild(dumNode);
+    //Attempt to get the latest Image Alts script from GitHub
+    var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/UGUI-pa11y/master/_scripts/imgalts.min.js', function (data) {
+        clipboard(data);
+    });
+    //If we cannot access the latest, use the version that shipped with UGUI: pa11y
+    getImgAlts.fail(function () {
+        var data = fs.readFileSync('_scripts/imgalts.min.js', 'binary');
+        clipboard(data);
     });
 
     $("#run").click(function (evt) {
