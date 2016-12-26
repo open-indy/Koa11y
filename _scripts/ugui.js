@@ -2692,31 +2692,21 @@ cutCopyPasteMenu();
 //
 function saveSettings(customLocation, callback) {
     var gui = require("nw.gui");
-
-    var defaultLocation = "";
-
-    //If you're on windows then folders in file paths are separated with `\`, otherwise OS's use `/`
-    if ( process.platform == "win32" ) {
-        //Find the path to the settings file and store it
-        defaultLocation = (gui.App.dataPath + "\\uguisettings.json");
-    } else {
-        //Find the path to the settings file and store it
-        defaultLocation = (gui.App.dataPath + "/uguisettings.json");
-    }
+    var path = require('path');
 
     //If a custom location isn't passed into the function, use the default location for the settings file
-    var settingsFile = defaultLocation;
+    var settingsFile = path.join(gui.App.dataPath, 'uguisettings.json');
 
     //Validate types  
     //Check if only one argument was passed into `saveSettings` and if it was a string or function.
     //Check if two arguments were passed into `saveSettings` and if the first one is a string.
     //Check if two arguments were passed into `saveSettings` and if the second one is a function
     if (
-        (arguments.length === 1 && (typeof(customLocation) !== "string") && (typeof(customLocation) !== "function")) ||
-        (arguments.length === 2 && typeof(customLocation) !== "string") ||
-        (arguments.length === 2 && typeof(callback) !== "function")
+        (arguments.length === 1 && (typeof(customLocation) !== 'string') && (typeof(customLocation) !== 'function')) ||
+        (arguments.length === 2 && typeof(customLocation) !== 'string') ||
+        (arguments.length === 2 && typeof(callback) !== 'function')
        ) {
-        console.info(º+"The following arguments are allowed:", consoleBold);
+        console.info(º+'The following arguments are allowed:', consoleBold);
         console.info(º+"1. Just a string to a custom file path.", consoleNormal);
         console.info(º+'ugui.helpers.saveSettings( "C:\\folder\\app-settings.json" );', consoleCode);
         console.info(º+"2. Just a function as a callback to be ran when save completes.", consoleNormal);
@@ -2728,7 +2718,7 @@ function saveSettings(customLocation, callback) {
         console.info(º+"4. Nothing at all.", consoleNormal);
         console.info(º+'ugui.helpers.saveSettings();', consoleCode);
         console.info(º+"By passing in nothing, UGUI will use the default save location of:", consoleNormal);
-        console.info(º+'"' + defaultLocation + '"', consoleCode);
+        console.info(º+'"' + settingsFile + '"', consoleCode);
         console.info(º+"And upon completion of saving the settings, nothing will be triggered.", consoleNormal);
         return;
     //Check if `customLocation` is exists and is a string
@@ -2787,31 +2777,21 @@ $(".save-ugui-settings").click( function() {
 //
 function loadSettings(customLocation, callback) {
     var gui = require("nw.gui");
-
-    var defaultLocation = "";
-
-    //If you're on windows then folders in file paths are separated with `\`, otherwise OS's use `/`
-    if ( process.platform == "win32" ) {
-        //Find the path to the settings file and store it
-        defaultLocation = (gui.App.dataPath + "\\uguisettings.json");
-    } else {
-        //Find the path to the settings file and store it
-        defaultLocation = (gui.App.dataPath + "/uguisettings.json");
-    }
+    var path = require('path');
 
     //If a custom location isn't passed into the function, use the default location for the settings file
-    var settingsFile = defaultLocation;
+    var settingsFile = path.join(gui.App.dataPath, 'uguisettings.json');
 
     //Validate types  
     //Check if only one argument was passed into `loadSettings` and if it was a string or function.
     //Check if two arguments were passed into `loadSettings` and if the first one is a string.
     //Check if two arguments were passed into `loadSettings` and if the second one is a function.
     if (
-        (arguments.length === 1 && (typeof(customLocation) !== "string") && (typeof(customLocation) !== "function")) ||
-        (arguments.length === 2 && typeof(customLocation) !== "string") ||
-        (arguments.length === 2 && typeof(callback) !== "function")
+        (arguments.length === 1 && (typeof(customLocation) !== 'string') && (typeof(customLocation) !== 'function')) ||
+        (arguments.length === 2 && typeof(customLocation) !== 'string') ||
+        (arguments.length === 2 && typeof(callback) !== 'function')
        ) {
-        console.info(º+"The following arguments are allowed:", consoleBold);
+        console.info(º+'The following arguments are allowed:', consoleBold);
         console.info(º+"1. Just a string to a custom file path.", consoleNormal);
         console.info(º+'ugui.helpers.loadSettings( "C:\\folder\\app-settings.json" );', consoleCode);
         console.info(º+"2. Just a function as a callback to be ran when loading completes.", consoleNormal);
@@ -2823,7 +2803,7 @@ function loadSettings(customLocation, callback) {
         console.info(º+"4. Nothing at all.", consoleNormal);
         console.info(º+'ugui.helpers.loadSettings();', consoleCode);
         console.info(º+"By passing in nothing, UGUI will use the default load location of:", consoleNormal);
-        console.info(º+'"' + defaultLocation + '"', consoleCode);
+        console.info(º+'"' + settingsFile + '"', consoleCode);
         console.info(º+"And upon completion of saving the settings, nothing will be triggered.", consoleNormal);
         return;
     //Check if `customLocation` is exists and is a string
@@ -2833,7 +2813,7 @@ function loadSettings(customLocation, callback) {
     }
 
     //Attempt to read the file
-    fs.readFile(settingsFile, {encoding: "utf-8"}, function(err, data) {
+    fs.readFile(settingsFile, {encoding: "utf-8"}, function (err, data) {
         //Display console warning if unable to read the file
         if (err) {
             console.warn(º+"Could not read settings file from location:", consoleNormal);
@@ -2849,7 +2829,22 @@ function loadSettings(customLocation, callback) {
             return;
         //Load the file if it's found
         } else {
+            var semVer = require('semver');
             var settingsObj = JSON.parse(data);
+
+            var settingsVersion = 'none';
+            if (settingsObj.version) {
+                settingsVersion = settingsObj.version.value;
+            }
+            // If the old settings file is below v2.0.0 delete the settings file
+            if (settingsVersion == 'none' || semVer.lt(settingsVersion, '2.0.0')) {
+                ugui.helpers.deleteAFile(settingsFile, function () {
+                    var win = gui.Window.get();
+                    win.reload();
+                });
+                return;
+            }
+
             //Iterate through the saved settings and update the UI
             for (key in settingsObj) {
                 var htmltype = settingsObj[key].htmltype;
