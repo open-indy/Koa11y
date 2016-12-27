@@ -3,7 +3,7 @@
     "version": "2.0.0",
     "author": "The Jared Wilcurt",
     "description": "Check if a website has accessibility issues.",
-    "keywords": [ "Accessibility", "standards", "automated", "WCAG" ],
+    "keywords": [ "Accessibility", "standards", "automated", "WCAG", "Section 508" ],
     "maintainers":[{
         "name": "TheJaredWilcurt",
         "email": "TheJaredWilcurt@noreply.github.com",
