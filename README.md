@@ -1,4 +1,4 @@
-#A GUI for pa11y
+#A GUI for Pa11y
 
 To run this you'll need Node (v4.0.0 or above) installed on your computer.
 

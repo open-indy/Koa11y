@@ -16,7 +16,7 @@
     "bugs": "https://github.com/TheJaredWilcurt/UGUI-pa11y/issues",
     "main": "index.htm",
     "window": {
-        "title": "UGUI: pa11y",
+        "title": "UGUI: Pa11y",
         "icon": "_img/icon32.png",
         "toolbar": false,
         "resizable": true,

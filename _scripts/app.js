@@ -49,7 +49,6 @@ function runApp () {
             $('#run').prop("disabled", true);
         }
     }
-    unlockRun();
 
     function urlKeyup () {
         reset();
@@ -161,7 +160,6 @@ function runApp () {
             $('#imageAltsSection').hide();
         }
     }
-    toggleImageAlts();
 
     $('input[name="standard"], input[name="outputtype"]').change(function () {
         reset();
@@ -186,7 +184,7 @@ function runApp () {
     var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/UGUI-pa11y/master/_scripts/imgalts.min.js', function (data) {
         clipboard(data);
     });
-    //If we cannot access the latest, use the version that shipped with UGUI: pa11y
+    //If we cannot access the latest, use the version that shipped with UGUI: Pa11y
     getImgAlts.fail(function () {
         var data = fs.readFileSync('_scripts/imgalts.min.js', 'binary');
         clipboard(data);
@@ -397,16 +395,41 @@ function runApp () {
                     }
                 }
 
-                $.get('_markup/template.html', function (data) {
+                $.get('_markup/template.html', function (page) {
                     var results = $("#results").html();
                     var buttons = $("#button-badges").html();
                     var imgAlts = $("#imagealts").val();
-                    var output = data + url + '</h1>\n<span id="buttons">' + buttons + '</span>\n</div>\n' + imgAlts + '\n<div class="row">' + results + "</div>\n</div>\n</body>\n</html>";
+                    var output =
+                          page + url + '</h1>\n<span id="buttons">' + buttons + '</span>\n</div>\n' +
+                            imgAlts + '\n' +
+                            '<div class="row">' + results + '</div>\n' +
+                            '</div>\n' +
+                            '<script>\n' +
+                            '    $(".btn.btn-sm").click(function () { $(this).toggleClass("disabled"); });\n' +
+                            '    $(".btn.btn-sm.btn-danger").click(function () { $(".panel-danger").toggle(); });\n' +
+                            '    $(".btn.btn-sm.btn-warning").click(function () { $(".panel-warning").toggle(); });\n' +
+                            '    $(".btn.btn-sm.btn-primary").click(function () { $(".panel-primary").toggle(); });\n' +
+                            '</script>\n' +
+                          '</body>\n' +
+                        '</html>';
                     var file = path.join(folderPicker, fileName + ext);
                     ugui.helpers.writeToFile(file, output);
                 });
             }
         });
     });
+
+
+    toggleImageAlts();
+    unlockRun();
+    if (
+        !ugui.args.outputcsv.htmlticked &&
+        !ugui.args.outputxml.htmlticked &&
+        !ugui.args.outputmd.htmlticked &&
+        !ugui.args.outputjson.htmlticked &&
+        !ugui.args.outputhtml.htmlticked
+    ) {
+        $('#output-btn label[for="html"]').click();
+    }
 
 } // end runApp();
