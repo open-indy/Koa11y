@@ -400,17 +400,20 @@ function runApp () {
                     var buttons = $("#button-badges").html();
                     var imgAlts = $("#imagealts").val();
                     var output =
-                          page + url + '</h1>\n<span id="buttons">' + buttons + '</span>\n</div>\n' +
+                        template +
+                        '      <span id="buttons">' + buttons + '</span>\n' +
+                        '      <h1>' + url + '</h1>\n' +
+                        '    </div>\n' +
                             imgAlts + '\n' +
-                            '<div class="row">' + results + '</div>\n' +
-                            '</div>\n' +
-                            '<script>\n' +
-                            '    $(".btn.btn-sm").click(function () { $(this).toggleClass("disabled"); });\n' +
-                            '    $(".btn.btn-sm.btn-danger").click(function () { $(".panel-danger").toggle(); });\n' +
-                            '    $(".btn.btn-sm.btn-warning").click(function () { $(".panel-warning").toggle(); });\n' +
-                            '    $(".btn.btn-sm.btn-primary").click(function () { $(".panel-primary").toggle(); });\n' +
-                            '</script>\n' +
-                          '</body>\n' +
+                        '      <div class="row">' + results + '</div>\n' +
+                        '    </div>\n' +
+                        '    <script>\n' +
+                        '        $(".btn.btn-sm").click(function () { $(this).toggleClass("disabled"); });\n' +
+                        '        $(".btn.btn-sm.btn-danger").click(function () { $(".panel-danger").toggle(); });\n' +
+                        '        $(".btn.btn-sm.btn-warning").click(function () { $(".panel-warning").toggle(); });\n' +
+                        '        $(".btn.btn-sm.btn-primary").click(function () { $(".panel-primary").toggle(); });\n' +
+                        '    </script>\n' +
+                        '  </body>\n' +
                         '</html>';
                     var file = path.join(folderPicker, fileName + ext);
                     ugui.helpers.writeToFile(file, output);
