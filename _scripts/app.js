@@ -104,13 +104,12 @@ function runApp () {
             filetype = 'Markdown';
         }
         var message =
-            '<div class="col-xs-12">' +
-                '<div class="well">' +
-                    '<h4 class="text-center">' +
-                        '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
-                    '</h4>' +
-                    '<p>' + file + '</p>' +
-                '</div>' +
+            '<div class="alert alert-info alert-dismissible" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                '<h4>' +
+                    '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
+                '</h4>' +
+                '<p>' + file + '</p>' +
             '</div>';
         $("#results").html(message);
     }
@@ -365,15 +364,18 @@ function runApp () {
                 successMessage(file, filetype);
             // HTML
             } else {
+                var returnedErrors = '';
+                var returnedWarnings = '';
+                var returnedNotices = '';
+                var panelColor = '';
                 for (var i = 0; i < results.length; i++) {
                     var theType = results[i].type;
-                    var panelColor = "default";
-                    if (theType == "warning") {
-                        panelColor = "warning";
-                    } else if (theType == "error") {
-                        panelColor = "danger";
-                    } else if (theType == "notice") {
-                        panelColor = "primary";
+                    if (theType == 'warning') {
+                        panelColor = 'warning';
+                    } else if (theType == 'error') {
+                        panelColor = 'danger';
+                    } else if (theType == 'notice') {
+                        panelColor = 'primary';
                     }
 
                     var theContext = results[i].context;
@@ -384,20 +386,26 @@ function runApp () {
                         '<div class="panel-heading">' + results[i].code + '</div>\n' +
                         '<div class="panel-body">\n' +
                           '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + results[i].message + '<br /><br />\n' +
-                          '<pre><code>' + theContext + '</code></pre><br />\n' +
+                          '<pre><code>' + theContext + '</code></pre>\n' +
                         '</div>\n' +
                         '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
                       '</div>\n';
+
                     if (theType == "error") {
-                        $("#results").prepend(entry);
-                    } else {
-                        $("#results").append(entry);
+                        returnedErrors = returnedErrors + entry;
+                    } else if (theType =="warning") {
+                        returnedWarnings = returnedWarnings + entry;
+                    } else if (theType == "notice") {
+                        returnedNotices = returnedNotices + entry;
                     }
                 }
 
-                $.get('_markup/template.html', function (page) {
-                    var results = $("#results").html();
-                    var buttons = $("#button-badges").html();
+                $.get('_markup/template.html', function (template) {
+                    var results = returnedErrors + returnedWarnings + returnedNotices;
+                    var buttons = '';
+                    $("#button-badges button:not('.disabled')").each(function () {
+                        buttons = buttons + $(this).prop('outerHTML') + '\n';
+                    });
                     var imgAlts = $("#imagealts").val();
                     var output =
                         template +
@@ -417,6 +425,8 @@ function runApp () {
                         '</html>';
                     var file = path.join(folderPicker, fileName + ext);
                     ugui.helpers.writeToFile(file, output);
+
+                    successMessage(file, filetype);
                 });
             }
         });
