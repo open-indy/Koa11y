@@ -6,7 +6,7 @@
 
 To download UGUI: Pa11y, visit the website:
 
-* http://TheJaredWilcurt.github.io/UGUI-pa11y/
+* http://TheJaredWilcurt.github.io/UGUI-pa11y
 
 * * *
 
