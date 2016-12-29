@@ -258,19 +258,16 @@ function runApp () {
             $('#spinner').fadeOut('slow');
 
             if (error) {
-                if (error.path = "phantomjs") {
-                    console.info("PhantomJS must be installed globally.");
-                    console.info("Install Node, from nodejs.org");
-                    console.info("Then run: npm install -g phantomjs");
-                    console.error(error);
-                    $.get("_markup/phantomjs-missing.htm", function (markup) {
-                        $("body").prepend( markup );
-                        ugui.helpers.openDefaultBrowser();
-                    });
-                } else {
-                    console.info("Failed to return data from the page you entered.");
-                    console.error(error.message);
-                }
+                console.error(error);
+                var markup =
+                    '<div class="alert alert-danger alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>' +
+                            '<p>Pa11y Error:</p>' +
+                        '</h4>' +
+                        '<p>' + error.message + '</p>' +
+                    '</div>';
+                $("#results").html(markup);
                 return;
             }
 
