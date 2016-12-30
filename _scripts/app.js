@@ -7,7 +7,7 @@ $(document).ready( function () {
 //Container for your app's custom JS
 function runApp () {
 
-    //require('nw.gui').Window.get().showDevTools();
+    require('nw.gui').Window.get().showDevTools();
 
     var fs = require('fs');
     var path = require('path');
@@ -112,6 +112,17 @@ function runApp () {
                 '<p>' + file + '</p>' +
             '</div>';
         $("#results").html(message);
+    }
+    function errorMessage (error) {
+        var markup =
+            '<div class="alert alert-danger alert-dismissible" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                '<h4>' +
+                    '<p>Pa11y Error:</p>' +
+                '</h4>' +
+                '<p>' + error + '</p>' +
+            '</div>';
+        $("#results").html(markup);
     }
 
 
@@ -259,15 +270,7 @@ function runApp () {
 
             if (error) {
                 console.error(error);
-                var markup =
-                    '<div class="alert alert-danger alert-dismissible" role="alert">' +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                        '<h4>' +
-                            '<p>Pa11y Error:</p>' +
-                        '</h4>' +
-                        '<p>' + error.message + '</p>' +
-                    '</div>';
-                $("#results").html(markup);
+                errorMessage(error.message);
                 return;
             }
 
@@ -429,6 +432,37 @@ function runApp () {
         });
     });
 
+    function phantomImgAlts (url, callback) {
+        if (!url) {
+            console.log('Pass in a URL.');
+            return;
+        }
+        var path = require('path');
+        var exec = require('child_process').execFile;
+        var phantomjs = require('phantomjs-prebuilt');
+        var binPath = phantomjs.path;
+
+        var childArgs = [path.join(process.cwd(), '_scripts', 'phantom-imgalts.js'), url];
+
+        exec(binPath, childArgs, function (err, stdout, stderr) {
+            if (err) {
+                console.log(err);
+                errorMessage(err);
+                return;
+            }
+            if (stderr) {
+                console.log(stderr);
+                errorMessage(stderr);
+                return;
+            }
+            if (callback) {
+                var data = JSON.parse(stdout);
+                callback(data);
+            } else {
+                console.log(stdout);
+            }
+        })
+    }
 
     toggleImageAlts();
     unlockRun();
