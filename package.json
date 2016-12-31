@@ -50,12 +50,15 @@
     },
     "devDependencies": {
         "nw": "^0.12.3",
+        "eslint": "^3.8.1",
         "sass-lint": "^1.10.2"
     },
     "scripts": {
         "start": "nw .",
         "phantomjs": "phantomjs",
         "phantomjs-prebuilt": "phantomjs-prebuilt",
+        "lint": "eslint --config=.eslintrc.js _scripts sasslinter.js",
+        "fix": "eslint --fix --config=.eslintrc.js _scripts sasslinter.js",
         "sasslint": "node sasslinter.js"
     },
     "license": "MIT",

@@ -1,11 +1,11 @@
-//Image Alts Script v4
+// Image Alts Script v4
 
 console.clear();
 
 window.xhrWorked = true;
 var xhr = new XMLHttpRequest();
 var img = document.getElementsByTagName('img');
-//Number of images on the page
+// Number of images on the page
 var imgLen = img.length;
 var altLen = 0;
 var bigAlt = imgLen;
@@ -23,30 +23,30 @@ if (imgLen < 1) {
             imgAlts.push(img[i]);
         }
         try {
-            //Make a Synchronous call to get the current image
+            // Make a Synchronous call to get the current image
             xhr.open('HEAD', img[i].getAttribute('src'), false);
-            //When the image requested is ready
+            // When the image requested is ready
             xhr.onreadystatechange = function () {
-                if ( xhr.readyState == 4 ) {
-                    if ( xhr.status == 200 ) {
-                        //Filesize
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        // Filesize
                         var size = xhr.getResponseHeader('Content-Length');
-                        size = parseInt(size)
+                        size = parseInt(size);
                         if (!isNaN(size)) {
-                            //Add the size to the total size of all images thus far
+                            // Add the size to the total size of all images thus far
                             imgSizes = imgSizes + size;
-                            //If the current image is over 100KB
+                            // If the current image is over 100KB
                             if (size > 102400) {
-                                //Lower the score of bigImg from 100%
+                                // Lower the score of bigImg from 100%
                                 bigImg--;
                             }
                         } else {
-                            //Refused to get unsafe header "Content-Length"
-                            //xhr.onreadystatechange
-                            //Because page was https, and our xhr was http, the size came back null
+                            // Refused to get unsafe header "Content-Length"
+                            // xhr.onreadystatechange
+                            // Because page was https, and our xhr was http, the size came back null
                             missedImg = missedImg + 1;
                         }
-                    //Otherwise there was an error getting the image
+                    // Otherwise there was an error getting the image
                     } else {
                         imgErr++;
                     }
@@ -59,20 +59,18 @@ if (imgLen < 1) {
     }
     for (var j = 0; j < imgAlts.length; j++) {
         var currentAlt = imgAlts[j].getAttribute('alt');
-        //if the alt tag is longer than 100 chars
+        // if the alt tag is longer than 100 chars
         if (currentAlt.length > 100) {
-            //lower it's score from 100%
+            // lower it's score from 100%
             bigAlt--;
         }
         var descriptive = confirm('Is this text descriptive: (' + j + '/' + imgAlts.length + ')\n' + currentAlt);
         if (descriptive) {
-            //increase the alt tag count
+            // increase the alt tag count
             altLen++;
         }
     }
 
-    var image = 'images';
-    if (imgErr == 1) { image = 'image'; }
     var altPercent = Math.round((altLen / imgLen) * 100);
     var under100KB = '?';
     var failPercent = '?';
@@ -93,8 +91,8 @@ if (imgLen < 1) {
     if (altPercent < 100) { altIcon = bad; }
     if (bigAlt > imgLen) { lengthIcon = bad; }
     if (imgErr > 0) { errorIcon = bad; }
-    //Ideally this only gets hit if the XHR was successfull;
-    if (bigAlt > 0 && xhrWorked) {
+    // Ideally this only gets hit if the XHR was successfull;
+    if (bigAlt > 0 && window.xhrWorked) {
         sizeIcon = good;
         if (bigImg > 0) { sizeIcon = bad; }
         errorIcon = good;
@@ -113,8 +111,8 @@ if (imgLen < 1) {
         if (missedImg > 0 && errorIcon == good) { errorIcon = warn; }
     }
     var lastTwo =
-        '      <p><i class="glyphicon ' + sizeIcon + '"' + missImgWarn + '></i> <strong>' + under100KB + '%</strong> of ' + testable + 'images were under 100KB in size. <strong>(' + sizeUnder100 + "/" + imgLen +  ')</strong></p>\r\n' +
-        '      <p><i class="glyphicon ' + errorIcon + '"' + missImgWarn + '></i> <strong>' + failPercent + '%</strong> of ' + testable + 'images loaded with a total image payload of <strong>' + KB + 'KB (' + loaded + "/" + imgLen + ')</strong></p>\r\n';
+        '      <p><i class="glyphicon ' + sizeIcon + '"' + missImgWarn + '></i> <strong>' + under100KB + '%</strong> of ' + testable + 'images were under 100KB in size. <strong>(' + sizeUnder100 + '/' + imgLen + ')</strong></p>\r\n' +
+        '      <p><i class="glyphicon ' + errorIcon + '"' + missImgWarn + '></i> <strong>' + failPercent + '%</strong> of ' + testable + 'images loaded with a total image payload of <strong>' + KB + 'KB (' + loaded + '/' + imgLen + ')</strong></p>\r\n';
     if (under100KB == '?' && failPercent == '?' && sizeUnder100 == '?' && KB == '?' && loaded == '?') {
         lastTwo = '      <p><i class="glyphicon ' + warn + '"></i> The requested URL blocks cross-origin resource sharing of images (CORS), so we couldn\'t verify the image file sizes.</p>\r\n';
     }
@@ -124,7 +122,7 @@ if (imgLen < 1) {
         '  <div class="panel panel-primary">\r\n' +
         '    <div class="panel-heading">Image Accessibility</div>\r\n' +
         '    <div class="panel-body">\r\n' +
-        '      <p><i class="glyphicon ' + altIcon + '"></i> <strong>' + altPercent + '%</strong> of images on the page had descriptive ALT text. <strong>(' + altLen + "/" + imgLen + ')</strong></p>\r\n' +
+        '      <p><i class="glyphicon ' + altIcon + '"></i> <strong>' + altPercent + '%</strong> of images on the page had descriptive ALT text. <strong>(' + altLen + '/' + imgLen + ')</strong></p>\r\n' +
         '      <p><i class="glyphicon ' + lengthIcon + '"></i> <strong>' + Math.round((bigAlt / imgLen) * 100) + '%</strong> of ALTs were under 100 characters. <strong>(' + bigAlt + '/' + imgLen + ')</strong></p>\r\n' +
                lastTwo +
         '    </div>\r\n' +
@@ -134,7 +132,7 @@ if (imgLen < 1) {
     var dummy = document.createElement('textarea');
     dummy.setAttribute('id', 'dummy');
     document.body.appendChild(dummy);
-    var dumNode = document.getElementById('dummy')
+    var dumNode = document.getElementById('dummy');
     dumNode.value = output;
     dumNode.select();
     document.execCommand('copy');

@@ -1,10 +1,13 @@
 
-//Wait for the document to load, then load settings for the user, then run the app.
-$(document).ready( function () {
+var $ = window.$;
+var ugui = window.ugui;
+
+// Wait for the document to load, then load settings for the user, then run the app.
+$(document).ready(function () {
     ugui.helpers.loadSettings(runApp);
 });
 
-//Container for your app's custom JS
+// Container for your app's custom JS
 function runApp () {
 
     require('nw.gui').Window.get().showDevTools();
@@ -13,28 +16,28 @@ function runApp () {
     var path = require('path');
 
     function cleanURL () {
-        var url = $("#url").val();
-        url = url.replace("https://", "");
-        url = url.replace("http://",  "");
-        url = url.replace("www.",     "");
-        url = url.replace(".html",    "");
-        url = url.replace(".htm",     "");
-        url = url.replace(".php",     "");
-        url = url.replace(".aspx",    "");
-        url = url.replace(".asp",     "");
-        url = url.replace(".cfm",     "");
-        url = url.split(".").join(" ");
-        url = url.split("/").join(" ");
-        url = url.split("?").join(" ");
-        url = url.split("&").join(" ");
-        url = url.split("|").join(" ");
-        url = url.split("=").join(" ");
-        url = url.split("*").join(" ");
-        url = url.split("\\").join(" ");
-        url = url.split('"').join(" ");
-        url = url.split(":").join(" ");
-        url = url.split("<").join(" ");
-        url = url.split(">").join(" ");
+        var url = $('#url').val();
+        url = url.replace('https://', '');
+        url = url.replace('http://', '');
+        url = url.replace('www.', '');
+        url = url.replace('.html', '');
+        url = url.replace('.htm', '');
+        url = url.replace('.php', '');
+        url = url.replace('.aspx', '');
+        url = url.replace('.asp', '');
+        url = url.replace('.cfm', '');
+        url = url.split('.').join(' ');
+        url = url.split('/').join(' ');
+        url = url.split('?').join(' ');
+        url = url.split('&').join(' ');
+        url = url.split('|').join(' ');
+        url = url.split('=').join(' ');
+        url = url.split('*').join(' ');
+        url = url.split('\\').join(' ');
+        url = url.split('"').join(' ');
+        url = url.split(':').join(' ');
+        url = url.split('<').join(' ');
+        url = url.split('>').join(' ');
         return url;
     }
 
@@ -44,21 +47,21 @@ function runApp () {
         var dest = ugui.args.folderPicker.value;
         var file = ugui.args.output.value;
         if (url && dest && file) {
-            $('#run').prop("disabled", false);
+            $('#run').prop('disabled', false);
         } else {
-            $('#run').prop("disabled", true);
+            $('#run').prop('disabled', true);
         }
     }
 
     function urlKeyup () {
         reset();
         var url = cleanURL();
-        $("#output").val(url);
+        $('#output').val(url);
         ugui.helpers.saveSettings();
         unlockRun();
     }
-    $("#url").change(urlKeyup);
-    $("#url").keyup(urlKeyup);
+    $('#url').change(urlKeyup);
+    $('#url').keyup(urlKeyup);
 
     $('#output').change(unlockRun);
     $('#output').keyup(unlockRun);
@@ -94,7 +97,7 @@ function runApp () {
     prefillData();
 
     function reset () {
-        $("#results").empty();
+        $('#results').empty();
         $('#button-badges .badge').html('0');
     }
 
@@ -111,7 +114,7 @@ function runApp () {
                 '</h4>' +
                 '<p>' + file + '</p>' +
             '</div>';
-        $("#results").html(message);
+        $('#results').html(message);
     }
     function errorMessage (error) {
         var markup =
@@ -122,7 +125,7 @@ function runApp () {
                 '</h4>' +
                 '<p>' + error + '</p>' +
             '</div>';
-        $("#results").html(markup);
+        $('#results').html(markup);
     }
 
 
@@ -179,62 +182,62 @@ function runApp () {
 
     function clipboard (data) {
         $('#clipboard').click(function () {
-            var dummy = document.createElement("textarea");
-            dummy.setAttribute("id", "dummy");
+            var dummy = document.createElement('textarea');
+            dummy.setAttribute('id', 'dummy');
             document.body.appendChild(dummy);
-            var dumNode = document.getElementById("dummy")
+            var dumNode = document.getElementById('dummy');
             dumNode.value = data;
             dumNode.select();
-            document.execCommand("copy");
+            document.execCommand('copy');
             document.body.removeChild(dumNode);
         });
     }
 
-    //Attempt to get the latest Image Alts script from GitHub
+    // Attempt to get the latest Image Alts script from GitHub
     var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/UGUI-pa11y/master/_scripts/imgalts.min.js', function (data) {
         clipboard(data);
     });
-    //If we cannot access the latest, use the version that shipped with UGUI: Pa11y
+    // If we cannot access the latest, use the version that shipped with UGUI: Pa11y
     getImgAlts.fail(function () {
         var data = fs.readFileSync('_scripts/imgalts.min.js', 'binary');
         clipboard(data);
     });
 
-    $("#run").click(function (evt) {
+    $('#run').click(function (evt) {
         $('#spinner').fadeIn('slow');
         evt.preventDefault();
         reset();
 
         ugui.helpers.buildUGUIArgObject();
 
-        var filetype = "html";
-        var ext = ".html";
+        var filetype = 'html';
+        var ext = '.html';
         if (ugui.args.outputcsv.htmlticked) {
-            filetype = "csv";
-            ext = ".csv";
+            filetype = 'csv';
+            ext = '.csv';
         } else if (ugui.args.outputhtml.htmlticked) {
-            filetype = "html";
-            ext = ".html";
+            filetype = 'html';
+            ext = '.html';
         } else if (ugui.args.outputjson.htmlticked) {
-            filetype = "json";
-            ext = ".json";
+            filetype = 'json';
+            ext = '.json';
         } else if (ugui.args.outputmd.htmlticked) {
-            filetype = "markdown";
-            ext = ".md";
+            filetype = 'markdown';
+            ext = '.md';
         } else if (ugui.args.outputxml.htmlticked) {
-            filetype = "xml";
-            ext = ".xml";
+            filetype = 'xml';
+            ext = '.xml';
         }
 
-        var standard = "WCAG2AA";
+        var standard = 'WCAG2AA';
         if (ugui.args.standardsection.htmlticked) {
-            standard = "Section508";
+            standard = 'Section508';
         } else if (ugui.args.standardwcaga.htmlticked) {
-            standard = "WCAG2A";
+            standard = 'WCAG2A';
         } else if (ugui.args.standardwcagaa.htmlticked) {
-            standard = "WCAG2AA";
+            standard = 'WCAG2AA';
         } else if (ugui.args.standardwcagaaa.htmlticked) {
-            standard = "WCAG2AAA";
+            standard = 'WCAG2AAA';
         }
 
         var ignore = [];
@@ -269,6 +272,7 @@ function runApp () {
             $('#spinner').fadeOut('slow');
 
             if (error) {
+                // eslint-disable-next-line no-console
                 console.error(error);
                 errorMessage(error.message);
                 return;
@@ -283,17 +287,17 @@ function runApp () {
 
             for (var i = 0; i < results.length; i++) {
                 var theType = results[i].type;
-                if (theType == "error") {
+                if (theType == 'error') {
                     badges.errors = badges.errors + 1;
-                } else if (theType == "warning") {
+                } else if (theType == 'warning') {
                     badges.warnings = badges.warnings + 1;
-                } else if (theType == "notice") {
+                } else if (theType == 'notice') {
                     badges.notices = badges.notices + 1;
                 }
             }
-            $("#button-row .btn-danger span").text(badges.errors);
-            $("#button-row .btn-warning span").text(badges.warnings);
-            $("#button-row .btn-primary span").text(badges.notices);
+            $('#button-row .btn-danger span').text(badges.errors);
+            $('#button-row .btn-warning span').text(badges.warnings);
+            $('#button-row .btn-primary span').text(badges.notices);
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
@@ -302,7 +306,7 @@ function runApp () {
                 output = JSON.stringify(output, null, 2);
                 var file = path.join(folderPicker, fileName + ext);
                 ugui.helpers.writeToFile(file, output);
-                $("#results").html(successMessage(file, filetype));
+                $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
                 var json2csv = require('json2csv');
@@ -379,7 +383,7 @@ function runApp () {
                     }
 
                     var theContext = results[i].context;
-                    theContext = theContext.split("<").join("&lt;");
+                    theContext = theContext.split('<').join('&lt;');
 
                     var entry =
                       '<div class="panel panel-' + panelColor + '">\n' +
@@ -391,11 +395,11 @@ function runApp () {
                         '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
                       '</div>\n';
 
-                    if (theType == "error") {
+                    if (theType == 'error') {
                         returnedErrors = returnedErrors + entry;
-                    } else if (theType =="warning") {
+                    } else if (theType == 'warning') {
                         returnedWarnings = returnedWarnings + entry;
-                    } else if (theType == "notice") {
+                    } else if (theType == 'notice') {
                         returnedNotices = returnedNotices + entry;
                     }
                 }
@@ -403,10 +407,10 @@ function runApp () {
                 $.get('_markup/template.html', function (template) {
                     var results = returnedErrors + returnedWarnings + returnedNotices;
                     var buttons = '';
-                    $("#button-badges button:not('.disabled')").each(function () {
+                    $('#button-badges button:not(".disabled")').each(function () {
                         buttons = buttons + $(this).prop('outerHTML') + '\n';
                     });
-                    var imgAlts = $("#imagealts").val();
+                    var imgAlts = $('#imagealts').val();
                     var output =
                         template +
                         '      <span id="buttons">' + buttons + '</span>\n' +
@@ -450,18 +454,24 @@ function runApp () {
                 errorMessage(err);
                 return;
             }
+
             if (stderr) {
                 console.log(stderr);
                 errorMessage(stderr);
                 return;
             }
+
             if (callback) {
-                var data = JSON.parse(stdout);
-                callback(data);
+                if (stdout == 'No URL passed in.') {
+                    console.log(stdout);
+                } else {
+                    var data = JSON.parse(stdout);
+                    callback(data);
+                }
             } else {
                 console.log(stdout);
             }
-        })
+        });
     }
 
     toggleImageAlts();
