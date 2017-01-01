@@ -420,10 +420,49 @@ function runApp () {
                         '      <div class="row">' + results + '</div>\n' +
                         '    </div>\n' +
                         '    <script>\n' +
-                        '        $(".btn.btn-sm").click(function () { $(this).toggleClass("disabled"); });\n' +
-                        '        $(".btn.btn-sm.btn-danger").click(function () { $(".panel-danger").toggle(); });\n' +
-                        '        $(".btn.btn-sm.btn-warning").click(function () { $(".panel-warning").toggle(); });\n' +
-                        '        $(".btn.btn-sm.btn-primary").click(function () { $(".panel-primary").toggle(); });\n' +
+                        '      var errorButton = document.querySelectorAll(\'.btn-danger\')[0];\n' +
+                        '      var warningButton = document.querySelectorAll(\'.btn-warning\')[0];\n' +
+                        '      var noticeButton = document.querySelectorAll(\'.btn-primary\')[0];\n' +
+                        '      var allErrors = document.querySelectorAll(\'.panel-danger\');\n' +
+                        '      var allWarnings = document.querySelectorAll(\'.panel-warning\');\n' +
+                        '      var allNotices = document.querySelectorAll(\'.panel-primary\');\n\n' +
+                        '      function hideAll (arr) {\n' +
+                        '        for (var i = 0; i < arr.length; i++) {\n' +
+                        '          arr[i].classList.add(\'hide\');\n' +
+                        '        }\n' +
+                        '      }\n\n' +
+                        '      function showAll (arr) {\n' +
+                        '        for (var i = 0; i < arr.length; i++) {\n' +
+                        '          arr[i].classList.remove(\'hide\');\n' +
+                        '        }\n' +
+                        '      }\n\n' +
+                        '      errorButton.addEventListener(\'click\', function () {\n' +
+                        '        if (this.classList.contains(\'disabled\')) {\n' +
+                        '          this.classList.remove(\'disabled\');\n' +
+                        '          showAll(allErrors);\n' +
+                        '        } else {\n' +
+                        '          this.classList.add(\'disabled\');\n' +
+                        '          hideAll(allErrors);\n' +
+                        '        }\n' +
+                        '      });\n' +
+                        '      warningButton.addEventListener(\'click\', function () {\n' +
+                        '        if (this.classList.contains(\'disabled\')) {\n' +
+                        '          this.classList.remove(\'disabled\');\n' +
+                        '          showAll(allWarnings);\n' +
+                        '        } else {\n' +
+                        '          this.classList.add(\'disabled\');\n' +
+                        '          hideAll(allWarnings);\n' +
+                        '        }\n' +
+                        '      });\n' +
+                        '      noticeButton.addEventListener(\'click\', function () {\n' +
+                        '        if (this.classList.contains(\'disabled\')) {\n' +
+                        '          this.classList.remove(\'disabled\');\n' +
+                        '          showAll(allNotices);\n' +
+                        '        } else {\n' +
+                        '          this.classList.add(\'disabled\');\n' +
+                        '          hideAll(allNotices);\n' +
+                        '        }\n' +
+                        '      });\n' +
                         '    </script>\n' +
                         '  </body>\n' +
                         '</html>';

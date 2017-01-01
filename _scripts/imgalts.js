@@ -1,4 +1,4 @@
-// Image Alts Script v4
+// Image Alts Script v4.0.1
 
 console.clear();
 
@@ -119,7 +119,7 @@ if (imgLen < 1) {
     console.clear();
     var output =
         '<div class="row">\r\n' +
-        '  <div class="panel panel-primary">\r\n' +
+        '  <div class="panel panel-success">\r\n' +
         '    <div class="panel-heading">Image Accessibility</div>\r\n' +
         '    <div class="panel-body">\r\n' +
         '      <p><i class="glyphicon ' + altIcon + '"></i> <strong>' + altPercent + '%</strong> of images on the page had descriptive ALT text. <strong>(' + altLen + '/' + imgLen + ')</strong></p>\r\n' +
