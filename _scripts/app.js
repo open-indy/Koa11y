@@ -384,12 +384,13 @@ function runApp () {
 
                     var theContext = results[i].context;
                     theContext = theContext.split('<').join('&lt;');
-
+                    var message = results[i].message;
+                    message = message.replace('. Recommendation: ', '. <strong>Recommendation:</strong> ');
                     var entry =
                       '<div class="panel panel-' + panelColor + '">\n' +
                         '<div class="panel-heading">' + results[i].code + '</div>\n' +
                         '<div class="panel-body">\n' +
-                          '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + results[i].message + '<br /><br />\n' +
+                          '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + message + '<br /><br />\n' +
                           '<pre><code>' + theContext + '</code></pre>\n' +
                         '</div>\n' +
                         '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
