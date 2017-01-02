@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Accessibility Standards</title>
+    <title>Accessibility Standards - UGUI: Pa11y</title>
     <meta name="generator" content="UGUI: Pa11y 2.0.0" />
 
 
@@ -216,4 +216,55 @@
   </head>
   <body>
     <div class="container" role="main">
-      <div class="row">
+      <!-- Content goes here -->
+    </div>
+    <script>
+      var errorButton = document.querySelectorAll('.btn-danger')[0];
+      var warningButton = document.querySelectorAll('.btn-warning')[0];
+      var noticeButton = document.querySelectorAll('.btn-primary')[0];
+      var allErrors = document.querySelectorAll('.panel-danger');
+      var allWarnings = document.querySelectorAll('.panel-warning');
+      var allNotices = document.querySelectorAll('.panel-primary');
+
+      function hideAll (arr) {
+        for (var i = 0; i < arr.length; i++) {
+          arr[i].classList.add('hide');
+        }
+      }
+
+      function showAll (arr) {
+        for (var i = 0; i < arr.length; i++) {
+          arr[i].classList.remove('hide');
+        }
+      }
+
+      errorButton.addEventListener('click', function () {
+        if (this.classList.contains('disabled')) {
+          this.classList.remove('disabled');
+          showAll(allErrors);
+        } else {
+          this.classList.add('disabled');
+          hideAll(allErrors);
+        }
+      });
+      warningButton.addEventListener('click', function () {
+        if (this.classList.contains('disabled')) {
+          this.classList.remove('disabled');
+          showAll(allWarnings);
+        } else {
+          this.classList.add('disabled');
+          hideAll(allWarnings);
+        }
+      });
+      noticeButton.addEventListener('click', function () {
+        if (this.classList.contains('disabled')) {
+          this.classList.remove('disabled');
+          showAll(allNotices);
+        } else {
+          this.classList.add('disabled');
+          hideAll(allNotices);
+        }
+      });
+    </script>
+  </body>
+</html>

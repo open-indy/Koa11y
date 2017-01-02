@@ -10,7 +10,7 @@ $(document).ready(function () {
 // Container for your app's custom JS
 function runApp () {
 
-    require('nw.gui').Window.get().showDevTools();
+    // require('nw.gui').Window.get().showDevTools();
 
     var fs = require('fs');
     var path = require('path');
@@ -412,61 +412,14 @@ function runApp () {
                         buttons = buttons + $(this).prop('outerHTML') + '\n';
                     });
                     var imgAlts = $('#imagealts').val();
-                    var output =
-                        template +
+                    var content =
+                        '    <div class="row">\n' +
                         '      <span id="buttons">' + buttons + '</span>\n' +
                         '      <h1>' + url + '</h1>\n' +
                         '    </div>\n' +
-                            imgAlts + '\n' +
-                        '      <div class="row">' + results + '</div>\n' +
-                        '    </div>\n' +
-                        '    <script>\n' +
-                        '      var errorButton = document.querySelectorAll(\'.btn-danger\')[0];\n' +
-                        '      var warningButton = document.querySelectorAll(\'.btn-warning\')[0];\n' +
-                        '      var noticeButton = document.querySelectorAll(\'.btn-primary\')[0];\n' +
-                        '      var allErrors = document.querySelectorAll(\'.panel-danger\');\n' +
-                        '      var allWarnings = document.querySelectorAll(\'.panel-warning\');\n' +
-                        '      var allNotices = document.querySelectorAll(\'.panel-primary\');\n\n' +
-                        '      function hideAll (arr) {\n' +
-                        '        for (var i = 0; i < arr.length; i++) {\n' +
-                        '          arr[i].classList.add(\'hide\');\n' +
-                        '        }\n' +
-                        '      }\n\n' +
-                        '      function showAll (arr) {\n' +
-                        '        for (var i = 0; i < arr.length; i++) {\n' +
-                        '          arr[i].classList.remove(\'hide\');\n' +
-                        '        }\n' +
-                        '      }\n\n' +
-                        '      errorButton.addEventListener(\'click\', function () {\n' +
-                        '        if (this.classList.contains(\'disabled\')) {\n' +
-                        '          this.classList.remove(\'disabled\');\n' +
-                        '          showAll(allErrors);\n' +
-                        '        } else {\n' +
-                        '          this.classList.add(\'disabled\');\n' +
-                        '          hideAll(allErrors);\n' +
-                        '        }\n' +
-                        '      });\n' +
-                        '      warningButton.addEventListener(\'click\', function () {\n' +
-                        '        if (this.classList.contains(\'disabled\')) {\n' +
-                        '          this.classList.remove(\'disabled\');\n' +
-                        '          showAll(allWarnings);\n' +
-                        '        } else {\n' +
-                        '          this.classList.add(\'disabled\');\n' +
-                        '          hideAll(allWarnings);\n' +
-                        '        }\n' +
-                        '      });\n' +
-                        '      noticeButton.addEventListener(\'click\', function () {\n' +
-                        '        if (this.classList.contains(\'disabled\')) {\n' +
-                        '          this.classList.remove(\'disabled\');\n' +
-                        '          showAll(allNotices);\n' +
-                        '        } else {\n' +
-                        '          this.classList.add(\'disabled\');\n' +
-                        '          hideAll(allNotices);\n' +
-                        '        }\n' +
-                        '      });\n' +
-                        '    </script>\n' +
-                        '  </body>\n' +
-                        '</html>';
+                             imgAlts + '\n' +
+                        '    <div class="row">' + results + '</div>\n';
+                    var output = template.replace('<!-- Content goes here -->', content);
                     var file = path.join(folderPicker, fileName + ext);
                     ugui.helpers.writeToFile(file, output);
 
