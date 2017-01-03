@@ -480,3 +480,17 @@ function runApp () {
     }
 
 } // end runApp();
+
+
+window.deleteSettingsFile = function (bool) {
+    if (bool) {
+        var gui = require('nw.gui');
+        var path = require('path');
+        var settingsFile = path.join(gui.App.dataPath, 'uguisettings.json');
+
+        ugui.helpers.deleteAFile(settingsFile, function () {
+            var win = gui.Window.get();
+            win.reload();
+        });
+    }
+};
