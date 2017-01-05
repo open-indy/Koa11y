@@ -10,7 +10,7 @@ $(document).ready(function () {
 // Container for your app's custom JS
 function runApp () {
 
-    // require('nw.gui').Window.get().showDevTools();
+    require('nw.gui').Window.get().showDevTools();
 
     var fs = require('fs');
     var path = require('path');
@@ -478,7 +478,6 @@ function runApp () {
     ) {
         $('#output-btn label[for="html"]').click();
     }
-
 } // end runApp();
 
 
