@@ -101,3 +101,24 @@ function processAltsScript (data) {
 }
 
 processAltsScript(fakeData);
+
+
+/*
+
+var http = require('http');
+var fs = require('fs');
+
+function getImage (url, filename) {
+    http.get(url, function (response) {
+        if (response.statusCode == 200) {
+            response.pipe(fs.createWriteStream(filename));
+        } else {
+            console.log(response.statusCode);
+        }
+    })
+}
+
+getImage('http://scout-app.io/_img/logo-ubuntu.svg', '01.svg');
+
+
+*/
