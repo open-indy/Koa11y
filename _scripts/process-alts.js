@@ -65,10 +65,15 @@ function processAltsScript (data) {
     fs.mkdirSync(path.join(appData, 'temp'));
 
     function downloadComplete (response, newFile) {
-        response.pipe(newFile);
-        if (i < data.length) {
-            i = i + 1;
-            downloadImage();
+
+        if (response.statusCode == 200) {
+            response.pipe(fs.createWriteStream(newFile));
+            if (i < data.length) {
+                i = i + 1;
+                downloadImage();
+            }
+        } else {
+            console.log(response.statusCode);
         }
     }
 
@@ -81,7 +86,6 @@ function processAltsScript (data) {
 
             if (protocol == 'http') {
                 http.get(image.src, function (response) {
-                    console.log(response);
                     downloadComplete(response, newFile);
                 });
             } else if (protocol == 'https') {
@@ -100,25 +104,8 @@ function processAltsScript (data) {
     downloadImage();
 }
 
-processAltsScript(fakeData);
-
-
-/*
-
-var http = require('http');
-var fs = require('fs');
-
-function getImage (url, filename) {
-    http.get(url, function (response) {
-        if (response.statusCode == 200) {
-            response.pipe(fs.createWriteStream(filename));
-        } else {
-            console.log(response.statusCode);
-        }
-    })
-}
-
-getImage('http://scout-app.io/_img/logo-ubuntu.svg', '01.svg');
-
-
-*/
+// LEFT TO DO:
+// Create a UI to accept the new array of objects
+// Pass that into the stuff above
+// process all the data and produce stats on an object
+// Run Pa11y and then prepend stuff to the output file.
