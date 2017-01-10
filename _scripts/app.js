@@ -1,4 +1,4 @@
-
+window.nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
 
@@ -10,9 +10,9 @@ $(document).ready(function () {
 // Container for your app's custom JS
 function runApp () {
 
-    require('nw.gui').Window.get().showDevTools();
+    nw.Window.get().showDevTools();
 
-    var fs = require('fs');
+    var fs = require('fs-extra');
     var path = require('path');
 
     function cleanURL () {
@@ -55,6 +55,7 @@ function runApp () {
 
     function urlKeyup () {
         reset();
+        //Cleaned string
         var url = cleanURL();
         $('#output').val(url);
         ugui.helpers.saveSettings();
@@ -165,18 +166,8 @@ function runApp () {
         ugui.helpers.saveSettings();
     });
 
-    function toggleImageAlts () {
-        ugui.helpers.buildUGUIArgObject();
-        if (ugui.args.outputhtml.htmlticked) {
-            $('#imageAltsSection').show();
-        } else {
-            $('#imageAltsSection').hide();
-        }
-    }
-
     $('input[name="standard"], input[name="outputtype"]').change(function () {
         reset();
-        toggleImageAlts();
         ugui.helpers.saveSettings();
     });
 
@@ -190,22 +181,115 @@ function runApp () {
             dumNode.select();
             document.execCommand('copy');
             document.body.removeChild(dumNode);
+            // TODO: In the UI show small confimation that stuff was copied to clipboard
+            // maybe a tooltip that just says *copied!*
         });
     }
 
     // Attempt to get the latest Image Alts script from GitHub
-    var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/UGUI-pa11y/master/_scripts/imgalts.min.js', function (data) {
+    var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/UGUI-pa11y/master/_scripts/imgalts5.min.js', function (data) {
         clipboard(data);
     });
     // If we cannot access the latest, use the version that shipped with UGUI: Pa11y
     getImgAlts.fail(function () {
-        var data = fs.readFileSync('_scripts/imgalts.min.js', 'binary');
+        var data = fs.readFileSync('_scripts/imgalts5.min.js', 'binary');
         clipboard(data);
     });
 
+    /**
+     * Process an array of objects, each containing the src and alt data for images.
+     * @param  {array} data Array of objects. Each object has a "src" and "alt" for an image.
+     */
+    function processAltsScript (data, callback) {
+        var http = require('http');
+        var https = require('https');
+        var appData = nw.App.dataPath;
+        var temp = path.join(appData, 'temp');
+        var i = 0;
+        var data = JSON.parse(data);
+
+        function rmrf (location) {
+            location = path.normalize(location);
+            while (fs.existsSync(location)) {
+                if (process.platform == 'win32') {
+                    require('child_process').execSync('rd /S /Q ' + location);
+                } else {
+                    fs.removeSync(location);
+                }
+            }
+        }
+
+        while (fs.existsSync(temp)) {
+            rmrf(temp);
+        }
+        if (!fs.existsSync(temp)) {
+            fs.mkdirSync(temp);
+        }
+
+        function downloadComplete (response, newFile) {
+            if (response.statusCode == 200) {
+                var piped = response.pipe(fs.createWriteStream(newFile));
+                piped.on('finish', function () {
+                    console.log(newFile + ' was written');
+                    i = i + 1;
+                    downloadImage();
+                });
+            } else {
+                console.log(response.statusCode, newFile, 'failed');
+                i = i + 1;
+                downloadImage();
+            }
+        }
+
+        function downloadImage () {
+            if (i < data.length - 1) {
+                var image = data[i];
+                if (image.src.length > 1 && image.alt.length > 1) {
+                    var ext = path.extname(image.src);
+                    var newFile = path.join(appData, 'temp', i + ext);
+                    var protocol = image.src.split('://')[0];
+
+                    if (protocol == 'http') {
+                        http.get(image.src, function (response) {
+                            downloadComplete(response, newFile);
+                        });
+                    } else if (protocol == 'https') {
+                        https.get(image.src, function (response) {
+                            downloadComplete(response, newFile);
+                        });
+                    } else if (i < data.length - 1) {
+                        i = i + 1;
+                        downloadImage();
+                    } else {
+                        callback();
+                    }
+                } else if (i < data.length - 1) {
+                    i = i + 1;
+                    downloadImage();
+                } else {
+                    callback();
+                }
+            } else {
+                callback();
+            }
+        }
+        downloadImage();
+    }
+
+
     $('#run').click(function (evt) {
-        $('#spinner').fadeIn('slow');
         evt.preventDefault();
+
+        var imgAltsVal = $('#imagealts').val();
+        if (imgAltsVal) {
+            processAltsScript(imgAltsVal, runPa11y);
+        } else {
+            runPa11y();
+        }
+    });
+
+    function runPa11y () {
+        $('#spinner').fadeIn('slow');
         reset();
 
         ugui.helpers.buildUGUIArgObject();
@@ -427,8 +511,22 @@ function runApp () {
                 });
             }
         });
-    });
+    }
 
+    /**
+     * Experimented with this, but not currently using it.
+     *
+     * The idea was to have PhantomJS go to the URL and run the ImgAlts script for us
+     * to completely automate the process, however we still need the user to load the
+     * lazy loading items on pages, and to confirm that alt tags are descriptive. So
+     * this effort has been abandoned. Though it does successfully spin up and run our
+     * phantom-imgalts.js script. So I'm keeping it here for future use, in case we
+     * need to automate something else, or just as a reference for other projects.
+     *
+     * @param  {String}   url      URL for PhantomJS to load
+     * @param  {Function} callback Callback to run upon PhantomJS script finishing
+     * @return {Null}              Currently nothing, just console logs.
+     */
     function phantomImgAlts (url, callback) {
         if (!url) {
             console.log('Pass in a URL.');
@@ -467,28 +565,18 @@ function runApp () {
         });
     }
 
-    toggleImageAlts();
     unlockRun();
-    if (
-        !ugui.args.outputcsv.htmlticked &&
-        !ugui.args.outputxml.htmlticked &&
-        !ugui.args.outputmd.htmlticked &&
-        !ugui.args.outputjson.htmlticked &&
-        !ugui.args.outputhtml.htmlticked
-    ) {
-        $('#output-btn label[for="html"]').click();
-    }
+
 } // end runApp();
 
 
 window.deleteSettingsFile = function (bool) {
     if (bool) {
-        var gui = require('nw.gui');
         var path = require('path');
-        var settingsFile = path.join(gui.App.dataPath, 'uguisettings.json');
+        var settingsFile = path.join(nw.App.dataPath, 'uguisettings.json');
 
         ugui.helpers.deleteAFile(settingsFile, function () {
-            var win = gui.Window.get();
+            var win = nw.Window.get();
             win.reload();
         });
     }
