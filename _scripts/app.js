@@ -14,6 +14,8 @@ function runApp () {
 
     var fs = require('fs-extra');
     var path = require('path');
+    var appData = nw.App.dataPath;
+    var temp = path.join(appData, 'temp');
 
     function cleanURL () {
         var url = $('#url').val();
@@ -129,6 +131,9 @@ function runApp () {
         $('#results').html(markup);
     }
 
+    $('#imageAltsModal .modal-header .glyphicon-remove').click(function () {
+        $('#imageAltsModal').slideUp('slow');
+    });
 
     $('#outputFolderIcon').click(function () {
         $('#outputFolderBrowse').click();
@@ -203,8 +208,6 @@ function runApp () {
     function processAltsScript (data, callback) {
         var http = require('http');
         var https = require('https');
-        var appData = nw.App.dataPath;
-        var temp = path.join(appData, 'temp');
         var i = 0;
         var data = JSON.parse(data);
 
@@ -290,12 +293,34 @@ function runApp () {
         downloadImage();
     }
 
+    function loadImagesInModal () {
+        var data = JSON.parse($('#imagealts').val());
+        fs.readdir(temp, function (err, files) {
+            if (err) {
+                errorMessage(err);
+                console.log(err);
+                return;
+            }
+            files.forEach(function (file, i) {
+                var filename = file.split('.')[0];
+                var alt = data[filename].alt;
+                var src = path.join(temp, file);
+                var image =
+                  '<div>' +
+                    '<img src="' + src + '">' +
+                    '<span>' + (i + 1) + '</span>' +
+                  '</div>';
+                console.log(image);
+            });
+        });
+    }
 
     $('#run').click(function (evt) {
         evt.preventDefault();
 
         var imgAltsVal = $('#imagealts').val();
         if (imgAltsVal) {
+            $('#imageAltsModal').fadeIn('slow');
             processAltsScript(imgAltsVal, runPa11y);
         } else {
             runPa11y();
