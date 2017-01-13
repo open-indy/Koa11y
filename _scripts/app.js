@@ -225,6 +225,13 @@ function runApp () {
         if (!fs.existsSync(temp)) {
             fs.mkdirSync(temp);
         }
+        function imageAltsDonut (i) {
+            if (typeof(i) === 'boolean') {
+                updateDonutChart('#imageaAltsDonut', 100, true);
+            } else {
+                updateDonutChart('#imageAltsDonut', (100*(i/data.length)), true);
+            }
+        }
 
         function downloadComplete (response, newFile) {
             if (response.statusCode == 200) {
@@ -232,11 +239,13 @@ function runApp () {
                 piped.on('finish', function () {
                     console.log(newFile + ' was written');
                     i = i + 1;
+                    imageAltsDonut(i);
                     downloadImage();
                 });
             } else {
                 console.log(response.statusCode, newFile, 'failed');
                 i = i + 1;
+                imageAltsDonut(i);
                 downloadImage();
             }
         }
@@ -259,17 +268,22 @@ function runApp () {
                         });
                     } else if (i < data.length - 1) {
                         i = i + 1;
+                        imageAltsDonut(i);
                         downloadImage();
                     } else {
+                        imageAltsDonut(true);
                         callback();
                     }
                 } else if (i < data.length - 1) {
                     i = i + 1;
+                    imageAltsDonut(i);
                     downloadImage();
                 } else {
+                    imageAltsDonut(true);
                     callback();
                 }
             } else {
+                imageAltsDonut(true);
                 callback();
             }
         }

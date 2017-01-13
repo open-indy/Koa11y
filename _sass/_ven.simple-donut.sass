@@ -1,0 +1,61 @@
+//https://github.com/simple-donut/simple-donut-jquery
+
+$pie-size: 12em
+$pie-main: #18BC9C
+$pie-text: #7F8C8D
+$pie-shadow: #BDC3C7
+
+.donut-size
+    font-size: $pie-size
+
+.pie-wrapper
+    position: relative
+    width: 1em
+    height: 1em
+    margin: 0px auto
+    font-family: 'Lato', Tahoma, Geneva, sans-serif
+    .pie
+        position: absolute
+        top: 0px
+        left: 0px
+        width: 100%
+        height: 100%
+        clip: rect(0, 1em, 1em, 0.5em)
+    .half-circle
+        position: absolute
+        top: 0px
+        left: 0px
+        width: 100%
+        height: 100%
+        border: 0.1em solid $pie-main
+        border-radius: 50%
+        clip: rect(0em, 0.5em, 1em, 0em)
+        box-sizing: border-box
+    .right-side
+        transform: rotate(0deg)
+    .label
+        position: absolute
+        top: 0.52em
+        right: 0.4em
+        bottom: 0.4em
+        left: 0.4em
+        display: block
+        background: none
+        border-radius: 50%
+        color: $pie-text
+        font-size: 0.25em
+        line-height: 2.6em
+        text-align: center
+        cursor: default
+        z-index: 2
+    .smaller
+        padding-bottom: 20px
+        color: $pie-shadow
+        font-size: .45em
+        vertical-align: super
+    .shadow
+        width: 100%
+        height: 100%
+        border: 0.1em solid $pie-shadow
+        border-radius: 50%
+        box-sizing: border-box
