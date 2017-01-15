@@ -1,6 +1,7 @@
-window.nw = require('nw.gui');
+var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
+var updateDonutChart = window.updateDonutChart;
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -57,7 +58,7 @@ function runApp () {
 
     function urlKeyup () {
         reset();
-        //Cleaned string
+        // Cleaned string
         var url = cleanURL();
         $('#output').val(url);
         ugui.helpers.saveSettings();
@@ -209,7 +210,7 @@ function runApp () {
         var http = require('http');
         var https = require('https');
         var i = 0;
-        var data = JSON.parse(data);
+        data = JSON.parse(data);
 
         function rmrf (location) {
             location = path.normalize(location);
@@ -232,7 +233,7 @@ function runApp () {
             if (typeof(i) === 'boolean') {
                 updateDonutChart('#imageaAltsDonut', 100, true);
             } else {
-                updateDonutChart('#imageAltsDonut', (100*(i/data.length)), true);
+                updateDonutChart('#imageAltsDonut', (100 * (i / data.length)), true);
             }
         }
 
@@ -240,12 +241,12 @@ function runApp () {
             if (response.statusCode == 200) {
                 var piped = response.pipe(fs.createWriteStream(newFile));
                 piped.on('finish', function () {
-                    console.log(newFile + ' was written');
                     i = i + 1;
                     imageAltsDonut(i);
                     downloadImage();
                 });
             } else {
+                // eslint-disable-next-line
                 console.log(response.statusCode, newFile, 'failed');
                 i = i + 1;
                 imageAltsDonut(i);
@@ -295,9 +296,11 @@ function runApp () {
 
     function loadImagesInModal () {
         var data = JSON.parse($('#imagealts').val());
+data = window.x;
         fs.readdir(temp, function (err, files) {
             if (err) {
                 errorMessage(err);
+                // eslint-disable-next-line
                 console.log(err);
                 return;
             }
@@ -315,16 +318,57 @@ function runApp () {
         });
     }
 
+window.x = [
+    { 'src': 'http://scout-app.io/_img/scout-app-logo.svg', 'alt': 'Scout-App 2 Logo featuring Scout the Puppy.' },
+    { 'src': 'http://scout-app.io/_img/logo-win.svg', 'alt': 'Windows' },
+    { 'src': 'http://scout-app.io/_img/logo-ubuntu.svg', 'alt': 'Ubuntu' },
+    { 'src': 'http://scout-app.io/_img/logo-zorin.svg', 'alt': 'Zorin' },
+    { 'src': 'http://scout-app.io/_img/logo-osx.svg', 'alt': 'OSX' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/01.png', 'alt': 'First Time User Experience (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/02.png', 'alt': 'Project view (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/25.png', 'alt': 'Multi-Project Import (Windows 7)' },
+    { 'src': '', 'alt': 'Status of All Projects (Windows 7)' },
+    { 'src': '', 'alt': 'Dev Tools are always accessible (Windows 7)' },
+    { 'src': '', 'alt': 'Windows 10' },
+    { 'src': 'http://scout-app.io/_img/logo-win.svg', 'alt': 'Windows' },
+    { 'src': 'http://scout-app.io/_img/logo-ubuntu.svg', 'alt': 'Ubuntu' },
+    { 'src': 'http://scout-app.io/_img/logo-zorin.svg', 'alt': 'Zorin' },
+    { 'src': 'http://scout-app.io/_img/logo-osx.svg', 'alt': 'OSX' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/02.png', 'alt': 'English (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/03.png', 'alt': 'Dutch (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/04.png', 'alt': 'French (Windows 7)' },
+    { 'src': '', 'alt': 'Russian (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/logo-win.svg', 'alt': 'Windows' },
+    { 'src': 'http://scout-app.io/_img/logo-ubuntu.svg', 'alt': 'Ubuntu' },
+    { 'src': 'http://scout-app.io/_img/logo-zorin.svg', 'alt': 'Zorin' },
+    { 'src': 'http://scout-app.io/_img/logo-osx.svg', 'alt': 'OSX' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/02.png', 'alt': 'Simplex (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/06.png', 'alt': 'Cerulean (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/screenshots/win/07.png', 'alt': 'Classic (Windows 7)' },
+    { 'src': '', 'alt': 'Cosmo (Windows 7)' },
+    { 'src': '', 'alt': 'W3suli.com (Windows 7)' },
+    { 'src': '', 'alt': 'Yeti (Windows 7)' },
+    { 'src': 'http://scout-app.io/_img/logo-nodesass.svg', 'alt': 'The Node-Sass engine.' },
+    { 'src': 'http://scout-app.io/_img/logo-ugui.png', 'alt': 'The Universal GUI Library/Framework' },
+    { 'src': 'http://scout-app.io/_img/logo-nwjs.png', 'alt': 'The NW.js Cross-Platform Runtime Environment' },
+    { 'src': 'http://scout-app.io/_img/devswag.png', 'alt': 'DevSwag Logo' },
+    { 'src': 'http://scout-app.io/_img/big-sticker.png', 'alt': 'Scout-App logo as a sticker' },
+    { 'src': 'data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7', 'alt': 'Data URI Test' }
+];
+
+    loadImagesInModal();
+
     $('#run').click(function (evt) {
         evt.preventDefault();
 
         var imgAltsVal = $('#imagealts').val();
         if (imgAltsVal) {
             $('#imageAltsModal').fadeIn('slow');
-            processAltsScript(imgAltsVal, runPa11y);
+            processAltsScript(imgAltsVal, loadImagesInModal);
         } else {
-            runPa11y();
+            // runPa11y();
         }
+            loadImagesInModal();
     });
 
     function runPa11y () {
@@ -377,6 +421,7 @@ function runApp () {
         var url = ugui.args.url.value;
         var folderPicker = ugui.args.folderPicker.value;
         var fileName = ugui.args.output.value;
+        var file = path.join(folderPicker, fileName + ext);
 
         var pa11y = require('pa11y');
         var phantomjs = require('phantomjs-prebuilt');
@@ -407,8 +452,9 @@ function runApp () {
                 'warnings': 0,
                 'notices': 0
             };
+            var i = 0;
 
-            for (var i = 0; i < results.length; i++) {
+            for (i = 0; i < results.length; i++) {
                 var theType = results[i].type;
                 if (theType == 'error') {
                     badges.errors = badges.errors + 1;
@@ -424,11 +470,11 @@ function runApp () {
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
-                var output = {};
-                output.results = results;
-                output = JSON.stringify(output, null, 2);
-                var file = path.join(folderPicker, fileName + ext);
-                ugui.helpers.writeToFile(file, output);
+                var outputJSON = {};
+                outputJSON.results = results;
+                outputJSON = JSON.stringify(outputJSON, null, 2);
+
+                ugui.helpers.writeToFile(file, outputJSON);
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
@@ -437,41 +483,39 @@ function runApp () {
                 for (var key in results[0]) {
                     fields.push(key);
                 }
-                var output = json2csv({
+                var outputCSV = json2csv({
                     'data': results,
                     'fields': fields
                 });
 
-                var file = path.join(folderPicker, fileName + ext);
-                ugui.helpers.writeToFile(file, output);
+                ugui.helpers.writeToFile(file, outputCSV);
 
                 successMessage(file, filetype);
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
                 var output = '';
                 var hr = '\n* * *\n\n';
-                for (var i = 0; i < results.length; i++) {
-                    var current = results[i];
-                    var code = '**Code:** ' + current.code + '  \n';
-                    var type = '**Type:** ' + current.type + '  \n';
-                    var typeCode = '**Type Code:** ' + current.typeCode + '  \n';
-                    var message = '**Message:** ' + current.message + '  \n';
-                    var selector = '**Selector:** `' + current.selector + '`  \n';
-                    var context = '**Context:**\n```\n' + current.context + '\n```\n';
+                for (i = 0; i < results.length; i++) {
+                    var item = results[i];
+                    var code = '**Code:** ' + item.code + '  \n';
+                    var type = '**Type:** ' + item.type + '  \n';
+                    var typeCode = '**Type Code:** ' + item.typeCode + '  \n';
+                    var message = '**Message:** ' + item.message + '  \n';
+                    var selector = '**Selector:** `' + item.selector + '`  \n';
+                    var context = '**Context:**\n```\n' + item.context + '\n```\n';
                     output = output + code + type + typeCode + message + selector + context;
                     if (i < results.length - 1) {
                         output = output + hr;
                     }
                 }
 
-                var file = path.join(folderPicker, fileName + ext);
                 ugui.helpers.writeToFile(file, output);
 
                 successMessage(file, filetype);
             // XML
             } else if (ugui.args.outputxml.htmlticked) {
-                var output = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
-                for (var i = 0; i < results.length; i++) {
+                var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
+                for (i = 0; i < results.length; i++) {
                     var current = results[i];
                     var result =
                         '  <result>\n' +
@@ -481,12 +525,11 @@ function runApp () {
                         '    <selector><![CDATA[' + current.selector + ']]></selector>\n' +
                         '    <context><![CDATA[' + current.context + ']]></context>\n' +
                         '  </result>\n';
-                    output = output + result;
+                    outputXML = outputXML + result;
                 }
-                output = output + '</pa11y>\n';
+                outputXML = outputXML + '</pa11y>\n';
 
-                var file = path.join(folderPicker, fileName + ext);
-                ugui.helpers.writeToFile(file, output);
+                ugui.helpers.writeToFile(file, outputXML);
 
                 successMessage(file, filetype);
             // HTML
@@ -495,35 +538,35 @@ function runApp () {
                 var returnedWarnings = '';
                 var returnedNotices = '';
                 var panelColor = '';
-                for (var i = 0; i < results.length; i++) {
-                    var theType = results[i].type;
-                    if (theType == 'warning') {
+                for (i = 0; i < results.length; i++) {
+                    var resultsType = results[i].type;
+                    if (resultsType == 'warning') {
                         panelColor = 'warning';
-                    } else if (theType == 'error') {
+                    } else if (resultsType == 'error') {
                         panelColor = 'danger';
-                    } else if (theType == 'notice') {
+                    } else if (resultsType == 'notice') {
                         panelColor = 'primary';
                     }
 
                     var theContext = results[i].context;
                     theContext = theContext.split('<').join('&lt;');
-                    var message = results[i].message;
-                    message = message.replace('. Recommendation: ', '. <strong>Recommendation:</strong> ');
+                    var theMessage = results[i].message;
+                    theMessage = theMessage.replace('. Recommendation: ', '. <strong>Recommendation:</strong> ');
                     var entry =
                       '<div class="panel panel-' + panelColor + '">\n' +
                         '<div class="panel-heading">' + results[i].code + '</div>\n' +
                         '<div class="panel-body">\n' +
-                          '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + message + '<br /><br />\n' +
+                          '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + theMessage + '<br /><br />\n' +
                           '<pre><code>' + theContext + '</code></pre>\n' +
                         '</div>\n' +
                         '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
                       '</div>\n';
 
-                    if (theType == 'error') {
+                    if (resultsType == 'error') {
                         returnedErrors = returnedErrors + entry;
-                    } else if (theType == 'warning') {
+                    } else if (resultsType == 'warning') {
                         returnedWarnings = returnedWarnings + entry;
-                    } else if (theType == 'notice') {
+                    } else if (resultsType == 'notice') {
                         returnedNotices = returnedNotices + entry;
                     }
                 }
@@ -543,7 +586,7 @@ function runApp () {
                              imgAlts + '\n' +
                         '    <div class="row">' + results + '</div>\n';
                     var output = template.replace('<!-- Content goes here -->', content);
-                    var file = path.join(folderPicker, fileName + ext);
+
                     ugui.helpers.writeToFile(file, output);
 
                     successMessage(file, filetype);
@@ -566,8 +609,10 @@ function runApp () {
      * @param  {Function} callback Callback to run upon PhantomJS script finishing
      * @return {Null}              Currently nothing, just console logs.
      */
+    // eslint-disable-next-line
     function phantomImgAlts (url, callback) {
         if (!url) {
+            // eslint-disable-next-line
             console.log('Pass in a URL.');
             return;
         }
@@ -580,12 +625,14 @@ function runApp () {
 
         exec(binPath, childArgs, function (err, stdout, stderr) {
             if (err) {
+                // eslint-disable-next-line
                 console.log(err);
                 errorMessage(err);
                 return;
             }
 
             if (stderr) {
+                // eslint-disable-next-line
                 console.log(stderr);
                 errorMessage(stderr);
                 return;
@@ -593,12 +640,14 @@ function runApp () {
 
             if (callback) {
                 if (stdout == 'No URL passed in.') {
+                    // eslint-disable-next-line
                     console.log(stdout);
                 } else {
                     var data = JSON.parse(stdout);
                     callback(data);
                 }
             } else {
+                // eslint-disable-next-line
                 console.log(stdout);
             }
         });
