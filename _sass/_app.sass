@@ -54,7 +54,32 @@
     bottom: 0px
     background: rgba(0, 0, 0, 0.6)
     z-index: 1090
+    overflow: auto
+    .modal-dialog
+        position: relative
+    .modal-body
+        max-height: 500px
+        height: 100%
+        text-align: center
+        overflow: auto
+
+#imageAltsThumbs
+    img
+        max-width: 200px
+        max-height: 200px
+        border: 1px solid #CCC
+        border-radius: 4px
+        padding: 3px
+        &:hover
+            background: #333
+    div[data-imgnum]
+        display: inline-block
+        max-width: 200px
+        margin: 15px 20px
+        text-align: center
+    .btn
+        margin: 0px 10px
 
 @media (min-width: 768px)
     #imageAltsModal .modal-dialog
-        width: calc(100% - 70px);
+        width: calc(100% - 70px)
