@@ -298,7 +298,7 @@ function runApp () {
         $('#imageAltsDonut').fadeOut('fast');
         debugger;
         var data = JSON.parse($('#imagealts').val());
-        $('#imageAltsThumbs').empty();
+        $('#imageAltsThumbs').html('<h3>Is the text under the image descriptive?</h3>');
 
         fs.readdir(temp, function (err, files) {
             if (err) {
@@ -317,13 +317,38 @@ function runApp () {
                       '<img src="' + src + '">' +
                       '<figcaption>' + alt + '</figcaption>' +
                     '</figure>' +
-                    '<button class="btn btn-success">Yes</button>' +
-                    '<button class="btn btn-danger">No</button>' +
+                    '<button class="btn disabled btn-success">Yes</button>' +
+                    '<button class="btn disabled btn-danger">No</button>' +
                   '</div>';
                 $('#imageAltsThumbs').append(image);
             });
+            window.confirmedImages = [];
+            $('#imageAltsThumbs .btn').click(function () {
+                $(this).removeClass('disabled');
+                $(this).siblings('.btn').addClass('disabled');
+                var imgnum = $(this).parent().data('imgnum');
+                window.confirmedImages[imgnum] = $(this).hasClass('btn-success');
+                var filtered = window.confirmedImages.filter(function (val) {
+                    if (typeof(val) != 'undefined') {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+                if ($('[data-imgnum]').length === filtered.length) {
+                    $('#imageAltsModal .modal-footer .btn').removeClass('disabled');
+                } else {
+                    $('#imageAltsModal .modal-footer .btn').addClass('disabled');
+                }
+            });
         });
     }
+
+    $('#imageAltsModal .modal-footer .btn').click(function () {
+        if (!$(this).hasClass('disabled')) {
+            console.log('continue');
+        }
+    });
 
     window.pickle = loadImagesInModal;
 
