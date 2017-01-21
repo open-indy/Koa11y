@@ -259,6 +259,7 @@ function runApp () {
                 var image = data[i];
                 if (image.src.length > 1 && image.alt.length > 1) {
                     var ext = path.extname(image.src);
+                    ext = ext.split('?')[0].split('#')[0];
                     var newFile = path.join(appData, 'temp', i + ext);
                     var protocol = image.src.split('://')[0];
 
@@ -295,12 +296,15 @@ function runApp () {
     }
 
     function loadImagesInModal () {
-        $('#imageAltsDonut').fadeOut('fast');
-        debugger;
-        var data = JSON.parse($('#imagealts').val());
-        $('#imageAltsThumbs').html('<h3>Is the text under the image descriptive?</h3>');
+        console.log('yay'); // this is getting hit multiple times before it should be hit at all.
+    }
 
+    function loadImagesInModal3 () {
+//debugger;
         fs.readdir(temp, function (err, files) {
+            $('#imageAltsDonut').fadeOut('fast');
+            var data = JSON.parse($('#imagealts').val());
+            $('#imageAltsThumbs').html('<h3>Is the text under the image descriptive?</h3>');
             if (err) {
                 errorMessage(err);
                 // eslint-disable-next-line
@@ -354,7 +358,7 @@ function runApp () {
 
     $('#run').click(function (evt) {
         evt.preventDefault();
-debugger;
+//debugger;
         var imgAltsVal = $('#imagealts').val();
         if (imgAltsVal) {
             $('#imageAltsModal').fadeIn('slow');
