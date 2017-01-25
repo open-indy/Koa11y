@@ -257,6 +257,7 @@ function runApp () {
         function downloadImage () {
             if (i < data.length - 1) {
                 var image = data[i];
+                // If there is a src and alt
                 if (image.src.length > 1 && image.alt.length > 1) {
                     var ext = path.extname(image.src);
                     ext = ext.split('?')[0].split('#')[0];
@@ -279,14 +280,17 @@ function runApp () {
                         imageAltsDonut(true);
                         callback();
                     }
+                // If it is missing a src or alt, but isn't the last image
                 } else if (i < data.length - 1) {
                     i = i + 1;
                     imageAltsDonut(i);
                     downloadImage();
+                // done
                 } else {
                     imageAltsDonut(true);
                     callback();
                 }
+            // done
             } else {
                 imageAltsDonut(true);
                 callback();
@@ -296,10 +300,6 @@ function runApp () {
     }
 
     function loadImagesInModal () {
-        console.log('yay'); // this is getting hit multiple times before it should be hit at all.
-    }
-
-    function loadImagesInModal3 () {
 //debugger;
         fs.readdir(temp, function (err, files) {
             $('#imageAltsDonut').fadeOut('fast');
@@ -367,7 +367,6 @@ function runApp () {
         } else {
             // runPa11y();
         }
-            loadImagesInModal();
     });
 
     function runPa11y () {
