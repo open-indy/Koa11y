@@ -300,7 +300,6 @@ function runApp () {
     }
 
     function loadImagesInModal () {
-//debugger;
         fs.readdir(temp, function (err, files) {
             $('#imageAltsDonut').fadeOut('fast');
             var data = JSON.parse($('#imagealts').val());
@@ -331,6 +330,15 @@ function runApp () {
                 $(this).removeClass('disabled');
                 $(this).siblings('.btn').addClass('disabled');
                 var imgnum = $(this).parent().data('imgnum');
+                var closestImg = $(this).siblings('figure').find('img');
+                if ($(this).hasClass('btn-success')) {
+                    $(closestImg).addClass('bg-success');
+                    $(closestImg).removeClass('bg-warning');
+                } else {
+                    $(closestImg).addClass('bg-warning');
+                    $(closestImg).removeClass('bg-success');
+                }
+
                 window.confirmedImages[imgnum] = $(this).hasClass('btn-success');
                 var filtered = window.confirmedImages.filter(function (val) {
                     if (typeof(val) != 'undefined') {
