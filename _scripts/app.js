@@ -358,11 +358,11 @@ function runApp () {
 
     $('#imageAltsModal .modal-footer .btn').click(function () {
         if (!$(this).hasClass('disabled')) {
+            console.log(window.confirmedImages);
+            // Ready to generate an object with the stats on it for image alts.
             console.log('continue');
         }
     });
-
-    window.pickle = loadImagesInModal;
 
     $('#run').click(function (evt) {
         evt.preventDefault();
