@@ -15,6 +15,7 @@ function runApp () {
 
     var fs = require('fs-extra');
     var path = require('path');
+    var stat = require('folder-stat');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
@@ -358,15 +359,75 @@ function runApp () {
 
     $('#imageAltsModal .modal-footer .btn').click(function () {
         if (!$(this).hasClass('disabled')) {
-            console.log(window.confirmedImages);
-            // Ready to generate an object with the stats on it for image alts.
-            console.log('continue');
+            $('#imageAltsModal').slideUp('slow');
+
+            var allData = JSON.parse($('#imagealts').val());
+
+            var imagesWithDescriptiveAltText = 0;
+            window.confirmedImages.forEach(function (img) {
+                if (img) {
+                    imagesWithDescriptiveAltText = imagesWithDescriptiveAltText + 1;
+                }
+            });
+
+            var altTagsUnder100Characters = 0;
+            allData.forEach(function (img) {
+                if (img.alt.length <= 100) {
+                    altTagsUnder100Characters = altTagsUnder100Characters + 1;
+                }
+            });
+
+            var imagesUnder100KB = 0;
+            var totalFileSizeInBytes = 0;
+            var imagesLoaded = 0;
+
+            stat(path.join(nw.App.dataPath, 'temp'), function (err, stats, files) {
+                if (err) {
+                    // eslint-disable-next-line no-console
+                    console.log(err);
+                }
+                if (stats) {
+                    stats.forEach(function (file) {
+                        if (file.size <= (100 * 1024)) {
+                            imagesUnder100KB = imagesUnder100KB + 1;
+                        }
+                        totalFileSizeInBytes = totalFileSizeInBytes + file.size;
+                    });
+                    imagesLoaded = files.length;
+                }
+
+                window.imageStats = {
+                    'totalImages': allData.length,
+                    'descriptive': imagesWithDescriptiveAltText,
+                    'nondescriptive': allData.length - imagesWithDescriptiveAltText,
+                    'under100Char': altTagsUnder100Characters,
+                    'under100KB': imagesUnder100KB,
+                    'imagesLoaded': imagesLoaded,
+                    'totalFileSizeInBytes': totalFileSizeInBytes,
+                    'totalFileSizeInKB': Math.round((totalFileSizeInBytes / 1024) * 10) / 10,
+                    'descriptivePercent': Math.round((imagesWithDescriptiveAltText / allData.length) * 100),
+                    'under100CharPercenter': Math.round((altTagsUnder100Characters / allData.length) * 100),
+                    'under100KBPercent': Math.round((imagesUnder100KB / allData.length) * 100),
+                    'imagesLoadedPercent': Math.round((imagesLoaded / allData.length) * 100)
+                };
+
+                //  54% of images on the page had descriptive ALT text. (36/67)
+                // 100% of ALTs were under 100 characters. (67/67)
+                //  99% of images were under 100KB in size. (66/67)
+                // 100% of images loaded with a total image payload of 533.1KB (67/67)
+
+                // We are now ready to post the stats to each output type (html, xml, json, etc.)
+                console.log('continue');
+            });
         }
     });
 
     $('#run').click(function (evt) {
         evt.preventDefault();
-//debugger;
+        $('#imageAltsThumbs').empty();
+        fs.emptyDirSync(path.join(nw.App.dataPath, 'temp'));
+        window.imageStats = {};
+
         var imgAltsVal = $('#imagealts').val();
         if (imgAltsVal) {
             $('#imageAltsModal').fadeIn('slow');

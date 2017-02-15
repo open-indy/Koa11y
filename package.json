@@ -4,7 +4,7 @@
     "author": "The Jared Wilcurt",
     "description": "Check if a website has accessibility issues.",
     "keywords": [ "Accessibility", "standards", "automated", "WCAG", "Section 508" ],
-    "maintainers":[{
+    "maintainers": [{
         "name": "TheJaredWilcurt",
         "email": "TheJaredWilcurt@noreply.github.com",
         "web": "http://ugui.io"
@@ -47,6 +47,7 @@
         "pa11y": "4.1.1",
         "phantomjs-prebuilt": "^2.1.14",
         "json2csv": "3.7.3",
+        "folder-stat": "^1.0.1",
         "fs-extra": "^0.30.x"
     },
     "devDependencies": {
