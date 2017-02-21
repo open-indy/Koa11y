@@ -1,4 +1,4 @@
-window.x = [
+[
     { "src": "http://scout-app.io/_img/scout-app-logo.svg", "alt": "Scout-App 2 Logo featuring Scout the Puppy." },
     { "src": "http://scout-app.io/_img/logo-win.svg", "alt": "Windows" },
     { "src": "http://scout-app.io/_img/logo-ubuntu.svg", "alt": "Ubuntu" },
@@ -34,10 +34,4 @@ window.x = [
     { "src": "http://scout-app.io/_img/devswag.png", "alt": "DevSwag Logo" },
     { "src": "http://scout-app.io/_img/big-sticker.png", "alt": "Scout-App logo as a sticker" },
     { "src": "data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7", "alt": "Data URI Test" }
-];
-
-// LEFT TO DO:
-// -Create a UI to accept the new array of objects
-// -Pass that into the stuff above
-// process all the data and produce stats on an object
-// Run Pa11y and then prepend stuff to the output file.
+]

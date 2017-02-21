@@ -411,13 +411,7 @@ function runApp () {
                     'imagesLoadedPercent': Math.round((imagesLoaded / allData.length) * 100)
                 };
 
-                //  54% of images on the page had descriptive ALT text. (36/67)
-                // 100% of ALTs were under 100 characters. (67/67)
-                //  99% of images were under 100KB in size. (66/67)
-                // 100% of images loaded with a total image payload of 533.1KB (67/67)
-
-                // We are now ready to post the stats to each output type (html, xml, json, etc.)
-                console.log('continue');
+                runPa11y();
             });
         }
     });
@@ -434,7 +428,7 @@ function runApp () {
             $('#imageAltsDonut').fadeIn('fast');
             processAltsScript(imgAltsVal, loadImagesInModal);
         } else {
-            // runPa11y();
+            runPa11y();
         }
     });
 
@@ -537,6 +531,14 @@ function runApp () {
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
+//  54% of images on the page had descriptive ALT text. (36/67)
+// 100% of ALTs were under 100 characters. (67/67)
+//  99% of images were under 100KB in size. (66/67)
+// 100% of images loaded with a total image payload of 533.1KB (67/67)
+
+// We are now ready to post the stats to each output type (html, xml, json, etc.)
+console.log(window.imageStats);
+debugger;
                 var outputJSON = {};
                 outputJSON.results = results;
                 outputJSON = JSON.stringify(outputJSON, null, 2);
@@ -545,6 +547,7 @@ function runApp () {
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
+debugger;
                 var json2csv = require('json2csv');
                 var fields = [];
                 for (var key in results[0]) {
@@ -560,6 +563,7 @@ function runApp () {
                 successMessage(file, filetype);
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
+debugger;
                 var output = '';
                 var hr = '\n* * *\n\n';
                 for (i = 0; i < results.length; i++) {
@@ -581,6 +585,7 @@ function runApp () {
                 successMessage(file, filetype);
             // XML
             } else if (ugui.args.outputxml.htmlticked) {
+debugger;
                 var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
                 for (i = 0; i < results.length; i++) {
                     var current = results[i];
@@ -601,6 +606,7 @@ function runApp () {
                 successMessage(file, filetype);
             // HTML
             } else {
+debugger;
                 var returnedErrors = '';
                 var returnedWarnings = '';
                 var returnedNotices = '';
