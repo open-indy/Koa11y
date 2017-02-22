@@ -541,10 +541,8 @@ function runApp () {
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
-
-console.log(window.imageStats);
-debugger;
                 var outputJSON = {};
+                outputJSON.images = window.imageStats;
                 outputJSON.results = results;
                 outputJSON = JSON.stringify(outputJSON, null, 2);
 
