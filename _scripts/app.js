@@ -16,6 +16,7 @@ function runApp () {
     var fs = require('fs-extra');
     var path = require('path');
     var stat = require('folder-stat');
+    var base64Img = require('base64-img');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
@@ -256,7 +257,7 @@ function runApp () {
         }
 
         function downloadImage () {
-            if (i < data.length - 1) {
+            if (i <= data.length - 1) {
                 var image = data[i];
                 // If there is a src and alt
                 if (image.src.length > 1 && image.alt.length > 1) {
@@ -265,7 +266,16 @@ function runApp () {
                     var newFile = path.join(appData, 'temp', i + ext);
                     var protocol = image.src.split('://')[0];
 
-                    if (protocol == 'http') {
+                    if (image.src.indexOf('data:image/') == 0) {
+                        base64Img.img(image.src, path.join(appData, 'temp'), i, function (err, filepath) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            i = i + 1;
+                            imageAltsDonut(i);
+                            downloadImage();
+                        });
+                    } else if (protocol == 'http') {
                         http.get(image.src, function (response) {
                             downloadComplete(response, newFile);
                         });
