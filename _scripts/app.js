@@ -667,7 +667,7 @@ debugger;
                         var descriptive = window.imageStats.descriptive;
                         var descriptivePercent = window.imageStats.descriptivePercent;
                         var under100Char = window.imageStats.under100Char;
-                        var under100CharPercent = window.imageStats.under100CharPercenter;
+                        var under100CharPercent = window.imageStats.under100CharPercent;
                         var under100KB = window.imageStats.under100KB;
                         var under100KBPercent = window.imageStats.under100KBPercent;
                         var imagesLoaded = window.imageStats.imagesLoaded;
@@ -687,10 +687,10 @@ debugger;
                             '<div class="panel panel-primary">' +
                               '<div class="panel-heading">Image Accessibility</div>' +
                               '<div class="panel-body">' +
-                                '<p><i class="glyphicon text-' + descriptiveStyle    + '"></i> <strong>' + descriptivePercent  + '%</strong> of images on the page had descriptive ALT text. <strong>(' + descriptive + '/' + totalImages + ')</strong></p>' +
-                                '<p><i class="glyphicon text-' + under100CharPercent + '"></i> <strong>' + under100CharPercent + '%</strong> of ALTs were under 100 characters. <strong>(' + under100Char + '/' + totalImages + ')</strong></p>' +
-                                '<p><i class="glyphicon text-' + under100KBStyle     + '"></i> <strong>' + under100KBPercent   + '%</strong> of images were under 100KB in size. <strong>(' + under100KB + '/' + totalImages + ')</strong></p>' +
-                                '<p><i class="glyphicon text-' + imagesLoadedStyle   + '"></i> <strong>' + imagesLoadedPercent + '%</strong> of images loaded with a total image payload of <strong>' + totalFileSizeInKB + 'KB (' + imagesLoaded + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + descriptiveStyle  + '"></i> <strong>' + descriptivePercent  + '%</strong> of images on the page had descriptive ALT text. <strong>(' + descriptive + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + under100CharStyle + '"></i> <strong>' + under100CharPercent + '%</strong> of ALTs were under 100 characters. <strong>(' + under100Char + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + under100KBStyle   + '"></i> <strong>' + under100KBPercent   + '%</strong> of images were under 100KB in size. <strong>(' + under100KB + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + imagesLoadedStyle + '"></i> <strong>' + imagesLoadedPercent + '%</strong> of images loaded with a total image payload of <strong>' + totalFileSizeInKB + 'KB (' + imagesLoaded + '/' + totalImages + ')</strong></p>' +
                               '</div>' +
                             '</div>' +
                           '</div>';
