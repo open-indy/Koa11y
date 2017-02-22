@@ -541,12 +541,7 @@ function runApp () {
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
-//  54% of images on the page had descriptive ALT text. (36/67)
-// 100% of ALTs were under 100 characters. (67/67)
-//  99% of images were under 100KB in size. (66/67)
-// 100% of images loaded with a total image payload of 533.1KB (67/67)
 
-// We are now ready to post the stats to each output type (html, xml, json, etc.)
 console.log(window.imageStats);
 debugger;
                 var outputJSON = {};
@@ -573,8 +568,23 @@ debugger;
                 successMessage(file, filetype);
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
-debugger;
-                var output = '';
+                var output = '# ' + ugui.args.url.value + '\n\n';
+                if (window.imageStats) {
+                    output = output + '## Image Accessibility\n\n';
+                    output = output + '**Total Images:** ' + window.imageStats.totalImages + '  \n';
+                    output = output + '**Descriptive Alt Text:** ' + window.imageStats.descriptive + '  \n';
+                    output = output + '**Non-descriptive Alt Text:** ' + window.imageStats.nondescriptive + '  \n';
+                    output = output + '**Percent of images with Descriptive Alt Text:** ' + window.imageStats.descriptivePercent + '%  \n';
+                    output = output + '**Alt Text Under 100 Characters:** ' + window.imageStats.under100Char + '  \n';
+                    output = output + '**Percent of images with fewer than 100 Characters of Alt Text:** ' + window.imageStats.under100CharPercent + '%  \n';
+                    output = output + '**Images Under 100KB:** ' + window.imageStats.under100KB + '  \n';
+                    output = output + '**Percent of images Under 100 Kilobytes in size:** ' + window.imageStats.under100KBPercent + '%  \n';
+                    output = output + '**Images That Loaded:** ' + window.imageStats.imagesLoaded + '  \n';
+                    output = output + '**Percent of Images that Loaded:** ' + window.imageStats.imagesLoadedPercent + '%  \n';
+                    output = output + '**Total File Size In Bytes:** ' + window.imageStats.totalFileSizeInBytes + '  \n';
+                    output = output + '**Total File Size In Kilobytes:** ' + window.imageStats.totalFileSizeInKB + '  \n';
+                }
+                output = output + '## Results\n';
                 var hr = '\n* * *\n\n';
                 for (i = 0; i < results.length; i++) {
                     var item = results[i];
