@@ -552,7 +552,10 @@ debugger;
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
-debugger;
+
+                // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
+                // console.log(window.imageStats);
+
                 var json2csv = require('json2csv');
                 var fields = [];
                 for (var key in results[0]) {
