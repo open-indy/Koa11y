@@ -406,7 +406,7 @@ function runApp () {
                     'totalFileSizeInBytes': totalFileSizeInBytes,
                     'totalFileSizeInKB': Math.round((totalFileSizeInBytes / 1024) * 10) / 10,
                     'descriptivePercent': Math.round((imagesWithDescriptiveAltText / allData.length) * 100),
-                    'under100CharPercenter': Math.round((altTagsUnder100Characters / allData.length) * 100),
+                    'under100CharPercent': Math.round((altTagsUnder100Characters / allData.length) * 100),
                     'under100KBPercent': Math.round((imagesUnder100KB / allData.length) * 100),
                     'imagesLoadedPercent': Math.round((imagesLoaded / allData.length) * 100)
                 };
@@ -606,7 +606,6 @@ debugger;
                 successMessage(file, filetype);
             // HTML
             } else {
-debugger;
                 var returnedErrors = '';
                 var returnedWarnings = '';
                 var returnedNotices = '';
@@ -650,7 +649,43 @@ debugger;
                     $('#button-badges button:not(".disabled")').each(function () {
                         buttons = buttons + $(this).prop('outerHTML') + '\n';
                     });
-                    var imgAlts = $('#imagealts').val();
+
+                    var imgAlts = '';
+
+                    if (imageStats) {
+                        var totalImages = window.imageStats.totalImages;
+                        var descriptive = window.imageStats.descriptive;
+                        var descriptivePercent = window.imageStats.descriptivePercent;
+                        var under100Char = window.imageStats.under100Char;
+                        var under100CharPercent = window.imageStats.under100CharPercenter;
+                        var under100KB = window.imageStats.under100KB;
+                        var under100KBPercent = window.imageStats.under100KBPercent;
+                        var imagesLoaded = window.imageStats.imagesLoaded;
+                        var imagesLoadedPercent = window.imageStats.imagesLoadedPercent;
+                        var totalFileSizeInKB = window.imageStats.totalFileSizeInKB;
+                        var descriptiveStyle = 'success glyphicon-ok';
+                        var under100CharStyle = 'success glyphicon-ok';
+                        var under100KBStyle = 'success glyphicon-ok';
+                        var imagesLoadedStyle = 'success glyphicon-ok';
+                        if (descriptivePercent  < 100) { descriptiveStyle  = 'danger glyphicon-remove'; }
+                        if (under100CharPercent < 100) { under100CharStyle = 'danger glyphicon-remove'; }
+                        if (under100KBPercent   < 100) { under100KBStyle   = 'danger glyphicon-remove'; }
+                        if (imagesLoadedPercent < 100) { imagesLoadedStyle = 'danger glyphicon-remove'; }
+
+                        imgAlts =
+                          '<div class="row">' +
+                            '<div class="panel panel-primary">' +
+                              '<div class="panel-heading">Image Accessibility</div>' +
+                              '<div class="panel-body">' +
+                                '<p><i class="glyphicon text-' + descriptiveStyle    + '"></i> <strong>' + descriptivePercent  + '%</strong> of images on the page had descriptive ALT text. <strong>(' + descriptive + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + under100CharPercent + '"></i> <strong>' + under100CharPercent + '%</strong> of ALTs were under 100 characters. <strong>(' + under100Char + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + under100KBStyle     + '"></i> <strong>' + under100KBPercent   + '%</strong> of images were under 100KB in size. <strong>(' + under100KB + '/' + totalImages + ')</strong></p>' +
+                                '<p><i class="glyphicon text-' + imagesLoadedStyle   + '"></i> <strong>' + imagesLoadedPercent + '%</strong> of images loaded with a total image payload of <strong>' + totalFileSizeInKB + 'KB (' + imagesLoaded + '/' + totalImages + ')</strong></p>' +
+                              '</div>' +
+                            '</div>' +
+                          '</div>';
+                    }
+
                     var content =
                         '    <div class="row">\n' +
                         '      <span id="buttons">' + buttons + '</span>\n' +
