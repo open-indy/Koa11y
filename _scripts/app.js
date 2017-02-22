@@ -595,8 +595,29 @@ debugger;
                 successMessage(file, filetype);
             // XML
             } else if (ugui.args.outputxml.htmlticked) {
-debugger;
                 var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
+
+                var imgAlts = '';
+                if (window.imageStats) {
+                    imgAlts =
+                        '  <imagealts>\n' +
+                        '    <totalimages>' + window.imageStats.totalImages + '</totalimages>\n' +
+                        '    <descriptive>' + window.imageStats.descriptive + '</descriptive>\n' +
+                        '    <nondescriptive>' + window.imageStats.nondescriptive + '</nondescriptive>\n' +
+                        '    <under100char>' + window.imageStats.under100Char + '</under100char>\n' +
+                        '    <under100kb>' + window.imageStats.under100KB + '</under100kb>\n' +
+                        '    <imagesloaded>' + window.imageStats.imagesLoaded + '</imagesloaded>\n' +
+                        '    <totalfilesizeinbytes>' + window.imageStats.totalFileSizeInBytes + '</totalfilesizeinbytes>\n' +
+                        '    <totalfilesizeinkb>' + window.imageStats.totalFileSizeInKB + '</totalfilesizeinkb>\n' +
+                        '    <descriptivepercent>' + window.imageStats.descriptivePercent + '</descriptivepercent>\n' +
+                        '    <under100charpercent>' + window.imageStats.under100CharPercent + '</under100charpercent>\n' +
+                        '    <under100kbpercent>' + window.imageStats.under100KBPercent + '</under100kbpercent>\n' +
+                        '    <imagesloadedpercent>' + window.imageStats.imagesLoadedPercent + '</imagesloadedpercent>\n' +
+                        '  </imagealts>\n';
+                }
+
+                outputXML = outputXML + imgAlts;
+
                 for (i = 0; i < results.length; i++) {
                     var current = results[i];
                     var result =
