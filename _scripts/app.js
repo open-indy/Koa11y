@@ -11,14 +11,34 @@ $(document).ready(function () {
 // Container for your app's custom JS
 function runApp () {
 
-    nw.Window.get().showDevTools();
-
     var fs = require('fs-extra');
     var path = require('path');
     var stat = require('folder-stat');
     var base64Img = require('base64-img');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
+
+    $('.navbar-brand img').mousedown(function (evt) {
+        if (evt.which === 3) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            nw.Window.get().showDevTools();
+        }
+    });
+
+    function tryParseJSON (jsonString) {
+        try {
+            var obj = JSON.parse(jsonString);
+            if (obj && typeof obj === 'object') {
+                return obj;
+            }
+        } catch (err) {
+            // eslint-disable-next-line no-console
+            console.log(err);
+        }
+
+        return false;
+    }
 
     function cleanURL () {
         var url = $('#url').val();
@@ -190,8 +210,17 @@ function runApp () {
             dumNode.select();
             document.execCommand('copy');
             document.body.removeChild(dumNode);
-            // TODO: In the UI show small confimation that stuff was copied to clipboard
-            // maybe a tooltip that just says *copied!*
+
+            var message =
+                '<div class="alert alert-info alert-dismissible" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                    '<h4>Copied to Clipboard</h4>' +
+                '</div>';
+            $('#results').html(message);
+
+            setTimeout(function () {
+                $('#results .alert').fadeOut('slow');
+            }, 700);
         });
     }
 
@@ -213,7 +242,6 @@ function runApp () {
         var http = require('http');
         var https = require('https');
         var i = 0;
-        data = JSON.parse(data);
 
         function rmrf (location) {
             location = path.normalize(location);
@@ -268,8 +296,10 @@ function runApp () {
                     var protocol = image.src.split('://')[0];
 
                     if (image.src.indexOf('data:image/') == 0) {
+                        // eslint-disable-next-line no-unused-vars
                         base64Img.img(image.src, path.join(appData, 'temp'), i, function (err, filepath) {
                             if (err) {
+                                // eslint-disable-next-line no-console
                                 console.log(err);
                             }
                             i = i + 1;
@@ -436,12 +466,18 @@ function runApp () {
         window.imageStats = {};
 
         var imgAltsVal = $('#imagealts').val();
-        var imgAltsParsed = JSON.parse(imgAltsVal);
-        // If there is at least 1 image found, run that Image Accessibility Modal
-        if (imgAltsParsed.length > 0 && typeof(imgAltsParsed) == 'object') {
-            $('#imageAltsModal').fadeIn('slow');
-            $('#imageAltsDonut').fadeIn('fast');
-            processAltsScript(imgAltsVal, loadImagesInModal);
+        // If there is text in the textarea
+        if (imgAltsVal) {
+            // This will output an error if JSON is invalid, or if there is no text
+            var imgAltsParsed = tryParseJSON(imgAltsVal);
+            // If the text is valid JSON
+            if (imgAltsParsed.length > 0 && typeof(imgAltsParsed) == 'object') {
+                $('#imageAltsModal').fadeIn('slow');
+                $('#imageAltsDonut').fadeIn('fast');
+                processAltsScript(imgAltsParsed, loadImagesInModal);
+            } else {
+                runPa11y();
+            }
         } else {
             runPa11y();
         }
@@ -699,7 +735,8 @@ function runApp () {
 
                     var imgAlts = '';
 
-                    if (imageStats) {
+                    // Ensure that the imageStats Object is not empty
+                    if (!$.isEmptyObject(window.imageStats)) {
                         var totalImages = window.imageStats.totalImages;
                         var descriptive = window.imageStats.descriptive;
                         var descriptivePercent = window.imageStats.descriptivePercent;
