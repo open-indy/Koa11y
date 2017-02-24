@@ -180,7 +180,8 @@ function runApp () {
     });
 
     function clipboard (data) {
-        $('#clipboard').click(function () {
+        $('#clipboard').click(function (evt) {
+            evt.preventDefault();
             var dummy = document.createElement('textarea');
             dummy.setAttribute('id', 'dummy');
             document.body.appendChild(dummy);
@@ -259,8 +260,8 @@ function runApp () {
         function downloadImage () {
             if (i <= data.length - 1) {
                 var image = data[i];
-                // If there is a src and alt
-                if (image.src.length > 1 && image.alt.length > 1) {
+                // If there is a src
+                if (image.src.length > 1) {
                     var ext = path.extname(image.src);
                     ext = ext.split('?')[0].split('#')[0];
                     var newFile = path.join(appData, 'temp', i + ext);
@@ -325,16 +326,18 @@ function runApp () {
                 var filename = file.split('.')[0];
                 var alt = data[filename].alt;
                 var src = path.join(temp, file);
-                var image =
-                  '<div data-imgnum="' + i + '">' +
-                    '<figure>' +
-                      '<img src="' + src + '">' +
-                      '<figcaption>' + alt + '</figcaption>' +
-                    '</figure>' +
-                    '<button class="btn disabled btn-success">Yes</button>' +
-                    '<button class="btn disabled btn-danger">No</button>' +
-                  '</div>';
-                $('#imageAltsThumbs').append(image);
+                if (alt) {
+                    var image =
+                      '<div data-imgnum="' + i + '">' +
+                        '<figure>' +
+                          '<img src="' + src + '">' +
+                          '<figcaption>' + alt + '</figcaption>' +
+                        '</figure>' +
+                        '<button class="btn disabled btn-success">Yes</button>' +
+                        '<button class="btn disabled btn-danger">No</button>' +
+                      '</div>';
+                    $('#imageAltsThumbs').append(image);
+                }
             });
             window.confirmedImages = [];
             $('#imageAltsThumbs .btn').click(function () {
@@ -433,7 +436,9 @@ function runApp () {
         window.imageStats = {};
 
         var imgAltsVal = $('#imagealts').val();
-        if (imgAltsVal) {
+        var imgAltsParsed = JSON.parse(imgAltsVal);
+        // If there is at least 1 image found, run that Image Accessibility Modal
+        if (imgAltsParsed.length > 0 && typeof(imgAltsParsed) == 'object') {
             $('#imageAltsModal').fadeIn('slow');
             $('#imageAltsDonut').fadeIn('fast');
             processAltsScript(imgAltsVal, loadImagesInModal);
