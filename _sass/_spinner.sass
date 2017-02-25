@@ -64,6 +64,7 @@ $spinner-ydev: $spinner-y + 5deg
         transform: rotateX(90deg) translateZ($spinner-translateZ)
 
 @-webkit-keyframes spinner-rotate
+    // sass-lint:disable-block single-line-per-selector
     0%
         transform: rotateX($spinner-x) rotateY($spinner-y)
     80%

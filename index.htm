@@ -203,8 +203,8 @@
               <div class="input-group">
                 <input id="output" type="text" class="form-control" data-argName="output" required="required" />
                 <div id="output-btn" class="input-group-addon btn-group">
-                  <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">HTML<span class="caret"></span></button>
-                  <ul class="dropdown-menu">
+                  <button id="outputtype" class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTML<span class="caret"></span></button>
+                  <ul class="dropdown-menu" aria-labelledby="outputtype">
                     <li><input type="radio" name="outputtype" data-argName="outputhtml" value="html" id="html" /><label for="html" >HTML</label></li>
                     <li><input type="radio" name="outputtype" data-argName="outputcsv"  value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
                     <li><input type="radio" name="outputtype" data-argName="outputjson" value="json" id="json" /><label for="json" >JSON</label></li>

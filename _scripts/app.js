@@ -1,3 +1,5 @@
+/* eslint-disable no-multi-spaces */
+
 var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
@@ -194,9 +196,20 @@ function runApp () {
         ugui.helpers.saveSettings();
     });
 
+    function showHideImageAltsBox () {
+        if (ugui.args.outputcsv.htmlticked) {
+            $('#imageAltsSection').slideUp(480);
+        } else {
+            $('#imageAltsSection').slideDown(480);
+        }
+    }
+
+    showHideImageAltsBox();
+
     $('input[name="standard"], input[name="outputtype"]').change(function () {
         reset();
         ugui.helpers.saveSettings();
+        showHideImageAltsBox();
     });
 
     function clipboard (data) {
@@ -466,8 +479,8 @@ function runApp () {
         window.imageStats = {};
 
         var imgAltsVal = $('#imagealts').val();
-        // If there is text in the textarea
-        if (imgAltsVal) {
+        // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
+        if (imgAltsVal && !ugui.args.outputcsv.htmlticked) {
             // This will output an error if JSON is invalid, or if there is no text
             var imgAltsParsed = tryParseJSON(imgAltsVal);
             // If the text is valid JSON
@@ -624,9 +637,9 @@ function runApp () {
                     output = output + '**Images That Loaded:** ' + window.imageStats.imagesLoaded + '  \n';
                     output = output + '**Percent of Images that Loaded:** ' + window.imageStats.imagesLoadedPercent + '%  \n';
                     output = output + '**Total File Size In Bytes:** ' + window.imageStats.totalFileSizeInBytes + '  \n';
-                    output = output + '**Total File Size In Kilobytes:** ' + window.imageStats.totalFileSizeInKB + '  \n';
+                    output = output + '**Total File Size In Kilobytes:** ' + window.imageStats.totalFileSizeInKB + '  \n\n';
                 }
-                output = output + '## Results\n';
+                output = output + '## Results\n\n';
                 var hr = '\n* * *\n\n';
                 for (i = 0; i < results.length; i++) {
                     var item = results[i];

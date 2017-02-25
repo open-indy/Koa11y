@@ -49,18 +49,18 @@
 #imageAltsModal
     position: fixed
     top: 0px
-    left: 0px
     right: 0px
     bottom: 0px
+    left: 0px
     background: rgba(0, 0, 0, 0.6)
-    z-index: 1090
     overflow: auto
+    z-index: 1090
     .modal-dialog
         position: relative
     .modal-body
+        height: 100%
         min-height: 250px
         max-height: 500px
-        height: 100%
         text-align: center
         overflow: auto
         p
@@ -84,7 +84,7 @@
         margin: 0px 10px
         cursor: pointer
         &:focus
-            outline: 0
+            outline: 0px
         &.disabled
             pointer-events: all
             -webkit-filter: saturate(0)
