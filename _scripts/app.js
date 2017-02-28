@@ -35,8 +35,6 @@ function runApp () {
                 return obj;
             }
         } catch (err) {
-            // eslint-disable-next-line no-console
-            console.log(err);
         }
 
         return false;
@@ -73,7 +71,16 @@ function runApp () {
         var url = ugui.args.url.value;
         var dest = ugui.args.folderPicker.value;
         var file = ugui.args.output.value;
-        if (url && dest && file) {
+        var errorsButton = (ugui.args.badgeError.value === 'true');
+        var warningsButton = (ugui.args.badgeWarning.value === 'true');
+        var noticesButton = (ugui.args.badgeNotice.value === 'true');
+        var imgAltsVal = $('#imagealts').val();
+        var imgAltsParsed = '';
+        if (imgAltsVal) {
+            imgAltsParsed = tryParseJSON(imgAltsVal);
+        }
+        // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notic), or some valid JSON in the imageAlts box
+        if (url && dest && file && ((errorsButton || warningsButton || noticesButton) || (!!imgAltsVal && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) == 'object')))) {
             $('#run').prop('disabled', false);
         } else {
             $('#run').prop('disabled', true);
@@ -93,6 +100,8 @@ function runApp () {
 
     $('#output').change(unlockRun);
     $('#output').keyup(unlockRun);
+    $('#imagealts').change(unlockRun);
+    $('#imagealts').keyup(unlockRun);
 
     function prefillURL () {
         $('#url').val('http://google.com');
@@ -194,6 +203,7 @@ function runApp () {
 
         ugui.helpers.buildUGUIArgObject();
         ugui.helpers.saveSettings();
+        unlockRun();
     });
 
     function showHideImageAltsBox () {
@@ -596,7 +606,10 @@ function runApp () {
             // JSON
             if (ugui.args.outputjson.htmlticked) {
                 var outputJSON = {};
-                outputJSON.images = window.imageStats;
+                // Ensure that the imageStats Object is not empty
+                if (!$.isEmptyObject(window.imageStats)) {
+                    outputJSON.images = window.imageStats;
+                }
                 outputJSON.results = results;
                 outputJSON = JSON.stringify(outputJSON, null, 2);
 
@@ -605,8 +618,11 @@ function runApp () {
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
 
-                // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
-                // console.log(window.imageStats);
+                // Ensure that the imageStats Object is not empty
+                if (!$.isEmptyObject(window.imageStats)) {
+                    // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
+                    console.log(window.imageStats);
+                }
 
                 var json2csv = require('json2csv');
                 var fields = [];
@@ -624,7 +640,8 @@ function runApp () {
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
                 var output = '# ' + ugui.args.url.value + '\n\n';
-                if (window.imageStats) {
+                // Ensure that the imageStats Object is not empty
+                if (!$.isEmptyObject(window.imageStats)) {
                     output = output + '## Image Accessibility\n\n';
                     output = output + '**Total Images:** ' + window.imageStats.totalImages + '  \n';
                     output = output + '**Descriptive Alt Text:** ' + window.imageStats.descriptive + '  \n';
@@ -663,7 +680,8 @@ function runApp () {
                 var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
 
                 var imgAlts = '';
-                if (window.imageStats) {
+                // Ensure that the imageStats Object is not empty
+                if (!$.isEmptyObject(window.imageStats)) {
                     imgAlts =
                         '  <imagealts>\n' +
                         '    <totalimages>' + window.imageStats.totalImages + '</totalimages>\n' +
