@@ -248,10 +248,10 @@ function runApp () {
     }
 
     // Attempt to get the latest Image Alts script from GitHub
-    var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/UGUI-pa11y/master/_scripts/imgalts5.min.js', function (data) {
+    var getImgAlts = $.get('https://raw.githubusercontent.com/TheJaredWilcurt/Koa11y/master/_scripts/imgalts5.min.js', function (data) {
         clipboard(data);
     });
-    // If we cannot access the latest, use the version that shipped with UGUI: Pa11y
+    // If we cannot access the latest, use the version that shipped with Koa11y
     getImgAlts.fail(function () {
         var data = fs.readFileSync('_scripts/imgalts5.min.js', 'binary');
         clipboard(data);

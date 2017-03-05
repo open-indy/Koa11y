@@ -1,14 +1,16 @@
-# UGUI: Pa11y
+# Koa11y
 
 ### Check if a website has accessibility issues.
 
-<p align="center"><img src="http://thejaredwilcurt.github.io/UGUI-pa11y/_img/screenshot.png" alt="Screenshot of UGUI: Pa11y"></p>
+<p align="center"><img src="http://thejaredwilcurt.github.io/Koa11y/_img/screenshot.png" alt="Screenshot of Koa11y"></p>
 
-To download UGUI: Pa11y, visit the website:
+To download Koa11y, visit the website:
 
-* http://TheJaredWilcurt.github.io/UGUI-pa11y
+* http://TheJaredWilcurt.github.io/Koa11y
+
 
 * * *
+
 
 ## To run source code locally
 
@@ -16,6 +18,7 @@ To download UGUI: Pa11y, visit the website:
 2. Download or clone this repo
 3. Run `npm install`
 4. Run `npm start`
+
 
 ### To open dev tools
 
