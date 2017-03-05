@@ -1,12 +1,12 @@
-#UGUI: pa11y Website
+#Koa11y Website
 
 ##A GUI for pa11y
 
-<p align="center"><img src="_img/logo.png" alt="UGUI: pa11y logo"></p>
+<p align="center"><img src="_img/logo.png" alt="Koa11y logo"></p>
 
-* http://TheJaredWilcurt.github.io/UGUI-pa11y
+* http://TheJaredWilcurt.github.io/Koa11y
 
-<p align="center"><img src="_img/screenshot.png" alt="UGUI: pa11y screenshot"></p>
+<p align="center"><img src="_img/screenshot.png" alt="Koa11y screenshot"></p>
 
 * * *
 
