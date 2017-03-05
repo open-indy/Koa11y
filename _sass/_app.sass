@@ -1,8 +1,13 @@
 
 // App specific styles
 
+.navbar-header .applicationTitle
+    font-family: 'balooregular', 'lato', sans-serif
+    font-size: 30px
+    vertical-align: middle
+
 #imagealts
-    height: 256px
+    height: 86px
     font-family: monospace
     font-size: 12px
 
@@ -49,12 +54,46 @@
 #imageAltsModal
     position: fixed
     top: 0px
-    left: 0px
     right: 0px
     bottom: 0px
+    left: 0px
     background: rgba(0, 0, 0, 0.6)
+    overflow: auto
     z-index: 1090
+    .modal-dialog
+        position: relative
+    .modal-body
+        height: 100%
+        min-height: 250px
+        max-height: 500px
+        text-align: center
+        overflow: auto
+        p
+            font-size: 23px
+
+#imageAltsThumbs
+    img
+        max-width: 200px
+        max-height: 200px
+        border: 1px solid #CCC
+        border-radius: 4px
+        padding: 3px
+        &:hover
+            background: #333
+    div[data-imgnum]
+        display: inline-block
+        max-width: 200px
+        margin: 15px 20px
+        text-align: center
+    .btn
+        margin: 0px 10px
+        cursor: pointer
+        &:focus
+            outline: 0px
+        &.disabled
+            pointer-events: all
+            -webkit-filter: saturate(0)
 
 @media (min-width: 768px)
     #imageAltsModal .modal-dialog
-        width: calc(100% - 70px);
+        width: calc(100% - 70px)

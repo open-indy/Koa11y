@@ -3,7 +3,7 @@
   <head>
 
     <!-- Automatically updated by your package.json file. -->
-    <title class="applicationTitle">UGUI: Pa11y</title>
+    <title class="applicationTitle">Koa11y</title>
 
     <link rel="icon" type="image/x-icon" href="_img/fav.ico">
     <link rel="stylesheet" href="_style/ven.bootstrap.css">
@@ -109,7 +109,7 @@
           </button>
           <a class="navbar-brand">
             <img src="_img/logo.png" alt="Logo" />
-            <span class="applicationTitle">UGUI: Pa11y</span>
+            <span class="applicationTitle">Koa11y</span>
           </a>
         </div>
         <div class="navbar-collapse collapse">
@@ -161,14 +161,14 @@
       -->
 
     <div class="container" role="main">
-
       <header>
         <h3>
-          <span class="applicationTitle">UGUI: Pa11y</span>
+<!--
+          <span class="applicationTitle">Koa11y</span>
           <small class="applicationDescription">A GUI for running Pa11y.</small>
+-->
         </h3>
       </header>
-
 
 
 
@@ -203,8 +203,8 @@
               <div class="input-group">
                 <input id="output" type="text" class="form-control" data-argName="output" required="required" />
                 <div id="output-btn" class="input-group-addon btn-group">
-                  <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">HTML<span class="caret"></span></button>
-                  <ul class="dropdown-menu">
+                  <button id="outputtype" class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTML<span class="caret"></span></button>
+                  <ul class="dropdown-menu" aria-labelledby="outputtype">
                     <li><input type="radio" name="outputtype" data-argName="outputhtml" value="html" id="html" /><label for="html" >HTML</label></li>
                     <li><input type="radio" name="outputtype" data-argName="outputcsv"  value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
                     <li><input type="radio" name="outputtype" data-argName="outputjson" value="json" id="json" /><label for="json" >JSON</label></li>
@@ -240,8 +240,8 @@
 
           <div class="row" id="imageAltsSection">
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12">
-              <label for="imagealts">Image Alts:</label>
-              <p><button id="clipboard" class="btn btn-sm btn-primary">Copy the console code</button> Paste this code in your browser's console and press enter. It will give you HTML you can paste into the box below, then click "Run".</p>
+              <label for="imagealts">Image Accessibility:</label>
+              <p><button id="clipboard" class="btn btn-sm btn-primary">Copy the console code</button> Paste this code in your browser's console and press enter. It will give you code you can paste into the box below, then click "Run".</p>
               <textarea id="imagealts" class="form-control"></textarea>
             </div>
           </div>
@@ -301,7 +301,7 @@
 
                 <div class="panel-heading">
                   <span class="pull-right versionApp" title="Version">V2.0.0</span>
-                  <h3 class="panel-title">About <span class="applicationTitle">UGUI: Pa11y</span></h3>
+                  <h3 class="panel-title">About <span class="applicationTitle">Koa11y</span></h3>
                 </div>
 
                 <div class="panel-body">
@@ -309,9 +309,10 @@
                     This program will load an invisible (headless) browser and go to the URL you've supplied to test the page for accessibility issues. Then it outputs any issues to a file.
                   </p>
                   <p>
-                    <span class="applicationTitle">UGUI: Pa11y</span> created by <span class="authorName">The Jared Wilcurt</span><br />
-                    <a href="http://thejaredwilcurt.github.io/UGUI-pa11y" class="external-link">Visit the UGUI: Pa11y website.</a><br />
-                    For more information visit: <a href="http://pa11y.org" class="external-link">Pa11y.org</a>.
+                    <span class="applicationTitle">Koa11y</span> created by <span class="authorName">The Jared Wilcurt</span><br />
+                    <a href="http://thejaredwilcurt.github.io/Koa11y" class="external-link">Visit the Koa11y website.</a><br />
+                    For more information visit: <a href="http://pa11y.org" class="external-link">Pa11y.org</a>.<br />
+                    Koala Logo designed by <a href="mailto:cha.schmidt@gmail.com" title="cha.schmidt@gmail.com" class="external-link">Charlotte Schmidt</a>.
                   </p>
                 </div>
 
@@ -342,6 +343,8 @@
             </div>
             <div class="modal-body">
 
+              <div id="imageAltsThumbs"></div>
+
               <div id="imageAltsDonut" class="donut-size">
                 <div class="pie-wrapper">
                   <span class="label">
@@ -355,6 +358,9 @@
                 </div>
               </div>
 
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-success pull-right disabled">Continue</button>
             </div>
           </div>
         </div>

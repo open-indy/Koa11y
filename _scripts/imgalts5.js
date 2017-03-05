@@ -6,7 +6,7 @@ var img = document.getElementsByTagName('img');
 var imgs = '[';
 
 for (var i = 0, image; i < img.length; i++) {
-    image = '{\"src\":\"' + img[i].src +'\",\"alt\":\"' + img[i].alt + '\"}';
+    image = '{\"src\":\"' + img[i].src + '\",\"alt\":\"' + img[i].alt + '\"}';
     if (i !== img.length - 1) {
         image = image + ',';
     }

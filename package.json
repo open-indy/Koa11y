@@ -1,22 +1,22 @@
 {
-    "name": "ugui_pa11y",
+    "name": "koa11y",
     "version": "2.0.0",
     "author": "The Jared Wilcurt",
     "description": "Check if a website has accessibility issues.",
     "keywords": [ "Accessibility", "standards", "automated", "WCAG", "Section 508" ],
-    "maintainers":[{
+    "maintainers": [{
         "name": "TheJaredWilcurt",
         "email": "TheJaredWilcurt@noreply.github.com",
-        "web": "http://ugui.io"
+        "web": "http://github.com/TheJaredWilcurt"
     }],
     "repository": [{
         "type": "git",
-        "url": "git://github.com/TheJaredWilcurt/UGUI-pa11y.git"
+        "url": "git://github.com/TheJaredWilcurt/Koa11y.git"
     }],
-    "bugs": "https://github.com/TheJaredWilcurt/UGUI-pa11y/issues",
+    "bugs": "https://github.com/TheJaredWilcurt/Koa11y/issues",
     "main": "index.htm",
     "window": {
-        "title": "UGUI: Pa11y",
+        "title": "Koa11y",
         "icon": "_img/icon32.png",
         "toolbar": false,
         "resizable": true,
@@ -47,6 +47,8 @@
         "pa11y": "4.1.1",
         "phantomjs-prebuilt": "^2.1.14",
         "json2csv": "3.7.3",
+        "folder-stat": "^1.0.1",
+        "base64-img": "^1.0.3",
         "fs-extra": "^0.30.x"
     },
     "devDependencies": {
@@ -65,6 +67,6 @@
     "license": "MIT",
     "licenses": [{
         "type": "MIT",
-        "url": "https://github.com/TheJaredWilcurt/UGUI-pa11y/blob/master/LICENSE"
+        "url": "https://github.com/TheJaredWilcurt/Koa11y/blob/master/LICENSE"
     }]
 }
