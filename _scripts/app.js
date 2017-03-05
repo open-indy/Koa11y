@@ -261,10 +261,12 @@ function runApp () {
      * Process an array of objects, each containing the src and alt data for images.
      * @param  {array} data Array of objects. Each object has a "src" and "alt" for an image.
      */
-    function processAltsScript (data, callback) {
+    function processAltsScript (callback) {
         var http = require('http');
         var https = require('https');
         var i = 0;
+
+        var data = window.imgAltsParsed;
 
         function rmrf (location) {
             location = path.normalize(location);
@@ -294,6 +296,7 @@ function runApp () {
         function downloadComplete (response, newFile) {
             if (response.statusCode == 200) {
                 var piped = response.pipe(fs.createWriteStream(newFile));
+                window.imgAltsParsed[i].path = newFile;
                 piped.on('finish', function () {
                     i = i + 1;
                     imageAltsDonut(i);
@@ -321,6 +324,7 @@ function runApp () {
                     if (image.src.indexOf('data:image/') == 0) {
                         // eslint-disable-next-line no-unused-vars
                         base64Img.img(image.src, path.join(appData, 'temp'), i, function (err, filepath) {
+                            window.imgAltsParsed[i].path = filepath;
                             if (err) {
                                 // eslint-disable-next-line no-console
                                 console.log(err);
@@ -365,61 +369,59 @@ function runApp () {
     }
 
     function loadImagesInModal () {
-        fs.readdir(temp, function (err, files) {
-            $('#imageAltsDonut').fadeOut('fast');
-            var data = JSON.parse($('#imagealts').val());
-            $('#imageAltsThumbs').html('<h3>Is the text under the image descriptive?</h3>');
-            if (err) {
-                errorMessage(err);
-                // eslint-disable-next-line
-                console.log(err);
-                return;
-            }
-            files.forEach(function (file, i) {
-                var filename = file.split('.')[0];
-                var alt = data[filename].alt;
-                var src = path.join(temp, file);
-                if (alt) {
-                    var image =
-                      '<div data-imgnum="' + i + '">' +
-                        '<figure>' +
-                          '<img src="' + src + '">' +
-                          '<figcaption>' + alt + '</figcaption>' +
-                        '</figure>' +
-                        '<button class="btn disabled btn-success">Yes</button>' +
-                        '<button class="btn disabled btn-danger">No</button>' +
-                      '</div>';
-                    $('#imageAltsThumbs').append(image);
-                }
-            });
-            window.confirmedImages = [];
-            $('#imageAltsThumbs .btn').click(function () {
-                $(this).removeClass('disabled');
-                $(this).siblings('.btn').addClass('disabled');
-                var imgnum = $(this).parent().data('imgnum');
-                var closestImg = $(this).siblings('figure').find('img');
-                if ($(this).hasClass('btn-success')) {
-                    $(closestImg).addClass('bg-success');
-                    $(closestImg).removeClass('bg-warning');
-                } else {
-                    $(closestImg).addClass('bg-warning');
-                    $(closestImg).removeClass('bg-success');
-                }
+        $('#imageAltsDonut').fadeOut('fast');
+        $('#imageAltsThumbs').html('<h3>Is the text under the image descriptive?</h3>');
 
-                window.confirmedImages[imgnum] = $(this).hasClass('btn-success');
-                var filtered = window.confirmedImages.filter(function (val) {
-                    if (typeof(val) != 'undefined') {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
-                if ($('[data-imgnum]').length === filtered.length) {
-                    $('#imageAltsModal .modal-footer .btn').removeClass('disabled');
+        var images = window.imgAltsParsed;
+
+        images.forEach(function (file, i) {
+            var alt = file.alt;
+            var src = file.src;
+            if (file.path && fs.existsSync(file.path)) {
+                src = file.path;
+            } else if (file.src.length < 1) {
+                src = '_img/broken.png';
+            }
+            if (alt) {
+                var image =
+                  '<div data-imgnum="' + i + '">' +
+                    '<figure>' +
+                      '<img src="' + src + '">' +
+                      '<figcaption>' + alt + '</figcaption>' +
+                    '</figure>' +
+                    '<button class="btn disabled btn-success">Yes</button>' +
+                    '<button class="btn disabled btn-danger">No</button>' +
+                  '</div>';
+                $('#imageAltsThumbs').append(image);
+            }
+        });
+        window.confirmedImages = [];
+        $('#imageAltsThumbs .btn').click(function () {
+            $(this).removeClass('disabled');
+            $(this).siblings('.btn').addClass('disabled');
+            var imgnum = $(this).parent().data('imgnum');
+            var closestImg = $(this).siblings('figure').find('img');
+            if ($(this).hasClass('btn-success')) {
+                $(closestImg).addClass('bg-success');
+                $(closestImg).removeClass('bg-warning');
+            } else {
+                $(closestImg).addClass('bg-warning');
+                $(closestImg).removeClass('bg-success');
+            }
+
+            window.confirmedImages[imgnum] = $(this).hasClass('btn-success');
+            var filtered = window.confirmedImages.filter(function (val) {
+                if (typeof(val) != 'undefined') {
+                    return true;
                 } else {
-                    $('#imageAltsModal .modal-footer .btn').addClass('disabled');
+                    return false;
                 }
             });
+            if ($('[data-imgnum]').length === filtered.length) {
+                $('#imageAltsModal .modal-footer .btn').removeClass('disabled');
+            } else {
+                $('#imageAltsModal .modal-footer .btn').addClass('disabled');
+            }
         });
     }
 
@@ -487,17 +489,18 @@ function runApp () {
         $('#imageAltsThumbs').empty();
         fs.emptyDirSync(path.join(nw.App.dataPath, 'temp'));
         window.imageStats = {};
+        window.imgAltsParsed = [];
 
         var imgAltsVal = $('#imagealts').val();
         // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
         if (imgAltsVal && !ugui.args.outputcsv.htmlticked) {
             // This will output an error if JSON is invalid, or if there is no text
-            var imgAltsParsed = tryParseJSON(imgAltsVal);
+            window.imgAltsParsed = tryParseJSON(imgAltsVal);
             // If the text is valid JSON
             if (imgAltsParsed.length > 0 && typeof(imgAltsParsed) == 'object') {
                 $('#imageAltsModal').fadeIn('slow');
                 $('#imageAltsDonut').fadeIn('fast');
-                processAltsScript(imgAltsParsed, loadImagesInModal);
+                processAltsScript(loadImagesInModal);
             } else {
                 runPa11y();
             }
