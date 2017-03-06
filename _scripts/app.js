@@ -15,7 +15,6 @@ function runApp () {
 
     var fs = require('fs-extra');
     var path = require('path');
-    var stat = require('folder-stat');
     var base64Img = require('base64-img');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
@@ -427,60 +426,61 @@ function runApp () {
 
     $('#imageAltsModal .modal-footer .btn').click(function () {
         if (!$(this).hasClass('disabled')) {
-            $('#imageAltsModal').slideUp('slow');
-
-            var allData = JSON.parse($('#imagealts').val());
-
             var imagesWithDescriptiveAltText = 0;
+            var altTagsUnder100Characters = 0;
+            var totalImages = window.imgAltsParsed.length;
+            var imagesUnder100KB = 0;
+            var totalFileSizeInBytes = 0;
+            var imagesLoaded = 0;
+
             window.confirmedImages.forEach(function (img) {
                 if (img) {
                     imagesWithDescriptiveAltText = imagesWithDescriptiveAltText + 1;
                 }
             });
 
-            var altTagsUnder100Characters = 0;
-            allData.forEach(function (img) {
-                if (img.alt.length <= 100) {
+            for (var i = 0, len = window.imgAltsParsed.length; i < len; i++) {
+                window.imgAltsParsed[i].size = 0;
+                var imgPath = window.imgAltsParsed[i].path;
+                var imgAlt = window.imgAltsParsed[i].alt;
+
+                if (imgPath && imgPath.length > 1) {
+                    window.imgAltsParsed[i].size = fs.statSync(imgPath).size;
+                }
+
+                var size = window.imgAltsParsed[i].size;
+
+                if (size <= (100 * 1024)) {
+                    imagesUnder100KB = imagesUnder100KB + 1;
+                }
+                totalFileSizeInBytes = totalFileSizeInBytes + size;
+
+                if (size > 0) {
+                    imagesLoaded = imagesLoaded + 1;
+                }
+
+                if (imgAlt.length <= 100) {
                     altTagsUnder100Characters = altTagsUnder100Characters + 1;
                 }
-            });
+            }
 
-            var imagesUnder100KB = 0;
-            var totalFileSizeInBytes = 0;
-            var imagesLoaded = 0;
+            window.imageStats = {
+                'totalImages': totalImages,
+                'descriptive': imagesWithDescriptiveAltText,
+                'nondescriptive': totalImages - imagesWithDescriptiveAltText,
+                'under100Char': altTagsUnder100Characters,
+                'under100KB': imagesUnder100KB,
+                'imagesLoaded': imagesLoaded,
+                'totalFileSizeInBytes': totalFileSizeInBytes,
+                'totalFileSizeInKB': Math.round((totalFileSizeInBytes / 1024) * 10) / 10,
+                'descriptivePercent': Math.round((imagesWithDescriptiveAltText / totalImages) * 100),
+                'under100CharPercent': Math.round((altTagsUnder100Characters / totalImages) * 100),
+                'under100KBPercent': Math.round((imagesUnder100KB / totalImages) * 100),
+                'imagesLoadedPercent': Math.round((imagesLoaded / totalImages) * 100)
+            };
 
-            stat(path.join(nw.App.dataPath, 'temp'), function (err, stats, files) {
-                if (err) {
-                    // eslint-disable-next-line no-console
-                    console.log(err);
-                }
-                if (stats) {
-                    stats.forEach(function (file) {
-                        if (file.size <= (100 * 1024)) {
-                            imagesUnder100KB = imagesUnder100KB + 1;
-                        }
-                        totalFileSizeInBytes = totalFileSizeInBytes + file.size;
-                    });
-                    imagesLoaded = files.length;
-                }
-
-                window.imageStats = {
-                    'totalImages': allData.length,
-                    'descriptive': imagesWithDescriptiveAltText,
-                    'nondescriptive': allData.length - imagesWithDescriptiveAltText,
-                    'under100Char': altTagsUnder100Characters,
-                    'under100KB': imagesUnder100KB,
-                    'imagesLoaded': imagesLoaded,
-                    'totalFileSizeInBytes': totalFileSizeInBytes,
-                    'totalFileSizeInKB': Math.round((totalFileSizeInBytes / 1024) * 10) / 10,
-                    'descriptivePercent': Math.round((imagesWithDescriptiveAltText / allData.length) * 100),
-                    'under100CharPercent': Math.round((altTagsUnder100Characters / allData.length) * 100),
-                    'under100KBPercent': Math.round((imagesUnder100KB / allData.length) * 100),
-                    'imagesLoadedPercent': Math.round((imagesLoaded / allData.length) * 100)
-                };
-
-                runPa11y();
-            });
+            $('#imageAltsModal').slideUp('slow');
+            runPa11y();
         }
     });
 
