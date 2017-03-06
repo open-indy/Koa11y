@@ -49,7 +49,8 @@
         "json2csv": "3.7.3",
         "folder-stat": "^1.0.1",
         "base64-img": "^1.0.3",
-        "fs-extra": "^0.30.x"
+        "fs-extra": "^0.30.x",
+        "semver": "^5.3.x"
     },
     "devDependencies": {
         "nw": "^0.12.3",
