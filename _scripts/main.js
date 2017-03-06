@@ -9,17 +9,20 @@ $(document).ready(function () {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-    var win = '_img/screenshot-win.png';
+
+    // Crossbrowser.js will add win, linux, or mac to the class of the html tag
+    // We manually set it to Windows by default in case JS doesn't load.
+    // But if the JS does load we swap out the image/link depending on the user's OS
     var lin = '_img/screenshot-lin.png';
     var osx = '_img/screenshot-osx.png';
-
-    if ($('html').hasClass('win')) {
-        $('#screenshot').attr('src', win);
-    } else if ($('html').hasClass('lin')) {
-        $('#screenshot').attr('src', lin);
-    } else if ($('html').hasClass('osx')) {
-        $('#screenshot').attr('src', osx);
+    if ($('html').hasClass('linux')) {
+        $('#screenshot').attr('href', lin);
+        $('#screenshot img').attr('src', lin);
+    } else if ($('html').hasClass('mac')) {
+        $('#screenshot').attr('href', osx);
+        $('#screenshot img').attr('src', osx);
     }
+
 
     $.get('https://api.github.com/repos/TheJaredWilcurt/Koa11y/releases', function (data) {
         var totalDownloads = [];
