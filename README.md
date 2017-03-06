@@ -4,7 +4,7 @@ Koa11y is a desktop app that allows you to automatically detect accessibility (a
 
 * http://TheJaredWilcurt.github.io/Koa11y
 
-<p align="center"><img src="_img/screenshot.png" alt="Koa11y screenshot"></p>
+<p align="center"><img src="_img/screenshot-win.png" alt="Koa11y screenshot"></p>
 
 * * *
 
