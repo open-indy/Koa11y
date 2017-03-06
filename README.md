@@ -1,8 +1,6 @@
-#Koa11y Website
+<img src="_img/wordmark.png" alt="Koa11y Koala Logo">
 
-##A GUI for pa11y
-
-<p align="center"><img src="_img/logo.png" alt="Koa11y logo"></p>
+Koa11y is a desktop app that allows you to automatically detect accessibility (a11y) issues on webpages.
 
 * http://TheJaredWilcurt.github.io/Koa11y
 
@@ -10,7 +8,7 @@
 
 * * *
 
-This site is based on:
+This branch is for the Koa11y website. This site is based on:
 
 * https://github.com/TheJaredWilcurt/app-site-template
 
