@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Accessibility Standards - Koa11y</title>
+    <meta name="generator" content="Koa11y 2.0.0" />
+
+
+
+    <!--
+
+      Run this test on your site with Koa11y!
+
+      https://TheJaredWilcurt.github.io/Koa11y
+
+    -->
+
+
+
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Lato:400,700,400italic');
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+      body {
+        background: #FFF;
+        margin-top: 17px;
+        color: #2C3E50;
+        font-family: 'Lato', 'Helvetica Neue', sans-serif;
+        font-size: 15px;
+        line-height: 1.42857143;
+      }
+      h1 {
+        display: inline-block;
+        margin: 21px 0px 20px;
+        font-size: 39px;
+        font-weight: 400;
+        word-break: break-all;
+      }
+      h4 {
+        margin: 0px;
+        color: #636F79;
+        font-size: 14.25px;
+      }
+      pre {
+        display: block;
+        background-color: #ECF0F1;
+        border: 1px solid #CCC;
+        border-radius: 4px;
+        margin: 0px 0px 10.5px;
+        padding: 10px;
+        color: #7B8A8B;
+        font-family: 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+        font-size: 14px;
+        line-height: 1.42857143;
+        overflow: auto;
+        word-break: break-all;
+        word-wrap: break-word;
+      }
+      code {
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      .container {
+        max-width: 900px;
+        width: 100%;
+        margin: 0px auto;
+        padding: 0px 15px;
+      }
+      .row {
+        margin-right: -15px;
+        margin-left: -15px;
+        clear: both;
+      }
+      .panel {
+        background-color: #FFF;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        margin-bottom: 21px;
+        box-shadow: 0px 1px 1px rgba(0,0,0,0.05);
+      }
+      .panel-heading {
+        padding: 10px 15px;
+        border-bottom: 1px solid transparent;
+        border-top-right-radius: 3px;
+        border-top-left-radius: 3px;
+        color: #FFF;
+      }
+      .panel-body {
+        padding: 15px;
+      }
+      .panel-footer {
+        background-color: #ECF0F1;
+        border-top: 1px solid #ECF0F1;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        padding: 10px 15px;
+      }
+      .panel-success { border-color: #18BC9C; }
+      .panel-danger  { border-color: #E74C3C; }
+      .panel-warning { border-color: #F39C12; }
+      .panel-primary { border-color: #2C3E50; }
+      .panel-success>.panel-heading { background-color: #18BC9C; border-color: #18BC9C; }
+      .panel-danger>.panel-heading  { background-color: #E74C3C; border-color: #E74C3C; }
+      .panel-warning>.panel-heading { background-color: #F39C12; border-color: #F39C12; }
+      .panel-primary>.panel-heading { background-color: #2C3E50; border-color: #2C3E50; }
+      .hide {
+        display: none;
+      }
+      .text-capitalize {
+        color: #8C8C8C;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+      #buttons {
+        display: inline-block;
+        margin-top: 30px;
+        float: right;
+      }
+      #buttons .disabled {
+        box-shadow: none;
+        cursor: pointer;
+        filter: alpha(opacity=65);
+        opacity: 0.65;
+        pointer-events: auto;
+      }
+      .panel-primary i {
+        margin: 0px 7px;
+      }
+      .btn {
+        display: inline-block;
+        background-image: none;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        margin-bottom: 0px;
+        padding: 10px 15px;
+        font-size: 15px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        cursor: pointer;
+        touch-action: manipulation;
+        user-select: none;
+        white-space: nowrap;
+        vertical-align: middle;
+      }
+      .btn-sm {
+        border-radius: 3px;
+        padding: 6px 9px;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .btn-danger {
+        background-color: #E74C3C;
+        border-color: #E74C3C;
+        color: #FFF;
+      }
+      .btn-warning {
+        background-color: #F39C12;
+        border-color: #F39C12;
+        color: #FFF;
+      }
+      .btn-primary {
+        background-color: #2C3E50;
+        border-color: #2C3E50;
+        color: #FFF;
+      }
+      .badge {
+        position: relative;
+        top: -1px;
+        display: inline-block;
+        min-width: 10px;
+        background-color: #FFF;
+        border-radius: 10px;
+        padding: 3px 7px;
+        color: #FFF;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+      }
+      .btn-danger .badge {
+        color: #E74C3C;
+      }
+      .btn-warning .badge {
+        color: #F39C12;
+      }
+      .btn-primary .badge {
+        color: #2C3E50;
+      }
+      .glyphicon {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        vertical-align: top;
+      }
+      .glyphicon-ok {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMSAtNiAzMiAzMiI+PHBhdGggZmlsbD0iIzE4QkM5QyIgZD0iTS43NzMgMTMuNDkzbDExLjE3MyAxMS4yTDMzLjc1OSAyLjgyNmwtNS42NTMtNS42NTNMMTEuOTE5IDEzLjM2IDYuNDI2IDcuODR6Ii8+PC9zdmc+');
+      }
+      .glyphicon-remove {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAtNiAzMiAzMiI+PHBhdGggZmlsbD0iI0U3NEMzQyIgZD0iTTIuODI3IDE3LjEybDcuNTItNy41Mi03LjUyLTcuNTJMOC40OC0zLjU3MyAxNiAzLjk0N2w3LjUyLTcuNTIgNS42NTMgNS42NTMtNy41MiA3LjUyIDcuNTIgNy41Mi01LjY1MyA1LjY1My03LjUyLTcuNTItNy41MiA3LjUyeiIvPjwvc3ZnPg==');
+      }
+      .glyphicon-ban-circle {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAtNiAzMiAzMiI+PHBhdGggZmlsbD0iI0YzOUMxMiIgZD0iTS4xMDcgOS42cTAtNC4zMiAyLjEzMy03Ljk3M1Q4LjAyNy00LjE2IDE2LTYuMjkzdDcuOTczIDIuMTMzIDUuNzg3IDUuNzg3VDMxLjg5MyA5LjZ0LTIuMTMzIDcuOTczLTUuNzg3IDUuNzg3VDE2IDI1LjQ5MyA4LjAyNyAyMy4zNiAyLjI0IDE3LjU3My4xMDcgOS42em00Ljg1MyAwcTAgMy4wNjcgMS42NTMgNS43MzNMMjEuNzYuMjEzUTE5LjA5My0xLjQ0IDE2LTEuNDRxLTQuNTYgMC03LjggMy4yNFQ0Ljk2IDkuNnptNS40NjcgOS40NjdRMTMuMDE0IDIwLjY0IDE2IDIwLjY0cTQuNTYgMCA3LjgtMy4yNHQzLjI0LTcuOHEwLTIuOTg3LTEuNTczLTUuNTczeiIvPjwvc3ZnPg==');
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" role="main">
+          <div class="row">
+      <span id="buttons"><button class="btn btn-sm btn-danger" type="button" value="true" data-argname="badgeError">
+                  Errors <span class="badge">3</span>
+                </button>
+<button class="btn btn-sm btn-warning" type="button" value="true" data-argname="badgeWarning">
+                  Warnings <span class="badge">10</span>
+                </button>
+<button class="btn btn-sm btn-primary" type="button" value="true" data-argname="badgeNotice">
+                  Notices <span class="badge">40</span>
+                </button>
+</span>
+      <h1>http://google.com</h1>
+    </div>
+<div class="row"><div class="panel panel-primary"><div class="panel-heading">Image Accessibility</div><div class="panel-body"><p><i class="glyphicon text-success glyphicon-ok"></i> <strong>100%</strong> of images on the page had descriptive ALT text. <strong>(3/3)</strong></p><p><i class="glyphicon text-success glyphicon-ok"></i> <strong>100%</strong> of ALTs were under 100 characters. <strong>(3/3)</strong></p><p><i class="glyphicon text-success glyphicon-ok"></i> <strong>100%</strong> of images were under 100KB in size. <strong>(3/3)</strong></p><p><i class="glyphicon text-success glyphicon-ok"></i> <strong>100%</strong> of images loaded with a total image payload of <strong>18.2KB (3/3)</strong></p></div></div></div>
+    <div class="row"><div class="panel panel-danger">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail</div>
+<div class="panel-body">
+<strong class="text-capitalize">error:</strong> This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 7:1, but text in this element has a contrast ratio of 5.37:1. <strong>Recommendation:</strong> change text colour to #2053b9.<br /><br />
+<pre><code>&lt;a href="/advanced_search?hl=en&amp;authuser=0">Advanced search&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(3) > a:nth-child(1)</small></h4></div>
+</div>
+<div class="panel panel-danger">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail</div>
+<div class="panel-body">
+<strong class="text-capitalize">error:</strong> This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 7:1, but text in this element has a contrast ratio of 5.37:1. <strong>Recommendation:</strong> change text colour to #2053b9.<br /><br />
+<pre><code>&lt;a href="/language_tools?hl=en&amp;authuser=0">Language tools&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(3) > a:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-danger">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_4.1_4_6.G17.Fail</div>
+<div class="panel-body">
+<strong class="text-capitalize">error:</strong> This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 7:1, but text in this element has a contrast ratio of 4.54:1. <strong>Recommendation:</strong> change text colour to #595959.<br /><br />
+<pre><code>&lt;p style="color:#767676;font-size:8pt">© 2017 - &lt;a href="/intl/en/poli...&lt;/p></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#footer > p</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_4.1_4_3_F24.F24.BGColour</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Check that this element has an inherited foreground colour to complement the corresponding inline background colour or image.<br /><br />
+<pre><code>&lt;body bgcolor="#fff">&lt;script>(function(){var src='/i...&lt;/body></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H49.B</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Semantic markup should be used to mark emphasised or special text so that it can be programmatically determined.<br /><br />
+<pre><code>&lt;b class="gb1">Search&lt;/b></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > b</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H49.U</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Semantic markup should be used to mark emphasised or special text so that it can be programmatically determined.<br /><br />
+<pre><code>&lt;u>More&lt;/u></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(9) > u</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H49.Center</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Semantic markup should be used to mark emphasised or special text so that it can be programmatically determined.<br /><br />
+<pre><code>&lt;center>&lt;br clear="all" id="lgpd">&lt;div ...&lt;/center></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H49.AlignAttr</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Semantic markup should be used to mark emphasised or special text so that it can be programmatically determined.<br /><br />
+<pre><code>&lt;td align="center" nowrap="">&lt;input name="ie" value="ISO-885...&lt;/td></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_4.1_4_3_F24.F24.FGColour</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Check that this element has an inherited background colour or image to complement the corresponding inline foreground colour.<br /><br />
+<pre><code>&lt;input style="color: rgb(0, 0, 0); margin: 0px; padding: 5px 8px 0px 6px; vertical-align: top; outline: none;" autocomplete="off" class="lst" value="" title="Google Search" maxlength="2048" name="q" size="57" dir="ltr" spellcheck="false"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > div > input</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H49.AlignAttr</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Semantic markup should be used to mark emphasised or special text so that it can be programmatically determined.<br /><br />
+<pre><code>&lt;td class="fl sblc" align="left" nowrap="" width="25%">&lt;a href="/advanced_search?hl=en...&lt;/td></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(3)</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H48</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> If this element contains a navigation section, it is recommended that it be marked up as a list.<br /><br />
+<pre><code>&lt;div style="margin:19px auto;text-align:center" id="fll">&lt;a href="/intl/en/ads/">Adverti...&lt;/div></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#fll</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_4.1_4_3_F24.F24.FGColour</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> Check that this element has an inherited background colour or image to complement the corresponding inline foreground colour.<br /><br />
+<pre><code>&lt;p style="color:#767676;font-size:8pt">© 2017 - &lt;a href="/intl/en/poli...&lt;/p></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#footer > p</small></h4></div>
+</div>
+<div class="panel panel-warning">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.H48</div>
+<div class="panel-body">
+<strong class="text-capitalize">warning:</strong> If this element contains a navigation section, it is recommended that it be marked up as a list.<br /><br />
+<pre><code>&lt;p style="color:#767676;font-size:8pt">© 2017 - &lt;a href="/intl/en/poli...&lt;/p></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#footer > p</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_2.H25.2</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that the title element describes the document.<br /><br />
+<pre><code>&lt;title>Google&lt;/title></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > head > title</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="http://www.google.com/imghp?hl=en&amp;tab=wi">Images&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="http://maps.google.com/maps?hl=en&amp;tab=wl">Maps&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(3)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="https://play.google.com/?hl=en&amp;tab=w8">Play&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(4)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="http://www.youtube.com/?tab=w1">YouTube&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(5)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="http://news.google.com/nwshp?hl=en&amp;tab=wn">News&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(6)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="https://mail.google.com/mail/?tab=wm">Gmail&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(7)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" href="https://drive.google.com/?tab=wo">Drive&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(8)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a class="gb1" style="text-decoration:none" href="https://www.google.com/intl/en/options/">&lt;u>More&lt;/u> »&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbar > nobr > a:nth-child(9)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="http://www.google.com/history/optout?hl=en" class="gb4">Web History&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#guser > nobr > a:nth-child(4)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/preferences?hl=en" class="gb4">Settings&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#guser > nobr > a:nth-child(5)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a target="_top" id="gb_70" href="https://accounts.google.com/ServiceLogin?hl=en&amp;passive=true&amp;continue=http://www.google.com/" class="gb4">Sign in&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gb_70</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_1.1_1_1.G94.Image</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Ensure that the img element's alt text serves the same purpose and presents the same information as the image.<br /><br />
+<pre><code>&lt;img alt="Google" height="92" src="/images/branding/googlelogo/1x/googlelogo_white_background_color_272x92dp.png" style="padding:28px 0 14px" width="272" id="hplogo" onload="window.lol&amp;&amp;lol()"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#hplogo</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_1.1_1_1.G73,G74</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> If this image cannot be fully described in a short text alternative, ensure a long text alternative is also available, such as in the body text or through a link.<br /><br />
+<pre><code>&lt;img alt="Google" height="92" src="/images/branding/googlelogo/1x/googlelogo_white_background_color_272x92dp.png" style="padding:28px 0 14px" width="272" id="hplogo" onload="window.lol&amp;&amp;lol()"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#hplogo</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_3.3_3_1.G83,G84,G85</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> If an input error is automatically detected in this form, check that the item(s) in error are identified and the error(s) are described to the user in text.<br /><br />
+<pre><code>&lt;form action="/search" name="f">&lt;table cellpadding="0" cellspac...&lt;/form></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_3.3_3_2.G131,G89,G184,H90</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that descriptive labels or instructions (including for required fields) are provided for user input in this form.<br /><br />
+<pre><code>&lt;form action="/search" name="f">&lt;table cellpadding="0" cellspac...&lt;/form></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_3.3_3_3.G177</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that this form provides suggested corrections to errors in user input, unless it would jeopardize the security or purpose of the content.<br /><br />
+<pre><code>&lt;form action="/search" name="f">&lt;table cellpadding="0" cellspac...&lt;/form></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_3.3_3_5.G71,G184,G193</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that context-sensitive help is available for this form, at a Web-page and/or control level.<br /><br />
+<pre><code>&lt;form action="/search" name="f">&lt;table cellpadding="0" cellspac...&lt;/form></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_3.3_3_6.G98,G99,G155,G164,G168.AllForms</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that submissions to this form are either reversible, checked for input errors, and/or confirmed by the user.<br /><br />
+<pre><code>&lt;form action="/search" name="f">&lt;table cellpadding="0" cellspac...&lt;/form></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.LayoutTable</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> This table appears to be a layout table. If it is meant to instead be a data table, ensure header cells are identified using th elements.<br /><br />
+<pre><code>&lt;table cellpadding="0" cellspacing="0">&lt;tbody>&lt;tr valign="top">&lt;td wid...&lt;/table></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input name="ie" value="ISO-8859-1" type="hidden"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > input:nth-child(1)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input value="en" name="hl" type="hidden"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > input:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input name="source" type="hidden" value="hp"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > input:nth-child(3)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input name="biw" type="hidden"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > input:nth-child(4)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input name="bih" type="hidden"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > input:nth-child(5)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input style="color: rgb(0, 0, 0); margin: 0px; padding: 5px 8px 0px 6px; vertical-align: top; outline: none;" autocomplete="off" class="lst" value="" title="Google Search" maxlength="2048" name="q" size="57" dir="ltr" spellcheck="false"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > div > input</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input class="lsb" value="Google Search" name="btnG" type="submit"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > span:nth-child(8) > span > input</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input class="lsb" value="I'm Feeling Lucky" name="btnI" onclick="if(this.form.q.value)this.checked=1; else top.location='/doodles/'" type="submit"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(2) > span:nth-child(9) > span > input</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/advanced_search?hl=en&amp;authuser=0">Advanced search&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(3) > a:nth-child(1)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/language_tools?hl=en&amp;authuser=0">Language tools&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > table > tbody > tr > td:nth-child(3) > a:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input id="gbv" name="gbv" type="hidden" value="1"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#gbv</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input type="hidden" name="oq"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > input:nth-child(3)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle3.Guideline3_2.3_2_1.G107</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that a change of context does not occur when this input field receives focus.<br /><br />
+<pre><code>&lt;input type="hidden" name="gs_l"></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > center > form > input:nth-child(4)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/intl/en/ads/">Advertising&nbsp;Programs&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#fll > a:nth-child(1)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/services/">Business Solutions&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#fll > a:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="https://plus.google.com/116899029375914044550" rel="publisher">+Google&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#fll > a:nth-child(3)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/intl/en/about.html">About Google&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#fll > a:nth-child(4)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/intl/en/policies/privacy/">Privacy&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#footer > p > a:nth-child(1)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle2.Guideline2_4.2_4_9.H30</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> Check that text of the link describes the purpose of the link.<br /><br />
+<pre><code>&lt;a href="/intl/en/policies/terms/">Terms&lt;/a></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>#footer > p > a:nth-child(2)</small></h4></div>
+</div>
+<div class="panel panel-primary">
+<div class="panel-heading">WCAG2AAA.Principle1.Guideline1_3.1_3_1.LayoutTable</div>
+<div class="panel-body">
+<strong class="text-capitalize">notice:</strong> This table appears to be a layout table. If it is meant to instead be a data table, ensure header cells are identified using th elements.<br /><br />
+<pre><code>&lt;table cellspacing="0" cellpadding="0" class="gstl_0 gssb_c" style="width: 509px; display: none; top: 235px; left: 257px; position: absolute;">&lt;tbody>&lt;tr>&lt;td class="gssb_f">&lt;...&lt;/table></code></pre>
+</div>
+<div class="panel-footer text-sm"><h4><small>html > body > table</small></h4></div>
+</div>
+</div>
+
+    </div>
+    <script>
+      var errorButton = document.querySelectorAll('.btn-danger')[0];
+      var warningButton = document.querySelectorAll('.btn-warning')[0];
+      var noticeButton = document.querySelectorAll('.btn-primary')[0];
+      var allErrors = document.querySelectorAll('.panel-danger');
+      var allWarnings = document.querySelectorAll('.panel-warning');
+      var allNotices = document.querySelectorAll('.panel-primary');
+
+      function hideAll (arr) {
+        for (var i = 0; i < arr.length; i++) {
+          arr[i].classList.add('hide');
+        }
+      }
+
+      function showAll (arr) {
+        for (var i = 0; i < arr.length; i++) {
+          arr[i].classList.remove('hide');
+        }
+      }
+
+      errorButton.addEventListener('click', function () {
+        if (this.classList.contains('disabled')) {
+          this.classList.remove('disabled');
+          showAll(allErrors);
+        } else {
+          this.classList.add('disabled');
+          hideAll(allErrors);
+        }
+      });
+      warningButton.addEventListener('click', function () {
+        if (this.classList.contains('disabled')) {
+          this.classList.remove('disabled');
+          showAll(allWarnings);
+        } else {
+          this.classList.add('disabled');
+          hideAll(allWarnings);
+        }
+      });
+      noticeButton.addEventListener('click', function () {
+        if (this.classList.contains('disabled')) {
+          this.classList.remove('disabled');
+          showAll(allNotices);
+        } else {
+          this.classList.add('disabled');
+          hideAll(allNotices);
+        }
+      });
+    </script>
+  </body>
+</html>
