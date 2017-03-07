@@ -10,6 +10,13 @@ To download Koa11y, visit the website:
 
 * http://TheJaredWilcurt.github.io/Koa11y
 
+* * *
+
+Koa11y is built on top of:
+
+* [Pa11y](http://pa11y.org)
+* [UGUI](http://ugui.io)
+* [NW.js](http://nwjs.io)
 
 * * *
 
