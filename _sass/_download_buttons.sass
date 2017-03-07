@@ -49,12 +49,6 @@
     padding: 10px 0px 0px 0px
     font-size: 25px
 
-.dl-btn-lin a
-    display: inline-block
-    width: 50%
-    padding: 2px 0px 6px 0px
-    font-size: 30px
-
 .dl-btn-win:hover,
 .dl-btn-osx:hover,
 .dl-btn-lin32:hover,
@@ -68,10 +62,18 @@
 .dl-btn-lin32,
 .dl-btn-lin64
     a
+        display: inline-block
+        width: 100%
         @if lightness($button-color) > lightness(#AAA)
             color: #000
         @else
             color: #FFF
+
+.dl-btn-lin a
+    display: inline-block
+    width: 50%
+    padding: 2px 0px 6px 0px
+    font-size: 30px
 
 .dl-btn-win,
 .dl-btn-osx,
