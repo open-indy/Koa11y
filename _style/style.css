@@ -31,6 +31,7 @@ img {
 }
 
 h2 {
+  margin-top: 0px;
   font-size: 19px;
 }
 
@@ -231,20 +232,20 @@ h1 img {
 
 /* OS totals chart */
 #os {
-  visibility: hidden;
   width: 100%;
-  font-size: 0px;
   margin: -8px 0px 4px 0px;
+  font-size: 0px;
+  visibility: hidden;
 }
 
 #os .win,
 #os .lin,
 #os .osx {
   height: 20px;
-  line-height: 20px;
-  font-size: 12px;
-  text-align: center;
   color: #FFF;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
   cursor: default;
 }
 
