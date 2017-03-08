@@ -26,6 +26,10 @@ body {
   font-style: italic;
 }
 
+a {
+  color: #145B98;
+}
+
 img {
   -ms-interpolation-mode: bicubic;
 }
@@ -89,6 +93,10 @@ h1 img {
   fill: #FFF;
 }
 
+.github-corner span {
+  font-size: 0px;
+}
+
 @keyframes octocat-wave {
   0%,
   100% {
@@ -137,7 +145,7 @@ h1 img {
 .dl-btn-lin32,
 .dl-btn-lin64,
 .linux .dl-btn-lin {
-  background: #C344C5;
+  background: #BE3FC0;
   margin: 0px auto 16px auto;
   padding: 0px;
   color: #FFF;
@@ -173,7 +181,7 @@ h1 img {
 .dl-btn-lin32:hover,
 .dl-btn-lin64:hover,
 .dl-btn-lin a:hover {
-  background: #973d99;
+  background: #8e3d8f;
 }
 
 .dl-btn-win a,
@@ -217,6 +225,11 @@ h1 img {
 }
 
 /* Archive Table */
+#output caption {
+  color: #000;
+  font-size: 0px;
+}
+
 #output thead tr {
   background: #660086;
   color: #FFF;
@@ -236,6 +249,10 @@ h1 img {
   margin: -8px 0px 4px 0px;
   font-size: 0px;
   visibility: hidden;
+}
+
+#os caption {
+  padding: 0px;
 }
 
 #os .win,
