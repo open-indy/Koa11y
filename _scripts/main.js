@@ -24,7 +24,7 @@ $(document).ready(function () {
     }
 
 
-    $.get('https://api.github.com/repos/TheJaredWilcurt/Koa11y/releases', function (data) {
+    $.get('https://api.github.com/repos/open-indy/Koa11y/releases', function (data) {
         var totalDownloads = [];
         var win = [];
         var lin = [];
@@ -35,7 +35,7 @@ $(document).ready(function () {
             var versionNumber = version.split('v')[1];
             var dateTime = currentRelease.created_at;
             var date = dateTime.split('T')[0];
-            var release = '<a href="https://github.com/TheJaredWilcurt/Koa11y/releases/tag/' + version + '" title="View release notes">' + date + '</a>';
+            var release = '<a href="https://github.com/open-indy/Koa11y/releases/tag/' + version + '" title="View release notes">' + date + '</a>';
             var downloadURL = '#';
             var downloads = 'N/A';
             var sizeMB = 'N/A';
@@ -118,7 +118,7 @@ $(document).ready(function () {
 
         // This part needs revised:
         var latestVersion = data[0].tag_name.split('v')[1];
-        var baseURL = 'https://github.com/TheJaredWilcurt/Koa11y/releases/download/v' + latestVersion + '/';
+        var baseURL = 'https://github.com/open-indy/Koa11y/releases/download/v' + latestVersion + '/';
         $('.dl-btn-win a').attr(               'href', baseURL + 'WIN_Koa11y_'   + latestVersion + '.zip');
         $('.dl-btn-osx a').attr(               'href', baseURL + 'OSX_Koa11y_'   + latestVersion + '.zip');
         $('.dl-btn-lin32 a').attr(             'href', baseURL + 'LIN32_Koa11y_' + latestVersion + '.zip');
