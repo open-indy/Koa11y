@@ -20,15 +20,27 @@ Koa11y is built on top of:
 
 * * *
 
+# Development/Code Contributing
 
-## To run source code locally
-
-1. Install [Node](http://nodejs.org) (V4.0.0 or above)
-2. Download or clone this repo
-3. Run `npm install`
-4. Run `npm start`
-
-
-### To open dev tools
+## To Open Dev Tools in Koa11y
 
 * Right-Click on the logo in the app.
+
+## To run source code locally (Win/OSX)
+
+1. Install [Node](http://nodejs.org) (V4.0.0 or above)
+1. Download or clone this repo
+1. Run `npm install`
+1. Run `npm start`
+
+## To run source code locally (Ubuntu)
+
+1. Download or Clone this repo and go to it in the terminal.
+1. Update apt-get: `sudo apt-get update`
+1. Install Node.js: `sudo apt-get install nodejs`
+1. Install NPM: `sudo apt-get install npm`
+1. Create a symbolic link for node `sudo ln -s /usr/bin/nodejs /usr/bin/node`
+1. Download dependencies: `npm install`
+1. Run the app: `npm start`
+
+
