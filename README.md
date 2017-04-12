@@ -40,7 +40,8 @@ Koa11y is built on top of:
 1. Install Node.js: `sudo apt-get install nodejs`
 1. Install NPM: `sudo apt-get install npm`
 1. Create a symbolic link for node `sudo ln -s /usr/bin/nodejs /usr/bin/node`
+1. Run `node -v` to check if you have a version of Node that is 4.0.0 or above, if not, [consult this](https://nodejs.org/en/download/package-manager).
 1. Download dependencies: `npm install`
 1. Run the app: `npm start`
 
-
+If that works, then in the future you can just run `npm start` to run the app, the rest is all setup.
