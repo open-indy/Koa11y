@@ -1,14 +1,14 @@
-<img src="http://thejaredwilcurt.github.io/Koa11y/_img/wordmark.png" alt="Koa11y Logo">
+<img src="http://open-indy.github.io/Koa11y/_img/wordmark.png" alt="Koa11y Logo">
 
 # Koa11y
 
 ### Koa11y is a desktop app that allows you to automatically detect accessibility (a11y) issues on webpages.
 
-<p align="center"><img src="http://thejaredwilcurt.github.io/Koa11y/_img/screenshot-win.png" alt="Screenshot of Koa11y"></p>
+<p align="center"><img src="http://open-indy.github.io/Koa11y/_img/screenshot-win.png" alt="Screenshot of Koa11y"></p>
 
 To download Koa11y, visit the website:
 
-* http://TheJaredWilcurt.github.io/Koa11y
+* http://open-indy.github.io/Koa11y
 
 * * *
 
