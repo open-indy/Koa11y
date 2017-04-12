@@ -11,9 +11,9 @@
     }],
     "repository": [{
         "type": "git",
-        "url": "git://github.com/TheJaredWilcurt/Koa11y.git"
+        "url": "git://github.com/open-indy/Koa11y.git"
     }],
-    "bugs": "https://github.com/TheJaredWilcurt/Koa11y/issues",
+    "bugs": "https://github.com/open-indy/Koa11y/issues",
     "main": "index.htm",
     "dependencies": {
     },
@@ -30,6 +30,6 @@
     "license": "MIT",
     "licenses": [{
         "type": "MIT",
-        "url": "https://github.com/TheJaredWilcurt/Koa11y/blob/master/LICENSE"
+        "url": "https://github.com/open-indy/Koa11y/blob/master/LICENSE"
     }]
 }
