@@ -22,6 +22,8 @@ Koa11y is built on top of:
 
 # Development/Code Contributing
 
+Koa11y is written in JavaScript, Sass, and HTML. It uses [NW.js](http://docs.nwjs.io/en/latest) to interact with the OS and to be cross-platform. It uses part of the [UGUI](http://ugui.io/api) api for system commands and common tasks (like saving/loading settings).
+
 ## To Open Dev Tools in Koa11y
 
 * Right-Click on the logo in the app.
