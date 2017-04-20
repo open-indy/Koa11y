@@ -109,7 +109,7 @@ $(document).ready(function () {
         }
         $('#total').html('<p>The official releases of Koa11y have been downloaded <strong>' + downloadCount + ' times</strong>.</p>');
         var withoutCLI = downloadCountWIN + downloadCountLIN + downloadCountOSX;
-        console.log(withoutCLI);
+
         $('#os .win').width( Math.round( (downloadCountWIN / withoutCLI) * 100) + '%' ).attr('title', downloadCountWIN + ' downloads');
         $('#os .lin').width( Math.round( (downloadCountLIN / withoutCLI) * 100) + '%' ).attr('title', downloadCountLIN + ' downloads');
         $('#os .osx').width( Math.round( (downloadCountOSX / withoutCLI) * 100) + '%' ).attr('title', downloadCountOSX + ' downloads');
@@ -117,13 +117,15 @@ $(document).ready(function () {
 
 
         // This part needs revised:
-        var latestVersion = data[0].tag_name.split('v')[1];
-        var baseURL = 'https://github.com/open-indy/Koa11y/releases/download/v' + latestVersion + '/';
-        $('.dl-btn-win a').attr(               'href', baseURL + 'WIN_Koa11y_'   + latestVersion + '.zip');
-        $('.dl-btn-osx a').attr(               'href', baseURL + 'OSX_Koa11y_'   + latestVersion + '.zip');
-        $('.dl-btn-lin32 a').attr(             'href', baseURL + 'LIN32_Koa11y_' + latestVersion + '.zip');
-        $('.dl-btn-lin64 a').attr(             'href', baseURL + 'LIN64_Koa11y_' + latestVersion + '.zip');
-        $('.dl-btn-lin a:first-of-type').attr( 'href', baseURL + 'LIN32_Koa11y_' + latestVersion + '.zip');
-        $('.dl-btn-lin a:last-of-type').attr(  'href', baseURL + 'LIN64_Koa11y_' + latestVersion + '.zip');
+        if (data && data.length > 0) {
+            var latestVersion = data[0].tag_name.split('v')[1];
+            var baseURL = 'https://github.com/open-indy/Koa11y/releases/download/v' + latestVersion + '/';
+            $('.dl-btn-win a').attr(               'href', baseURL + 'WIN_Koa11y_'   + latestVersion + '.zip');
+            $('.dl-btn-osx a').attr(               'href', baseURL + 'OSX_Koa11y_'   + latestVersion + '.zip');
+            $('.dl-btn-lin32 a').attr(             'href', baseURL + 'LIN32_Koa11y_' + latestVersion + '.zip');
+            $('.dl-btn-lin64 a').attr(             'href', baseURL + 'LIN64_Koa11y_' + latestVersion + '.zip');
+            $('.dl-btn-lin a:first-of-type').attr( 'href', baseURL + 'LIN32_Koa11y_' + latestVersion + '.zip');
+            $('.dl-btn-lin a:last-of-type').attr(  'href', baseURL + 'LIN64_Koa11y_' + latestVersion + '.zip');
+        }
     });
 });
