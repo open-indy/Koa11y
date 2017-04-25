@@ -34,6 +34,7 @@ function runApp () {
                 return obj;
             }
         } catch (err) {
+            console.log(err); // eslint-disable-line no-console
         }
 
         return false;
@@ -489,7 +490,7 @@ function runApp () {
             // This will output an error if JSON is invalid, or if there is no text
             window.imgAltsParsed = tryParseJSON(imgAltsVal);
             // If the text is valid JSON
-            if (imgAltsParsed.length > 0 && typeof(imgAltsParsed) == 'object') {
+            if (window.imgAltsParsed.length > 0 && typeof(window.imgAltsParsed) == 'object') {
                 $('#imageAltsModal').fadeIn('slow');
                 $('#imageAltsDonut').fadeIn('fast');
                 processAltsScript(loadImagesInModal);
@@ -616,7 +617,7 @@ function runApp () {
                 // Ensure that the imageStats Object is not empty
                 if (!$.isEmptyObject(window.imageStats)) {
                     // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
-                    console.log(window.imageStats);
+                    console.log(window.imageStats); // eslint-disable-line no-console
                 }
 
                 var json2csv = require('json2csv');
