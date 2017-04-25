@@ -34,7 +34,8 @@ function runApp () {
                 return obj;
             }
         } catch (err) {
-            console.log(err); // eslint-disable-line no-console
+            // eslint-disable-line no-empty
+            // If we log the err here it will spam the console anytime the user pastes non-json or types in the box
         }
 
         return false;
