@@ -66,6 +66,23 @@ function runApp () {
         return url;
     }
 
+    function keyBindings () {
+        document.onkeydown = function (pressed) {
+        // Check CMD+Shift+R and cut
+            if (pressed.metaKey && pressed.keyCode === 82) {
+                document.execCommand('cut');
+                return false;
+            } else if (pressed.metaKey && pressed.keyCode === 67) {
+                document.execCommand('copy');
+                return false;
+            } else if (pressed.metaKey && pressed.keyCode === 86) {
+                document.execCommand('paste');
+                return false;
+            }
+        };
+    }
+    keyBindings();
+
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
         var url = ugui.args.url.value;
