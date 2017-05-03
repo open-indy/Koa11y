@@ -84,7 +84,12 @@ function runApp () {
             }
         };
     }
-    keyBindings();
+
+    if (process.platform === 'darwin') {
+        keyBindings();
+    }
+    
+    
 
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
