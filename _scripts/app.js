@@ -900,16 +900,3 @@ function runApp () {
     unlockRun();
 
 } // end runApp();
-
-
-window.deleteSettingsFile = function (bool) {
-    if (bool) {
-        var path = require('path');
-        var settingsFile = path.join(nw.App.dataPath, 'uguisettings.json');
-
-        ugui.helpers.deleteAFile(settingsFile, function () {
-            var win = nw.Window.get();
-            win.reload();
-        });
-    }
-};
