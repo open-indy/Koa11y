@@ -52,7 +52,7 @@
         "semver": "^5.3.x"
     },
     "devDependencies": {
-        "nw": "^0.14.7",
+        "nw": "0.14.7-sdk",
         "eslint": "^3.8.1",
         "sass-lint": "^1.10.2"
     },
