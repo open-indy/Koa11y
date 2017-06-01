@@ -1,5 +1,5 @@
 /* eslint-disable no-multi-spaces */
-
+// Testing line ending
 var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
@@ -19,12 +19,10 @@ function runApp () {
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
-    $('.navbar-brand img').mousedown(function (evt) {
-        if (evt.which === 3) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            nw.Window.get().showDevTools();
-        }
+    $('.navbar-brand img').on('contextmenu', function (evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+        nw.Window.get().showDevTools();
     });
 
     function tryParseJSON (jsonString) {
