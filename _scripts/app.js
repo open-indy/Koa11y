@@ -1,5 +1,5 @@
 /* eslint-disable no-multi-spaces */
-
+// Testing line ending
 var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
