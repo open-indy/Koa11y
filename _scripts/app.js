@@ -287,7 +287,7 @@ function runApp () {
             location = path.normalize(location);
             while (fs.existsSync(location)) {
                 if (process.platform == 'win32') {
-                    require('child_process').execSync('rd /S /Q ' + location);
+                    require('child_process').execSync('rd /S /Q "' + location + '"');
                 } else {
                     fs.removeSync(location);
                 }
