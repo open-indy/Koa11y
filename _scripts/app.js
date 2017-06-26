@@ -393,7 +393,7 @@ function runApp () {
             var alt = file.alt;
             var src = file.src;
             if (file.path && fs.existsSync(file.path)) {
-                src = file.path;
+                src = 'file://' + file.path;
             } else if (file.src.length < 1) {
                 src = '_img/broken.png';
             }
