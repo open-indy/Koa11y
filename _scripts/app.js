@@ -4,6 +4,7 @@ var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
+var keybindings = require('./key-bindings');
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -65,23 +66,7 @@ function runApp () {
         return url;
     }
 
-    function keyBindings () {
-        document.onkeydown = function (pressed) {
-        // Check CMD+Shift+X and cut
-        // Check CMD+Shift+V and paste
-        // Check CMD+Shift+C and copy
-            if (pressed.metaKey && pressed.keyCode === 88) {
-                document.execCommand('cut');
-                return false;
-            } else if (pressed.metaKey && pressed.keyCode === 67) {
-                document.execCommand('copy');
-                return false;
-            } else if (pressed.metaKey && pressed.keyCode === 86) {
-                document.execCommand('paste');
-                return false;
-            }
-        };
-    }
+  
 
     if (process.platform === 'darwin') {
         keyBindings();
