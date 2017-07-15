@@ -1,5 +1,3 @@
-
-
 function keyBindings () {
     document.onkeydown = function (pressed) {
     // Check CMD+Shift+X and cut

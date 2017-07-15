@@ -4,7 +4,9 @@ var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
-var keybindings = require('./key-bindings');
+var keyBindings = require('./_functions/key-bindings');
+var tryParseJSON = require('./_functions/try-parse-json');
+var cleanURL = require('./_functions/clean-url');
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -25,48 +27,6 @@ function runApp () {
         evt.stopPropagation();
         nw.Window.get().showDevTools();
     });
-
-    function tryParseJSON (jsonString) {
-        try {
-            var obj = JSON.parse(jsonString);
-            if (obj && typeof obj === 'object') {
-                return obj;
-            }
-        } catch (err) {
-            // eslint-disable-line no-empty
-            // If we log the err here it will spam the console anytime the user pastes non-json or types in the box
-        }
-
-        return false;
-    }
-
-    function cleanURL () {
-        var url = $('#url').val();
-        url = url.replace('https://', '');
-        url = url.replace('http://', '');
-        url = url.replace('www.', '');
-        url = url.replace('.html', '');
-        url = url.replace('.htm', '');
-        url = url.replace('.php', '');
-        url = url.replace('.aspx', '');
-        url = url.replace('.asp', '');
-        url = url.replace('.cfm', '');
-        url = url.split('.').join(' ');
-        url = url.split('/').join(' ');
-        url = url.split('?').join(' ');
-        url = url.split('&').join(' ');
-        url = url.split('|').join(' ');
-        url = url.split('=').join(' ');
-        url = url.split('*').join(' ');
-        url = url.split('\\').join(' ');
-        url = url.split('"').join(' ');
-        url = url.split(':').join(' ');
-        url = url.split('<').join(' ');
-        url = url.split('>').join(' ');
-        return url;
-    }
-
-  
 
     if (process.platform === 'darwin') {
         keyBindings();
