@@ -1,3 +1,6 @@
+var jquery = require('../ven.jquery-2.1.1.min.js');
+
+
 function cleanURL () {
     var url = $('#url').val();
     url = url.replace('https://', '');
