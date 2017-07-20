@@ -560,7 +560,6 @@ function runApp () {
             // JSON
             if (ugui.args.outputjson.htmlticked) {
                 var outputJSON = formatJSON(window.imageStats, results);
-     
                 ugui.helpers.writeToFile(file, outputJSON);
                 $('#results').html(successMessage(file, filetype));
             // CSV
