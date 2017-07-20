@@ -7,6 +7,8 @@ var updateDonutChart = window.updateDonutChart;
 var keyBindings = require('./_functions/key-bindings');
 var tryParseJSON = require('./_functions/try-parse-json');
 var cleanURL = require('./_functions/clean-url');
+var makeDesktopPath = require('./_functions/my-desktop-path');
+var formatJSON = require('./_outputs/format-JSON');
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -31,8 +33,6 @@ function runApp () {
     if (process.platform === 'darwin') {
         keyBindings();
     }
-    
-    
 
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
@@ -58,7 +58,8 @@ function runApp () {
     function urlKeyup () {
         reset();
         // Cleaned string
-        var url = cleanURL();
+        var url = $('#url').val();
+        url = cleanURL(url);
         $('#output').val(url);
         ugui.helpers.saveSettings();
         unlockRun();
@@ -76,18 +77,7 @@ function runApp () {
         urlKeyup();
     }
     function prefillOutput () {
-        var homePath = '';
-        if (process.platform == 'linux') {
-            homePath = process.env.HOME;
-        } else if (process.platform == 'win32') {
-            homePath = process.env.USERPROFILE;
-        } else if (process.platform == 'darwin') {
-            homePath = '/Users/' + process.env.USER;
-            if (process.env.HOME) {
-                homePath = process.env.HOME;
-            }
-        }
-        var myDesktopPath = path.join(homePath, 'Desktop');
+        var myDesktopPath = makeDesktopPath();
         $('#folderPicker').val(myDesktopPath);
     }
     function prefillData () {
@@ -569,14 +559,8 @@ function runApp () {
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
-                var outputJSON = {};
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    outputJSON.images = window.imageStats;
-                }
-                outputJSON.results = results;
-                outputJSON = JSON.stringify(outputJSON, null, 2);
-
+                var outputJSON = formatJSON(window.imageStats, results);
+     
                 ugui.helpers.writeToFile(file, outputJSON);
                 $('#results').html(successMessage(file, filetype));
             // CSV
