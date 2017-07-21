@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="_style/style.css">
 
     <!-- UGUI requires jQuery 1.9.1 or above. -->
+    <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.bootstrap-3.2.0.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.dropdowns-enhancement.js"></script>
@@ -193,8 +194,7 @@
           <div class="row">
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12">
               <label for="url">URL:</label>
-              <input id="url" type="text" class="form-control" data-argName="url" required="required" />
-              <input type="hidden" data-argName="version" value="2.0.0" />
+              <input type="text" class="form-control" required="required" v-model="url" @keyup="urlKeyup" @change="urlKeyup" />
             </div>
           </div>
 
@@ -202,7 +202,7 @@
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 form-group">
               <label for="output">Filename (will overwrite existing files):</label>
               <div class="input-group">
-                <input id="output" type="text" class="form-control" data-argName="output" required="required" />
+                <input id="output" v-model="outputFileName" type="text" class="form-control" data-argName="output" required="required" />
                 <div id="output-btn" class="input-group-addon btn-group">
                   <button id="outputtype" class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTML<span class="caret"></span></button>
                   <ul class="dropdown-menu" aria-labelledby="outputtype">
@@ -231,7 +231,7 @@
             </div>
             <div class="col-xs-6 col-s-6 col-md-6 col-l-6">
               <label for="folderPicker">Output Folder:</label>
-              <input id="folderPicker" type="text" class="form-control" data-argName="folderPicker" required="required" />
+              <input id="folderPicker" type="text" class="form-control" v-model="folderPicker" required="required" />
               <span id="outputFolderIcon" class="glyphicon glyphicon-folder-open pull-right" title="Browse"></span>
               <input type="file" id="outputFolderBrowse" nwdirectory="nwdirectory" nwworkingdir="..." class="hide" />
             </div>

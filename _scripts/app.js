@@ -2,6 +2,7 @@
 // Testing line ending
 var nw = require('nw.gui');
 var $ = window.$;
+var Vue = window.Vue;
 var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
 
@@ -39,31 +40,7 @@ function runApp () {
         return false;
     }
 
-    function cleanURL () {
-        var url = $('#url').val();
-        url = url.replace('https://', '');
-        url = url.replace('http://', '');
-        url = url.replace('www.', '');
-        url = url.replace('.html', '');
-        url = url.replace('.htm', '');
-        url = url.replace('.php', '');
-        url = url.replace('.aspx', '');
-        url = url.replace('.asp', '');
-        url = url.replace('.cfm', '');
-        url = url.split('.').join(' ');
-        url = url.split('/').join(' ');
-        url = url.split('?').join(' ');
-        url = url.split('&').join(' ');
-        url = url.split('|').join(' ');
-        url = url.split('=').join(' ');
-        url = url.split('*').join(' ');
-        url = url.split('\\').join(' ');
-        url = url.split('"').join(' ');
-        url = url.split(':').join(' ');
-        url = url.split('<').join(' ');
-        url = url.split('>').join(' ');
-        return url;
-    }
+
 
     function keyBindings () {
         document.onkeydown = function (pressed) {
@@ -91,7 +68,7 @@ function runApp () {
 
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
-        var url = ugui.args.url.value;
+        var url = app.url;
         var dest = ugui.args.folderPicker.value;
         var file = ugui.args.output.value;
         var errorsButton = (ugui.args.badgeError.value === 'true');
@@ -110,51 +87,14 @@ function runApp () {
         }
     }
 
-    function urlKeyup () {
-        reset();
-        // Cleaned string
-        var url = cleanURL();
-        $('#output').val(url);
-        ugui.helpers.saveSettings();
-        unlockRun();
-    }
-    $('#url').change(urlKeyup);
-    $('#url').keyup(urlKeyup);
+
 
     $('#output').change(unlockRun);
     $('#output').keyup(unlockRun);
     $('#imagealts').change(unlockRun);
     $('#imagealts').keyup(unlockRun);
 
-    function prefillURL () {
-        $('#url').val('http://google.com');
-        urlKeyup();
-    }
-    function prefillOutput () {
-        var homePath = '';
-        if (process.platform == 'linux') {
-            homePath = process.env.HOME;
-        } else if (process.platform == 'win32') {
-            homePath = process.env.USERPROFILE;
-        } else if (process.platform == 'darwin') {
-            homePath = '/Users/' + process.env.USER;
-            if (process.env.HOME) {
-                homePath = process.env.HOME;
-            }
-        }
-        var myDesktopPath = path.join(homePath, 'Desktop');
-        $('#folderPicker').val(myDesktopPath);
-    }
-    function prefillData () {
-        ugui.helpers.buildUGUIArgObject();
-        if (!ugui.args.url.value) {
-            prefillURL();
-        }
-        if (!ugui.args.folderPicker.value) {
-            prefillOutput();
-        }
-    }
-    prefillData();
+
 
     function reset () {
         $('#results').empty();
@@ -896,5 +836,77 @@ function runApp () {
     }
 
     unlockRun();
+
+
+
+
+
+    var app = new Vue({
+        el: '#pa11y',
+        data: {
+            url: '',
+            outputFileName: 'google com',
+            version: '2.0.0',
+            folderPicker: ''
+        },
+        methods: {
+            prefillData: function () {
+                if (this.url.length < 1) {
+                    this.url = 'http://google.com';
+                }
+                ugui.helpers.buildUGUIArgObject();
+                if (this.folderPicker.length < 1) {
+                    this.prefillOutput();
+                }
+            },
+            prefillOutput: function () {
+                var homePath = '';
+                if (process.platform == 'linux') {
+                    homePath = process.env.HOME;
+                } else if (process.platform == 'win32') {
+                    homePath = process.env.USERPROFILE;
+                } else if (process.platform == 'darwin') {
+                    homePath = '/Users/' + process.env.USER;
+                    if (process.env.HOME) {
+                        homePath = process.env.HOME;
+                    }
+                }
+                this.folderPicker = path.join(homePath, 'Desktop');
+            },
+            urlKeyup: function () {
+                reset();
+                this.cleanURL();
+                ugui.helpers.saveSettings();
+                unlockRun();
+            },
+            cleanURL: function () {
+                var cleaned = this.url;
+                cleaned = cleaned.replace('https://', '');
+                cleaned = cleaned.replace('http://', '');
+                cleaned = cleaned.replace('www.', '');
+                cleaned = cleaned.replace('.html', '');
+                cleaned = cleaned.replace('.htm', '');
+                cleaned = cleaned.replace('.php', '');
+                cleaned = cleaned.replace('.aspx', '');
+                cleaned = cleaned.replace('.asp', '');
+                cleaned = cleaned.replace('.cfm', '');
+                cleaned = cleaned.split('.').join(' ');
+                cleaned = cleaned.split('/').join(' ');
+                cleaned = cleaned.split('?').join(' ');
+                cleaned = cleaned.split('&').join(' ');
+                cleaned = cleaned.split('|').join(' ');
+                cleaned = cleaned.split('=').join(' ');
+                cleaned = cleaned.split('*').join(' ');
+                cleaned = cleaned.split('\\').join(' ');
+                cleaned = cleaned.split('"').join(' ');
+                cleaned = cleaned.split(':').join(' ');
+                cleaned = cleaned.split('<').join(' ');
+                cleaned = cleaned.split('>').join(' ');
+                this.outputFileName = cleaned;
+            }
+        }
+    });
+
+    window.app = app;
 
 } // end runApp();
