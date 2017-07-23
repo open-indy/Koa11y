@@ -9,6 +9,8 @@ var tryParseJSON = require('./_functions/try-parse-json');
 var cleanURL = require('./_functions/clean-url');
 var makeDesktopPath = require('./_functions/my-desktop-path');
 var formatJSON = require('./_outputs/format-JSON');
+var formatCSV = require('./_outputs/format-CSV');
+var formatMD = require('./_outputs/format-MD');
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -564,60 +566,14 @@ function runApp () {
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
-
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
-                    console.log(window.imageStats); // eslint-disable-line no-console
-                }
-
-                var json2csv = require('json2csv');
-                var fields = [];
-                for (var key in results[0]) {
-                    fields.push(key);
-                }
-                var outputCSV = json2csv({
-                    'data': results,
-                    'fields': fields
-                });
+                var outputCSV = formatCSV(window.imageStats, results);
 
                 ugui.helpers.writeToFile(file, outputCSV);
 
                 successMessage(file, filetype);
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
-                var output = '# ' + ugui.args.url.value + '\n\n';
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    output = output + '## Image Accessibility\n\n';
-                    output = output + '**Total Images:** ' + window.imageStats.totalImages + '  \n';
-                    output = output + '**Descriptive Alt Text:** ' + window.imageStats.descriptive + '  \n';
-                    output = output + '**Non-descriptive Alt Text:** ' + window.imageStats.nondescriptive + '  \n';
-                    output = output + '**Percent of images with Descriptive Alt Text:** ' + window.imageStats.descriptivePercent + '%  \n';
-                    output = output + '**Alt Text Under 100 Characters:** ' + window.imageStats.under100Char + '  \n';
-                    output = output + '**Percent of images with fewer than 100 Characters of Alt Text:** ' + window.imageStats.under100CharPercent + '%  \n';
-                    output = output + '**Images Under 100KB:** ' + window.imageStats.under100KB + '  \n';
-                    output = output + '**Percent of images Under 100 Kilobytes in size:** ' + window.imageStats.under100KBPercent + '%  \n';
-                    output = output + '**Images That Loaded:** ' + window.imageStats.imagesLoaded + '  \n';
-                    output = output + '**Percent of Images that Loaded:** ' + window.imageStats.imagesLoadedPercent + '%  \n';
-                    output = output + '**Total File Size In Bytes:** ' + window.imageStats.totalFileSizeInBytes + '  \n';
-                    output = output + '**Total File Size In Kilobytes:** ' + window.imageStats.totalFileSizeInKB + '  \n\n';
-                }
-                output = output + '## Results\n\n';
-                var hr = '\n* * *\n\n';
-                for (i = 0; i < results.length; i++) {
-                    var item = results[i];
-                    var code = '**Code:** ' + item.code + '  \n';
-                    var type = '**Type:** ' + item.type + '  \n';
-                    var typeCode = '**Type Code:** ' + item.typeCode + '  \n';
-                    var message = '**Message:** ' + item.message + '  \n';
-                    var selector = '**Selector:** `' + item.selector + '`  \n';
-                    var context = '**Context:**\n```\n' + item.context + '\n```\n';
-                    output = output + code + type + typeCode + message + selector + context;
-                    if (i < results.length - 1) {
-                        output = output + hr;
-                    }
-                }
+                var output = formatMD(window.imageStats, results);
 
                 ugui.helpers.writeToFile(file, output);
 
