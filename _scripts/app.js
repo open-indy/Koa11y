@@ -11,6 +11,7 @@ var makeDesktopPath = require('./_functions/my-desktop-path');
 var formatJSON = require('./_outputs/format-JSON');
 var formatCSV = require('./_outputs/format-CSV');
 var formatMD = require('./_outputs/format-MD');
+var formatXML = require('./_outputs/format-XML');
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -562,7 +563,9 @@ function runApp () {
             // JSON
             if (ugui.args.outputjson.htmlticked) {
                 var outputJSON = formatJSON(window.imageStats, results);
+
                 ugui.helpers.writeToFile(file, outputJSON);
+                
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
@@ -573,50 +576,14 @@ function runApp () {
                 successMessage(file, filetype);
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
-                var output = formatMD(window.imageStats, results);
+                var output = formatMD(window.imageStats, results, ugui.args.url.value);
 
                 ugui.helpers.writeToFile(file, output);
 
                 successMessage(file, filetype);
             // XML
             } else if (ugui.args.outputxml.htmlticked) {
-                var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
-
-                var imgAlts = '';
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    imgAlts =
-                        '  <imagealts>\n' +
-                        '    <totalimages>' + window.imageStats.totalImages + '</totalimages>\n' +
-                        '    <descriptive>' + window.imageStats.descriptive + '</descriptive>\n' +
-                        '    <nondescriptive>' + window.imageStats.nondescriptive + '</nondescriptive>\n' +
-                        '    <under100char>' + window.imageStats.under100Char + '</under100char>\n' +
-                        '    <under100kb>' + window.imageStats.under100KB + '</under100kb>\n' +
-                        '    <imagesloaded>' + window.imageStats.imagesLoaded + '</imagesloaded>\n' +
-                        '    <totalfilesizeinbytes>' + window.imageStats.totalFileSizeInBytes + '</totalfilesizeinbytes>\n' +
-                        '    <totalfilesizeinkb>' + window.imageStats.totalFileSizeInKB + '</totalfilesizeinkb>\n' +
-                        '    <descriptivepercent>' + window.imageStats.descriptivePercent + '</descriptivepercent>\n' +
-                        '    <under100charpercent>' + window.imageStats.under100CharPercent + '</under100charpercent>\n' +
-                        '    <under100kbpercent>' + window.imageStats.under100KBPercent + '</under100kbpercent>\n' +
-                        '    <imagesloadedpercent>' + window.imageStats.imagesLoadedPercent + '</imagesloadedpercent>\n' +
-                        '  </imagealts>\n';
-                }
-
-                outputXML = outputXML + imgAlts;
-
-                for (i = 0; i < results.length; i++) {
-                    var current = results[i];
-                    var result =
-                        '  <result>\n' +
-                        '    <code>' + current.code + '</code>\n' +
-                        '    <type typecode="' + current.typeCode + '">' + current.type + '</type>\n' +
-                        '    <message>' + current.message + '</message>\n' +
-                        '    <selector><![CDATA[' + current.selector + ']]></selector>\n' +
-                        '    <context><![CDATA[' + current.context + ']]></context>\n' +
-                        '  </result>\n';
-                    outputXML = outputXML + result;
-                }
-                outputXML = outputXML + '</pa11y>\n';
+                outputXML = formatXML(window.imageStats, results);
 
                 ugui.helpers.writeToFile(file, outputXML);
 

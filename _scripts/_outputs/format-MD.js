@@ -1,6 +1,6 @@
-function formatMD(imageStats, results) {
+function formatMD(imageStats, results, urlValue) {
 
-    var output = '# ' + ugui.args.url.value + '\n\n';
+    var output = '# ' + urlValue + '\n\n';
         // Ensure that the imageStats Object is not empty
         if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)){
             output = output + '## Image Accessibility\n\n';
@@ -21,6 +21,7 @@ function formatMD(imageStats, results) {
         output = output + '## Results\n\n';
         var hr = '\n* * *\n\n';
 
+        console.log(output);
         for (i = 0; i < results.length; i++) {
             var item = results[i];
             var code = '**Code:** ' + item.code + '  \n';
