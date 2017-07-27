@@ -69,7 +69,7 @@ function runApp () {
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
         var url = app.url;
-        var dest = ugui.args.folderPicker.value;
+        var dest = app.folderPicker;
         var file = ugui.args.output.value;
         var errorsButton = (ugui.args.badgeError.value === 'true');
         var warningsButton = (ugui.args.badgeWarning.value === 'true');
@@ -791,6 +791,7 @@ function runApp () {
      * @param  {Function} callback Callback to run upon PhantomJS script finishing
      * @return {Null}              Currently nothing, just console logs.
      */
+    /*
     // eslint-disable-next-line
     function phantomImgAlts (url, callback) {
         if (!url) {
@@ -834,8 +835,8 @@ function runApp () {
             }
         });
     }
+    */
 
-    unlockRun();
 
 
 
@@ -908,5 +909,7 @@ function runApp () {
     });
 
     window.app = app;
+
+    unlockRun();
 
 } // end runApp();
