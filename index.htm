@@ -12,20 +12,6 @@
     <link rel="stylesheet" href="_style/ugui-devtools.css">
     <link rel="stylesheet" href="_style/style.css">
 
-    <!-- UGUI requires jQuery 1.9.1 or above. -->
-    <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
-    <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="_scripts/ven.bootstrap-3.2.0.min.js"></script>
-    <script type="text/javascript" src="_scripts/ven.dropdowns-enhancement.js"></script>
-    <script type="text/javascript" src="_scripts/ven.bootstrap-slider.min.js"></script>
-    <script type="text/javascript" src="_scripts/ven.simple-donut.js"></script>
-    <script type="text/javascript" src="_scripts/ugui.js"></script>
-    <script type="text/javascript" src="_scripts/app.js"></script>
-    <script type="text/javascript" src="_scripts/delete-settings.js"></script>
-
-
-
-
 
 
 
@@ -202,15 +188,15 @@
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 form-group">
               <label for="output">Filename (will overwrite existing files):</label>
               <div class="input-group">
-                <input id="output" v-model="outputFileName" type="text" class="form-control" data-argName="output" required="required" />
+                <input id="output" v-model="outputFileName" type="text" class="form-control" required="required" />
                 <div id="output-btn" class="input-group-addon btn-group">
                   <button id="outputtype" class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTML<span class="caret"></span></button>
                   <ul class="dropdown-menu" aria-labelledby="outputtype">
-                    <li><input type="radio" name="outputtype" data-argName="outputhtml" value="html" id="html" /><label for="html" >HTML</label></li>
-                    <li><input type="radio" name="outputtype" data-argName="outputcsv"  value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
-                    <li><input type="radio" name="outputtype" data-argName="outputjson" value="json" id="json" /><label for="json" >JSON</label></li>
-                    <li><input type="radio" name="outputtype" data-argName="outputmd"   value="md"   id="md"   /><label for="md"   >Markdown</label></li>
-                    <li><input type="radio" name="outputtype" data-argName="outputxml"  value="xml"  id="xml"  /><label for="xml"  >XML</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" value="html" id="html" /><label for="html" >HTML</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" value="json" id="json" /><label for="json" >JSON</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" value="md"   id="md"   /><label for="md"   >Markdown</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" value="xml"  id="xml"  /><label for="xml"  >XML</label></li>
                   </ul>
                 </div>
               </div>
@@ -375,5 +361,17 @@
 
 
     </div> <!-- end container -->
+
+
+    <!-- UGUI requires jQuery 1.9.1 or above. -->
+    <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
+    <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="_scripts/ven.bootstrap-3.2.0.min.js"></script>
+    <script type="text/javascript" src="_scripts/ven.dropdowns-enhancement.js"></script>
+    <script type="text/javascript" src="_scripts/ven.bootstrap-slider.min.js"></script>
+    <script type="text/javascript" src="_scripts/ven.simple-donut.js"></script>
+    <script type="text/javascript" src="_scripts/ugui.js"></script>
+    <script type="text/javascript" src="_scripts/app.js"></script>
+    <script type="text/javascript" src="_scripts/delete-settings.js"></script>
   </body>
 </html>

@@ -1,4 +1,5 @@
 /* eslint-disable no-multi-spaces */
+/* eslint-disable indent */ // TODO: Fix this after merging Rob's stuff
 // Testing line ending
 var nw = require('nw.gui');
 var $ = window.$;
@@ -6,19 +7,84 @@ var Vue = window.Vue;
 var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
 
-// Wait for the document to load, then load settings for the user, then run the app.
-$(document).ready(function () {
-    ugui.helpers.loadSettings(runApp);
-});
-
-// Container for your app's custom JS
-function runApp () {
+    // Load Settings later
+    // ugui.helpers.loadSettings(runApp);
 
     var fs = require('fs-extra');
     var path = require('path');
     var base64Img = require('base64-img');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
+
+
+
+    var app = new Vue({
+        el: '#pa11y',
+        data: {
+            url: 'http://www.google.com',
+            outputFileName: 'google com',
+            outputType: false,
+            version: '2.0.0',
+            folderPicker: ''
+        },
+        methods: {
+            prefillData: function () {
+                if (this.url.length < 1) {
+                    this.url = 'http://google.com';
+                }
+                ugui.helpers.buildUGUIArgObject();
+                if (this.folderPicker.length < 1) {
+                    this.prefillOutput();
+                }
+            },
+            prefillOutput: function () {
+                var homePath = '';
+                if (process.platform == 'linux') {
+                    homePath = process.env.HOME;
+                } else if (process.platform == 'win32') {
+                    homePath = process.env.USERPROFILE;
+                } else if (process.platform == 'darwin') {
+                    homePath = '/Users/' + process.env.USER;
+                    if (process.env.HOME) {
+                        homePath = process.env.HOME;
+                    }
+                }
+                this.folderPicker = path.join(homePath, 'Desktop');
+            },
+            urlKeyup: function () {
+                reset();
+                this.cleanURL();
+                ugui.helpers.saveSettings();
+                unlockRun();
+            },
+            cleanURL: function () {
+                var cleaned = this.url;
+                cleaned = cleaned.replace('https://', '');
+                cleaned = cleaned.replace('http://', '');
+                cleaned = cleaned.replace('www.', '');
+                cleaned = cleaned.replace('.html', '');
+                cleaned = cleaned.replace('.htm', '');
+                cleaned = cleaned.replace('.php', '');
+                cleaned = cleaned.replace('.aspx', '');
+                cleaned = cleaned.replace('.asp', '');
+                cleaned = cleaned.replace('.cfm', '');
+                cleaned = cleaned.split('.').join(' ');
+                cleaned = cleaned.split('/').join(' ');
+                cleaned = cleaned.split('?').join(' ');
+                cleaned = cleaned.split('&').join(' ');
+                cleaned = cleaned.split('|').join(' ');
+                cleaned = cleaned.split('=').join(' ');
+                cleaned = cleaned.split('*').join(' ');
+                cleaned = cleaned.split('\\').join(' ');
+                cleaned = cleaned.split('"').join(' ');
+                cleaned = cleaned.split(':').join(' ');
+                cleaned = cleaned.split('<').join(' ');
+                cleaned = cleaned.split('>').join(' ');
+                this.outputFileName = cleaned;
+            }
+        }
+    });
+
 
     $('.navbar-brand img').on('contextmenu', function (evt) {
         evt.preventDefault();
@@ -63,14 +129,13 @@ function runApp () {
     if (process.platform === 'darwin') {
         keyBindings();
     }
-    
-    
 
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
+
         var url = app.url;
         var dest = app.folderPicker;
-        var file = ugui.args.output.value;
+        var file = app.outputFileName;
         var errorsButton = (ugui.args.badgeError.value === 'true');
         var warningsButton = (ugui.args.badgeWarning.value === 'true');
         var noticesButton = (ugui.args.badgeNotice.value === 'true');
@@ -170,7 +235,7 @@ function runApp () {
     });
 
     function showHideImageAltsBox () {
-        if (ugui.args.outputcsv.htmlticked) {
+        if (app.outputType === 'csv') {
             $('#imageAltsSection').slideUp(480);
         } else {
             $('#imageAltsSection').slideDown(480);
@@ -449,7 +514,7 @@ function runApp () {
 
         var imgAltsVal = $('#imagealts').val();
         // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
-        if (imgAltsVal && !ugui.args.outputcsv.htmlticked) {
+        if (imgAltsVal && app.outputType === 'csv') {
             // This will output an error if JSON is invalid, or if there is no text
             window.imgAltsParsed = tryParseJSON(imgAltsVal);
             // If the text is valid JSON
@@ -473,19 +538,19 @@ function runApp () {
 
         var filetype = 'html';
         var ext = '.html';
-        if (ugui.args.outputcsv.htmlticked) {
+        if (app.outputType === 'csv') {
             filetype = 'csv';
             ext = '.csv';
-        } else if (ugui.args.outputhtml.htmlticked) {
+        } else if (app.outputType === 'html') {
             filetype = 'html';
             ext = '.html';
-        } else if (ugui.args.outputjson.htmlticked) {
+        } else if (app.outputType === 'json') {
             filetype = 'json';
             ext = '.json';
-        } else if (ugui.args.outputmd.htmlticked) {
+        } else if (app.outputType === 'md') {
             filetype = 'markdown';
             ext = '.md';
-        } else if (ugui.args.outputxml.htmlticked) {
+        } else if (app.outputType === 'xml') {
             filetype = 'xml';
             ext = '.xml';
         }
@@ -514,7 +579,7 @@ function runApp () {
 
         var url = ugui.args.url.value;
         var folderPicker = ugui.args.folderPicker.value;
-        var fileName = ugui.args.output.value;
+        var fileName = app.outputFileName;
         var file = path.join(folderPicker, fileName + ext);
 
         var pa11y = require('pa11y');
@@ -563,7 +628,7 @@ function runApp () {
             $('#button-row .btn-primary span').text(badges.notices);
 
             // JSON
-            if (ugui.args.outputjson.htmlticked) {
+            if (app.outputType === 'json') {
                 var outputJSON = {};
                 // Ensure that the imageStats Object is not empty
                 if (!$.isEmptyObject(window.imageStats)) {
@@ -575,7 +640,7 @@ function runApp () {
                 ugui.helpers.writeToFile(file, outputJSON);
                 $('#results').html(successMessage(file, filetype));
             // CSV
-            } else if (ugui.args.outputcsv.htmlticked) {
+            } else if (app.outputType === 'csv') {
 
                 // Ensure that the imageStats Object is not empty
                 if (!$.isEmptyObject(window.imageStats)) {
@@ -597,7 +662,7 @@ function runApp () {
 
                 successMessage(file, filetype);
             // Markdown
-            } else if (ugui.args.outputmd.htmlticked) {
+            } else if (app.outputType === 'md') {
                 var output = '# ' + ugui.args.url.value + '\n\n';
                 // Ensure that the imageStats Object is not empty
                 if (!$.isEmptyObject(window.imageStats)) {
@@ -635,7 +700,7 @@ function runApp () {
 
                 successMessage(file, filetype);
             // XML
-            } else if (ugui.args.outputxml.htmlticked) {
+            } else if (app.outputType === 'xml') {
                 var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
 
                 var imgAlts = '';
@@ -842,74 +907,4 @@ function runApp () {
 
 
 
-    var app = new Vue({
-        el: '#pa11y',
-        data: {
-            url: '',
-            outputFileName: 'google com',
-            version: '2.0.0',
-            folderPicker: ''
-        },
-        methods: {
-            prefillData: function () {
-                if (this.url.length < 1) {
-                    this.url = 'http://google.com';
-                }
-                ugui.helpers.buildUGUIArgObject();
-                if (this.folderPicker.length < 1) {
-                    this.prefillOutput();
-                }
-            },
-            prefillOutput: function () {
-                var homePath = '';
-                if (process.platform == 'linux') {
-                    homePath = process.env.HOME;
-                } else if (process.platform == 'win32') {
-                    homePath = process.env.USERPROFILE;
-                } else if (process.platform == 'darwin') {
-                    homePath = '/Users/' + process.env.USER;
-                    if (process.env.HOME) {
-                        homePath = process.env.HOME;
-                    }
-                }
-                this.folderPicker = path.join(homePath, 'Desktop');
-            },
-            urlKeyup: function () {
-                reset();
-                this.cleanURL();
-                ugui.helpers.saveSettings();
-                unlockRun();
-            },
-            cleanURL: function () {
-                var cleaned = this.url;
-                cleaned = cleaned.replace('https://', '');
-                cleaned = cleaned.replace('http://', '');
-                cleaned = cleaned.replace('www.', '');
-                cleaned = cleaned.replace('.html', '');
-                cleaned = cleaned.replace('.htm', '');
-                cleaned = cleaned.replace('.php', '');
-                cleaned = cleaned.replace('.aspx', '');
-                cleaned = cleaned.replace('.asp', '');
-                cleaned = cleaned.replace('.cfm', '');
-                cleaned = cleaned.split('.').join(' ');
-                cleaned = cleaned.split('/').join(' ');
-                cleaned = cleaned.split('?').join(' ');
-                cleaned = cleaned.split('&').join(' ');
-                cleaned = cleaned.split('|').join(' ');
-                cleaned = cleaned.split('=').join(' ');
-                cleaned = cleaned.split('*').join(' ');
-                cleaned = cleaned.split('\\').join(' ');
-                cleaned = cleaned.split('"').join(' ');
-                cleaned = cleaned.split(':').join(' ');
-                cleaned = cleaned.split('<').join(' ');
-                cleaned = cleaned.split('>').join(' ');
-                this.outputFileName = cleaned;
-            }
-        }
-    });
-
-    window.app = app;
-
     unlockRun();
-
-} // end runApp();
