@@ -13,19 +13,13 @@ var updateDonutChart = window.updateDonutChart;
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
-    function reset () {
-        $('#results').empty();
-        app.badges.errors = 0;
-        app.badges.warnings = 0;
-        app.badges.notices = 0;
-    }
-
     var app = new Vue({
         el: '#pa11y',
         data: {
-            url: 'http://www.google.com',
-            outputFileName: 'google com',
-            outputType: false,
+            url: '',
+            outputFileName: '',
+            outputType: '',
+            standard: '',
             version: '2.0.0',
             folderPicker: '',
             badges: {
@@ -35,14 +29,31 @@ var updateDonutChart = window.updateDonutChart;
             }
         },
         methods: {
+            // Settings and defaults
+            loadSettings: function () {
+                // TODO: Replace UGUI with custom load script
+                // This is not being ran currently
+                // Currently just prefilling data on load
+                ugui.helpers.loadSettings();
+            },
+            saveSettings: function () {
+                // TODO: Replace UGUI with custom save settings script
+                ugui.helpers.saveSettings();
+            },
             prefillData: function () {
+                this.outputType = 'html';
+                this.standard = 'wcagaa';
+
                 if (this.url.length < 1) {
                     this.url = 'http://google.com';
+                    this.outputFileName = 'google com';
                 }
-                ugui.helpers.buildUGUIArgObject();
+
                 if (this.folderPicker.length < 1) {
                     this.prefillOutput();
                 }
+                // TODO: Remove this at some point
+                ugui.helpers.buildUGUIArgObject();
             },
             prefillOutput: function () {
                 var homePath = '';
@@ -58,10 +69,23 @@ var updateDonutChart = window.updateDonutChart;
                 }
                 this.folderPicker = path.join(homePath, 'Desktop');
             },
+
+            // Helpers
+            reset: function () {
+                // TODO: Rename #results to #notifications or something
+                // Put all potential DOM elements that could be displayed
+                // there into the DOM by default. Hide/Show them based
+                // on Vue. Then remove this .empty() line.
+                $('#results').empty();
+                this.badges.errors = 0;
+                this.badges.warnings = 0;
+                this.badges.notices = 0;
+            },
+
             urlKeyup: function () {
-                reset();
+                this.reset();
                 this.cleanURL();
-                ugui.helpers.saveSettings();
+                this.saveSettings();
                 unlockRun();
             },
             cleanURL: function () {
@@ -89,22 +113,28 @@ var updateDonutChart = window.updateDonutChart;
                 cleaned = cleaned.split('>').join(' ');
                 this.outputFileName = cleaned;
             },
+
+
             outputFolderIcon: function () {
-                this.$refs.outputFolderBrowse.click();
+                var outputTextField = this.$refs.outputFolderBrowse;
+                outputTextField.click();
             },
             outputFolderSet: function (evt) {
                 this.folderPicker = evt.currentTarget.value;
                 this.outputFolderChanged();
             },
             outputFolderChanged: function () {
-                reset();
-                ugui.helpers.saveSettings();
+                this.reset();
+                this.saveSettings();
+            },
+            dropdownChanged: function () {
+                this.reset();
+                this.saveSettings();
+                showHideImageAltsBox();
             }
         }
     });
 
-    // TODO: Load Settings later
-    // ugui.helpers.loadSettings(runApp);
     // Prefill for now
     app.prefillData();
 
@@ -230,7 +260,7 @@ var updateDonutChart = window.updateDonutChart;
     }
 
     $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
-        reset();
+        app.reset();
 
         if ($(this).hasClass('disabled')) {
             $(this).removeClass('disabled');
@@ -254,12 +284,6 @@ var updateDonutChart = window.updateDonutChart;
     }
 
     showHideImageAltsBox();
-
-    $('input[name="standard"], input[name="outputtype"]').change(function () {
-        reset();
-        ugui.helpers.saveSettings();
-        showHideImageAltsBox();
-    });
 
     function clipboard (data) {
         $('#clipboard').click(function (evt) {
@@ -543,7 +567,7 @@ var updateDonutChart = window.updateDonutChart;
 
     function runPa11y () {
         $('#spinner').fadeIn('slow');
-        reset();
+        app.reset();
 
         ugui.helpers.buildUGUIArgObject();
 

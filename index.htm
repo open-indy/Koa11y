@@ -145,11 +145,11 @@
                 <div id="output-btn" class="input-group-addon btn-group">
                   <button id="outputtype" class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTML<span class="caret"></span></button>
                   <ul class="dropdown-menu" aria-labelledby="outputtype">
-                    <li><input type="radio" name="outputtype" v-model="outputType" value="html" id="html" /><label for="html" >HTML</label></li>
-                    <li><input type="radio" name="outputtype" v-model="outputType" value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
-                    <li><input type="radio" name="outputtype" v-model="outputType" value="json" id="json" /><label for="json" >JSON</label></li>
-                    <li><input type="radio" name="outputtype" v-model="outputType" value="md"   id="md"   /><label for="md"   >Markdown</label></li>
-                    <li><input type="radio" name="outputtype" v-model="outputType" value="xml"  id="xml"  /><label for="xml"  >XML</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" @change="dropdownChanged" value="html" id="html" /><label for="html" >HTML</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" @change="dropdownChanged" value="csv"  id="csv"  /><label for="csv"  >CSV</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" @change="dropdownChanged" value="json" id="json" /><label for="json" >JSON</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" @change="dropdownChanged" value="md"   id="md"   /><label for="md"   >Markdown</label></li>
+                    <li><input type="radio" name="outputtype" v-model="outputType" @change="dropdownChanged" value="xml"  id="xml"  /><label for="xml"  >XML</label></li>
                   </ul>
                 </div>
               </div>
@@ -162,10 +162,10 @@
               <label>Standards Format:</label><br />
               <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">WCAG2AA <span class="caret"></span></button>
               <ul id="standard" class="dropdown-menu">
-                <li><input type="radio" name="standard" data-argName="standardsection" value="section" id="section" /><label for="section" >Section508</label></li>
-                <li><input type="radio" name="standard" data-argName="standardwcaga"   value="wcaga"   id="wcaga"   /><label for="wcaga"   >WCAG2A</label></li>
-                <li><input type="radio" name="standard" data-argName="standardwcagaa"  value="wcagaa"  id="wcagaa" checked="checked" /><label for="wcagaa"  >WCAG2AA (default)</label></li>
-                <li><input type="radio" name="standard" data-argName="standardwcagaaa" value="wcagaaa" id="wcagaaa" /><label for="wcagaaa" >WCAG2AAA</label></li>
+                <li><input type="radio" name="standard" v-model="standard" @change="dropdownChanged" value="section" id="section" /><label for="section" >Section508</label></li>
+                <li><input type="radio" name="standard" v-model="standard" @change="dropdownChanged" value="wcaga"   id="wcaga"   /><label for="wcaga"   >WCAG2A</label></li>
+                <li><input type="radio" name="standard" v-model="standard" @change="dropdownChanged" value="wcagaa"  id="wcagaa"  /><label for="wcagaa"  >WCAG2AA (default)</label></li>
+                <li><input type="radio" name="standard" v-model="standard" @change="dropdownChanged" value="wcagaaa" id="wcagaaa" /><label for="wcagaaa" >WCAG2AAA</label></li>
               </ul>
             </div>
             <div class="col-xs-6 col-s-6 col-md-6 col-l-6">
