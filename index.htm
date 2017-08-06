@@ -21,40 +21,10 @@
       //              COMMAND LINE ARGUMENT UI BINDINGS              //
       //                                                             //
       /////////////////////////////////////////////////////////////////
-      // The order of these arguments controls the order they will   //
-      // be sent out to the command line. If you place a name inside //
-      // double parenthesis like ((cows)) it will automatically be   //
-      // replaced by the value of the element in the #argsForm with  //
-      // a matching data-argName="cows".                             //
-      //                                                             //
-      // Input tags with a type of "file" will also automatically be //
-      // parsed into several sub-arguments for your ease of use such //
-      // as path, name, ext, size, lastModifiedDate, etc.            //
-      //                                                             //
-      // If you need the value of an element parsed for you supply a //
-      // definition. Consult the UGUI documentation for detailed     //
-      // information and instructions on how this feature works.     //
-      /////////////////////////////////////////////////////////////////
     -->
 
     <cmd executable="pa11y">
-    <!--
-      <arg>((url))</arg>
 
-      <arg>((output))</arg>
-
-      <arg>((outputcsv))</arg>
-      <arg>((outputhtml))</arg>
-      <arg>((outputjson))</arg>
-      <arg>((outputmd))</arg>
-
-      <arg>((standardsection))</arg>
-      <arg>((standardwcaga))</arg>
-      <arg>((standardwcagaa))</arg>
-      <arg>((standardwcagaaa))</arg>
-
-      <arg>((folderPicker))</arg>
-    -->
     </cmd>
 
   </head>
@@ -67,24 +37,6 @@
 
   <!-- Change the class form dev to prod when you're ready to distribute your application. -->
   <body role="document" class="prod">
-
-
-
-
-
-
-
-      <!--
-        /////////////////////////////////////////////////////////////////
-        //                                                             //
-        //                         NAVIGATION                          //
-        //                                                             //
-        /////////////////////////////////////////////////////////////////
-        // Top bar navigation. Some parts are only visible when in dev //
-        // mode. Be sure to change the body class to prod before you   //
-        // distribute your app.                                        //
-        /////////////////////////////////////////////////////////////////
-      -->
 
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -104,7 +56,7 @@
           <ul class="nav navbar-nav">
             <li><a href="#about">About</a></li>
             <li><a href="#exit">Exit</a></li>
-            <!--
+          <!--
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">File <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -125,7 +77,8 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
               </ul>
-            </li> -->
+            </li>
+          -->
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -217,9 +170,9 @@
             </div>
             <div class="col-xs-6 col-s-6 col-md-6 col-l-6">
               <label for="folderPicker">Output Folder:</label>
-              <input id="folderPicker" type="text" class="form-control" v-model="folderPicker" required="required" />
-              <span id="outputFolderIcon" class="glyphicon glyphicon-folder-open pull-right" title="Browse"></span>
-              <input type="file" id="outputFolderBrowse" nwdirectory="nwdirectory" nwworkingdir="..." class="hide" />
+              <input class="form-control folderPicker" v-model="folderPicker" @change="outputFolderChanged" type="text" id="folderPicker" required="required" />
+              <span class="glyphicon glyphicon-folder-open pull-right outputFolderIcon" title="Browse" @click="outputFolderIcon"></span>
+              <input class="hide" @change="outputFolderSet" type="file" id="outputFolderBrowse" ref="outputFolderBrowse" nwdirectory="nwdirectory" nwworkingdir="..." />
             </div>
 
 
@@ -237,13 +190,13 @@
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 text-left" style="vertical-align: middle">
               <span id="button-badges">
                 <button class="btn btn-sm btn-danger" type="button" value="true" data-argName="badgeError">
-                  Errors <span class="badge">0</span>
+                  Errors <span class="badge">{{ badges.errors }}</span>
                 </button>
                 <button class="btn btn-sm btn-warning" type="button" value="true" data-argName="badgeWarning">
-                  Warnings <span class="badge">0</span>
+                  Warnings <span class="badge">{{ badges.warnings }}</span>
                 </button>
                 <button class="btn btn-sm btn-primary" type="button" value="true" data-argName="badgeNotice">
-                  Notices <span class="badge">0</span>
+                  Notices <span class="badge">{{ badges.notices }}</span>
                 </button>
               </span>
               <button type="submit" id="run" class="btn btn-primary pull-right">Run!</button>

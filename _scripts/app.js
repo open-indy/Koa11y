@@ -7,16 +7,18 @@ var Vue = window.Vue;
 var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
 
-    // Load Settings later
-    // ugui.helpers.loadSettings(runApp);
-
     var fs = require('fs-extra');
     var path = require('path');
     var base64Img = require('base64-img');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
-
+    function reset () {
+        $('#results').empty();
+        app.badges.errors = 0;
+        app.badges.warnings = 0;
+        app.badges.notices = 0;
+    }
 
     var app = new Vue({
         el: '#pa11y',
@@ -25,7 +27,12 @@ var updateDonutChart = window.updateDonutChart;
             outputFileName: 'google com',
             outputType: false,
             version: '2.0.0',
-            folderPicker: ''
+            folderPicker: '',
+            badges: {
+                errors: 0,
+                wargings: 0,
+                notices: 0
+            }
         },
         methods: {
             prefillData: function () {
@@ -81,9 +88,25 @@ var updateDonutChart = window.updateDonutChart;
                 cleaned = cleaned.split('<').join(' ');
                 cleaned = cleaned.split('>').join(' ');
                 this.outputFileName = cleaned;
+            },
+            outputFolderIcon: function () {
+                this.$refs.outputFolderBrowse.click();
+            },
+            outputFolderSet: function (evt) {
+                this.folderPicker = evt.currentTarget.value;
+                this.outputFolderChanged();
+            },
+            outputFolderChanged: function () {
+                reset();
+                ugui.helpers.saveSettings();
             }
         }
     });
+
+    // TODO: Load Settings later
+    // ugui.helpers.loadSettings(runApp);
+    // Prefill for now
+    app.prefillData();
 
 
     $('.navbar-brand img').on('contextmenu', function (evt) {
@@ -161,10 +184,7 @@ var updateDonutChart = window.updateDonutChart;
 
 
 
-    function reset () {
-        $('#results').empty();
-        $('#button-badges .badge').html('0');
-    }
+
 
     function successMessage (file, ext) {
         var filetype = ext.toUpperCase();
@@ -197,16 +217,7 @@ var updateDonutChart = window.updateDonutChart;
         $('#imageAltsModal').slideUp('slow');
     });
 
-    $('#outputFolderIcon').click(function () {
-        $('#outputFolderBrowse').click();
-    });
 
-    $('#outputFolderBrowse').change(function () {
-        reset();
-        var userDir = $(this).val();
-        $('#folderPicker').val(userDir);
-        ugui.helpers.saveSettings();
-    });
 
     if (ugui.args.badgeError.value == 'false') {
         $('#button-badges .btn-danger').addClass('disabled');
@@ -623,9 +634,10 @@ var updateDonutChart = window.updateDonutChart;
                     badges.notices = badges.notices + 1;
                 }
             }
-            $('#button-row .btn-danger span').text(badges.errors);
-            $('#button-row .btn-warning span').text(badges.warnings);
-            $('#button-row .btn-primary span').text(badges.notices);
+
+            app.badges.errors = badges.errors;
+            app.badges.warnings = badges.warnings;
+            app.badges.notices = badges.notices;
 
             // JSON
             if (app.outputType === 'json') {
