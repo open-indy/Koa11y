@@ -82,6 +82,7 @@ var updateDonutChart = window.updateDonutChart;
                 this.badges.notices = 0;
             },
 
+            // URL Stuff
             urlKeyup: function () {
                 this.reset();
                 this.cleanURL();
@@ -114,7 +115,7 @@ var updateDonutChart = window.updateDonutChart;
                 this.outputFileName = cleaned;
             },
 
-
+            // Output Folder stuff
             outputFolderIcon: function () {
                 var outputTextField = this.$refs.outputFolderBrowse;
                 outputTextField.click();
@@ -127,10 +128,37 @@ var updateDonutChart = window.updateDonutChart;
                 this.reset();
                 this.saveSettings();
             },
+
+            // Dropdowns (Standards/File Format)
             dropdownChanged: function () {
                 this.reset();
                 this.saveSettings();
                 showHideImageAltsBox();
+            },
+
+            clipboard: function (evt) {
+                evt.preventDefault();
+                var data = fs.readFileSync('_scripts/imgalts5.min.js', 'binary');
+                var dummy = document.createElement('textarea');
+                dummy.setAttribute('id', 'dummy');
+                document.body.appendChild(dummy);
+                var dumNode = document.getElementById('dummy');
+                dumNode.value = data;
+                dumNode.select();
+                document.execCommand('copy');
+                document.body.removeChild(dumNode);
+
+                // TODO: Embed this in the #results directly and use Vue/CSS to show/fadeout
+                var message =
+                    '<div class="alert alert-info alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>Copied to Clipboard</h4>' +
+                    '</div>';
+                $('#results').html(message);
+
+                setTimeout(function () {
+                    $('#results .alert').fadeOut('slow');
+                }, 700);
             }
         }
     });
@@ -284,33 +312,6 @@ var updateDonutChart = window.updateDonutChart;
     }
 
     showHideImageAltsBox();
-
-    function clipboard (data) {
-        $('#clipboard').click(function (evt) {
-            evt.preventDefault();
-            var dummy = document.createElement('textarea');
-            dummy.setAttribute('id', 'dummy');
-            document.body.appendChild(dummy);
-            var dumNode = document.getElementById('dummy');
-            dumNode.value = data;
-            dumNode.select();
-            document.execCommand('copy');
-            document.body.removeChild(dumNode);
-
-            var message =
-                '<div class="alert alert-info alert-dismissible" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                    '<h4>Copied to Clipboard</h4>' +
-                '</div>';
-            $('#results').html(message);
-
-            setTimeout(function () {
-                $('#results .alert').fadeOut('slow');
-            }, 700);
-        });
-    }
-
-    clipboard(fs.readFileSync('_scripts/imgalts5.min.js', 'binary'));
 
     /**
      * Process an array of objects, each containing the src and alt data for images.
@@ -591,13 +592,13 @@ var updateDonutChart = window.updateDonutChart;
         }
 
         var standard = 'WCAG2AA';
-        if (ugui.args.standardsection.htmlticked) {
+        if (app.standard === 'section') {
             standard = 'Section508';
-        } else if (ugui.args.standardwcaga.htmlticked) {
+        } else if (app.standard === 'wcaga') {
             standard = 'WCAG2A';
-        } else if (ugui.args.standardwcagaa.htmlticked) {
+        } else if (app.standard === 'wcagaa') {
             standard = 'WCAG2AA';
-        } else if (ugui.args.standardwcagaaa.htmlticked) {
+        } else if (app.standard === 'wcagaaa') {
             standard = 'WCAG2AAA';
         }
 
@@ -612,8 +613,8 @@ var updateDonutChart = window.updateDonutChart;
             ignore.push('notice');
         }
 
-        var url = ugui.args.url.value;
-        var folderPicker = ugui.args.folderPicker.value;
+        var url = app.url;
+        var folderPicker = app.folderPicker;
         var fileName = app.outputFileName;
         var file = path.join(folderPicker, fileName + ext);
 
@@ -699,7 +700,7 @@ var updateDonutChart = window.updateDonutChart;
                 successMessage(file, filetype);
             // Markdown
             } else if (app.outputType === 'md') {
-                var output = '# ' + ugui.args.url.value + '\n\n';
+                var output = '# ' + app.url + '\n\n';
                 // Ensure that the imageStats Object is not empty
                 if (!$.isEmptyObject(window.imageStats)) {
                     output = output + '## Image Accessibility\n\n';
