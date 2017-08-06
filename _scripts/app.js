@@ -13,15 +13,45 @@ var updateDonutChart = window.updateDonutChart;
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
+    if (ugui.args.badgeError.value == 'false') {
+        $('#button-badges .btn-danger').addClass('disabled');
+    }
+    if (ugui.args.badgeWarning.value == 'false') {
+        $('#button-badges .btn-warning').addClass('disabled');
+    }
+    if (ugui.args.badgeNotice.value == 'false') {
+        $('#button-badges .btn-primary').addClass('disabled');
+    }
+
+    $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
+        app.reset();
+
+        if ($(this).hasClass('disabled')) {
+            $(this).removeClass('disabled');
+            $(this).val('true');
+        } else {
+            $(this).addClass('disabled');
+            $(this).val('false');
+        }
+
+        ugui.helpers.buildUGUIArgObject();
+        app.saveSettings();
+        app.unlockRun();
+    });
+
     var app = new Vue({
         el: '#pa11y',
         data: {
+            version: '2.0.0',
             url: '',
             outputFileName: '',
             outputType: '',
             standard: '',
-            version: '2.0.0',
             folderPicker: '',
+            imageAlts: '',
+            errorsButton: true,
+            warningsButton: true,
+            noticesButton: true,
             badges: {
                 errors: 0,
                 wargings: 0,
@@ -31,14 +61,70 @@ var updateDonutChart = window.updateDonutChart;
         methods: {
             // Settings and defaults
             loadSettings: function () {
-                // TODO: Replace UGUI with custom load script
-                // This is not being ran currently
-                // Currently just prefilling data on load
-                ugui.helpers.loadSettings();
+                var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
+                var options = {
+                    encoding: 'utf-8'
+                };
+
+                fs.readFile(settingsFile, options, function (err, data) {
+                    if (err) {
+                        // eslint-disable-next-line
+                        console.warn('Could not read settings file from location:');
+                        console.warn('"' + settingsFile + '"'); // eslint-disable-line
+                        // eslint-disable-next-line
+                        console.warn('Error:');
+                        console.warn(err.message); // eslint-disable-line
+                        return;
+                    }
+
+                    var semVer = require('semver');
+                    var settings = JSON.parse(data);
+
+                    // If the old settings file is below v2.0.0 delete the settings file
+                    if (settings.version && semVer.lt(settings.version, '3.0.0')) {
+                        // eslint-disable-next-line
+                        console.log('old settings file');
+                        return;
+                    }
+
+                    for (var key in settings) {
+                        if (typeof(this[key]) !== 'undefined' && key !== 'version') {
+                            this[key] = settings[key];
+                        }
+                    }
+
+                    this.unlockRun();
+                });
             },
             saveSettings: function () {
-                // TODO: Replace UGUI with custom save settings script
-                ugui.helpers.saveSettings();
+                var saveData = {
+                    url: this.url,
+                    outputFileName: this.outputFileName,
+                    folderPicker: this.folderPicker,
+
+                    outputType: this.outputType,
+                    standard: this.standard,
+
+                    errorsButton: this.errorsButton,
+                    warningsButton: this.warningsButton,
+                    noticesButton: this.noticesButton,
+
+                    version: this.version
+                };
+
+                var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
+                var settingsJSON = JSON.stringify(saveData, null, 2);
+
+                fs.writeFile(settingsFile, settingsJSON, function (err) {
+                    if (err) {
+                        // eslint-disable-next-line
+                        console.warn('There was an error in attempting to save settings:');
+                        console.warn(settingsFile); // eslint-disable-line
+                        // eslint-disable-next-line
+                        console.warn('Error: ');
+                        console.warn(err.message); // eslint-disable-line
+                    }
+                });
             },
             prefillData: function () {
                 this.outputType = 'html';
@@ -81,13 +167,34 @@ var updateDonutChart = window.updateDonutChart;
                 this.badges.warnings = 0;
                 this.badges.notices = 0;
             },
+            unlockRun: function () {
+                ugui.helpers.buildUGUIArgObject();
+
+                var url = this.url;
+                var dest = this.folderPicker;
+                var file = this.outputFileName;
+                var errorsButton = (ugui.args.badgeError.value === 'true');
+                var warningsButton = (ugui.args.badgeWarning.value === 'true');
+                var noticesButton = (ugui.args.badgeNotice.value === 'true');
+                var imgAltsVal = this.imageAlts;
+                var imgAltsParsed = '';
+                if (imgAltsVal) {
+                    imgAltsParsed = tryParseJSON(imgAltsVal);
+                }
+                // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notic), or some valid JSON in the imageAlts box
+                if (url && dest && file && ((errorsButton || warningsButton || noticesButton) || (!!imgAltsVal && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) == 'object')))) {
+                    $('#run').prop('disabled', false);
+                } else {
+                    $('#run').prop('disabled', true);
+                }
+            },
 
             // URL Stuff
             urlKeyup: function () {
                 this.reset();
                 this.cleanURL();
                 this.saveSettings();
-                unlockRun();
+                this.unlockRun();
             },
             cleanURL: function () {
                 var cleaned = this.url;
@@ -211,39 +318,6 @@ var updateDonutChart = window.updateDonutChart;
         keyBindings();
     }
 
-    function unlockRun () {
-        ugui.helpers.buildUGUIArgObject();
-
-        var url = app.url;
-        var dest = app.folderPicker;
-        var file = app.outputFileName;
-        var errorsButton = (ugui.args.badgeError.value === 'true');
-        var warningsButton = (ugui.args.badgeWarning.value === 'true');
-        var noticesButton = (ugui.args.badgeNotice.value === 'true');
-        var imgAltsVal = $('#imagealts').val();
-        var imgAltsParsed = '';
-        if (imgAltsVal) {
-            imgAltsParsed = tryParseJSON(imgAltsVal);
-        }
-        // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notic), or some valid JSON in the imageAlts box
-        if (url && dest && file && ((errorsButton || warningsButton || noticesButton) || (!!imgAltsVal && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) == 'object')))) {
-            $('#run').prop('disabled', false);
-        } else {
-            $('#run').prop('disabled', true);
-        }
-    }
-
-
-
-    $('#output').change(unlockRun);
-    $('#output').keyup(unlockRun);
-    $('#imagealts').change(unlockRun);
-    $('#imagealts').keyup(unlockRun);
-
-
-
-
-
     function successMessage (file, ext) {
         var filetype = ext.toUpperCase();
         if (filetype == 'MARKDOWN') {
@@ -275,33 +349,6 @@ var updateDonutChart = window.updateDonutChart;
         $('#imageAltsModal').slideUp('slow');
     });
 
-
-
-    if (ugui.args.badgeError.value == 'false') {
-        $('#button-badges .btn-danger').addClass('disabled');
-    }
-    if (ugui.args.badgeWarning.value == 'false') {
-        $('#button-badges .btn-warning').addClass('disabled');
-    }
-    if (ugui.args.badgeNotice.value == 'false') {
-        $('#button-badges .btn-primary').addClass('disabled');
-    }
-
-    $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
-        app.reset();
-
-        if ($(this).hasClass('disabled')) {
-            $(this).removeClass('disabled');
-            $(this).val('true');
-        } else {
-            $(this).addClass('disabled');
-            $(this).val('false');
-        }
-
-        ugui.helpers.buildUGUIArgObject();
-        ugui.helpers.saveSettings();
-        unlockRun();
-    });
 
     function showHideImageAltsBox () {
         if (app.outputType === 'csv') {
@@ -548,7 +595,7 @@ var updateDonutChart = window.updateDonutChart;
         window.imageStats = {};
         window.imgAltsParsed = [];
 
-        var imgAltsVal = $('#imagealts').val();
+        var imgAltsVal = app.imageAlts;
         // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
         if (imgAltsVal && app.outputType === 'csv') {
             // This will output an error if JSON is invalid, or if there is no text
@@ -944,4 +991,4 @@ var updateDonutChart = window.updateDonutChart;
 
 
 
-    unlockRun();
+    app.unlockRun();

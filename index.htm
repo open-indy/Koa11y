@@ -141,7 +141,7 @@
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 form-group">
               <label for="output">Filename (will overwrite existing files):</label>
               <div class="input-group">
-                <input id="output" v-model="outputFileName" type="text" class="form-control" required="required" />
+                <input id="output" @change="unlockRun" @keyup="unlockRun" v-model="outputFileName" type="text" class="form-control" required="required" />
                 <div id="output-btn" class="input-group-addon btn-group">
                   <button id="outputtype" class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">HTML<span class="caret"></span></button>
                   <ul class="dropdown-menu" aria-labelledby="outputtype">
@@ -182,7 +182,7 @@
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12">
               <label for="imagealts">Image Accessibility:</label>
               <p><button @click="clipboard" class="btn btn-sm btn-primary">Copy the console code</button> Paste this code in your browser's console and press enter. It will give you code you can paste into the box below, then click "Run".</p>
-              <textarea id="imagealts" class="form-control"></textarea>
+              <textarea id="imagealts" @change="unlockRun" @keyup="unlockRun" v-model="imageAlts" class="form-control"></textarea>
             </div>
           </div>
 
