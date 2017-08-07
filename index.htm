@@ -189,17 +189,17 @@
           <div class="row" id="button-row">
             <div class="col-xs-12 col-s-12 col-md-12 col-l-12 text-left" style="vertical-align: middle">
               <span id="button-badges">
-                <button class="btn btn-sm btn-danger" type="button" value="true" data-argName="badgeError">
+                <button class="btn btn-sm btn-danger" :class="{'disabled': !errorsButton}" @click="toggleButton('errorsButton')">
                   Errors <span class="badge">{{ badges.errors }}</span>
                 </button>
-                <button class="btn btn-sm btn-warning" type="button" value="true" data-argName="badgeWarning">
+                <button class="btn btn-sm btn-warning" :class="{'disabled': !warningsButton}" @click="toggleButton('warningsButton')">
                   Warnings <span class="badge">{{ badges.warnings }}</span>
                 </button>
-                <button class="btn btn-sm btn-primary" type="button" value="true" data-argName="badgeNotice">
+                <button class="btn btn-sm btn-primary" :class="{'disabled': !noticesButton}" @click="toggleButton('noticesButton')">
                   Notices <span class="badge">{{ badges.notices }}</span>
                 </button>
               </span>
-              <button type="submit" id="run" class="btn btn-primary pull-right">Run!</button>
+              <button type="submit" id="run" class="btn btn-primary pull-right" :disabled="submitAllowed">Run!</button>
             </div>
           </div>
 

@@ -13,50 +13,28 @@ var updateDonutChart = window.updateDonutChart;
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
-    if (ugui.args.badgeError.value == 'false') {
-        $('#button-badges .btn-danger').addClass('disabled');
-    }
-    if (ugui.args.badgeWarning.value == 'false') {
-        $('#button-badges .btn-warning').addClass('disabled');
-    }
-    if (ugui.args.badgeNotice.value == 'false') {
-        $('#button-badges .btn-primary').addClass('disabled');
-    }
-
-    $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
-        app.reset();
-
-        if ($(this).hasClass('disabled')) {
-            $(this).removeClass('disabled');
-            $(this).val('true');
-        } else {
-            $(this).addClass('disabled');
-            $(this).val('false');
-        }
-
-        ugui.helpers.buildUGUIArgObject();
-        app.saveSettings();
-        app.unlockRun();
-    });
-
     var app = new Vue({
         el: '#pa11y',
         data: {
             version: '2.0.0',
+
             url: '',
             outputFileName: '',
             outputType: '',
             standard: '',
             folderPicker: '',
             imageAlts: '',
+
             errorsButton: true,
             warningsButton: true,
             noticesButton: true,
             badges: {
                 errors: 0,
-                wargings: 0,
+                warnings: 0,
                 notices: 0
-            }
+            },
+
+            submitAllowed: false
         },
         methods: {
             // Settings and defaults
@@ -168,25 +146,37 @@ var updateDonutChart = window.updateDonutChart;
                 this.badges.notices = 0;
             },
             unlockRun: function () {
-                ugui.helpers.buildUGUIArgObject();
-
                 var url = this.url;
-                var dest = this.folderPicker;
+                var destination = this.folderPicker;
                 var file = this.outputFileName;
-                var errorsButton = (ugui.args.badgeError.value === 'true');
-                var warningsButton = (ugui.args.badgeWarning.value === 'true');
-                var noticesButton = (ugui.args.badgeNotice.value === 'true');
-                var imgAltsVal = this.imageAlts;
+
+                var anyButtonEnabled = (this.errorsButton || this.warningsButton || this.noticesButton);
+
                 var imgAltsParsed = '';
-                if (imgAltsVal) {
-                    imgAltsParsed = tryParseJSON(imgAltsVal);
+                if (this.imageAlts) {
+                    imgAltsParsed = this.tryParseJSON(this.imageAlts);
                 }
+                var imageAltsInUse = !!this.imageAlts && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) === 'object');
+
                 // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notic), or some valid JSON in the imageAlts box
-                if (url && dest && file && ((errorsButton || warningsButton || noticesButton) || (!!imgAltsVal && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) == 'object')))) {
-                    $('#run').prop('disabled', false);
+                if (url && destination && file && (anyButtonEnabled || imageAltsInUse)) {
+                    this.submitAllowed = false;
                 } else {
-                    $('#run').prop('disabled', true);
+                    this.submitAllowed = true;
                 }
+            },
+            tryParseJSON: function (jsonString) {
+                try {
+                    var obj = JSON.parse(jsonString);
+                    if (obj && typeof(obj) === 'object') {
+                        return obj;
+                    }
+                } catch (err) {
+                    // eslint-disable-line no-empty
+                    // If we log the err here it will spam the console anytime the user pastes non-json or types in the box
+                }
+
+                return false;
             },
 
             // URL Stuff
@@ -243,6 +233,17 @@ var updateDonutChart = window.updateDonutChart;
                 showHideImageAltsBox();
             },
 
+            // Error/Warning/Notice Buttons
+            toggleButton: function (button) {
+                event.preventDefault();
+                this.reset();
+
+                this[button] = !this[button];
+
+                app.saveSettings();
+                this.unlockRun();
+            },
+
             clipboard: function (evt) {
                 evt.preventDefault();
                 var data = fs.readFileSync('_scripts/imgalts5.min.js', 'binary');
@@ -280,19 +281,7 @@ var updateDonutChart = window.updateDonutChart;
         nw.Window.get().showDevTools();
     });
 
-    function tryParseJSON (jsonString) {
-        try {
-            var obj = JSON.parse(jsonString);
-            if (obj && typeof obj === 'object') {
-                return obj;
-            }
-        } catch (err) {
-            // eslint-disable-line no-empty
-            // If we log the err here it will spam the console anytime the user pastes non-json or types in the box
-        }
 
-        return false;
-    }
 
 
 
@@ -599,7 +588,7 @@ var updateDonutChart = window.updateDonutChart;
         // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
         if (imgAltsVal && app.outputType === 'csv') {
             // This will output an error if JSON is invalid, or if there is no text
-            window.imgAltsParsed = tryParseJSON(imgAltsVal);
+            window.imgAltsParsed = app.tryParseJSON(imgAltsVal);
             // If the text is valid JSON
             if (window.imgAltsParsed.length > 0 && typeof(window.imgAltsParsed) == 'object') {
                 $('#imageAltsModal').fadeIn('slow');
