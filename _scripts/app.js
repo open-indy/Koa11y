@@ -4,8 +4,15 @@
 var nw = require('nw.gui');
 var $ = window.$;
 var Vue = window.Vue;
-var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
+var keyBindings = require('./_functions/key-bindings');
+var tryParseJSON = require('./_functions/try-parse-json');
+var cleanURL = require('./_functions/clean-url');
+var makeDesktopPath = require('./_functions/my-desktop-path');
+var formatJSON = require('./_outputs/format-JSON');
+var formatCSV = require('./_outputs/format-CSV');
+var formatMD = require('./_outputs/format-MD');
+var formatXML = require('./_outputs/format-XML');
 
     var fs = require('fs-extra');
     var path = require('path');
@@ -16,12 +23,25 @@ var updateDonutChart = window.updateDonutChart;
     var app = new Vue({
         el: '#pa11y',
         data: {
-            version: '2.0.0',
+            version: '3.0.0',
 
-            url: '',
-            outputFileName: '',
-            outputType: '',
-            standard: '',
+            url: 'http://google.com',
+            outputFileName: 'google com',
+            outputType: 'html',
+            outputTypes: {
+                html: 'HTML',
+                csv: 'CSV',
+                json: 'JSON',
+                md: 'Markdown',
+                xml: 'XML'
+            },
+            standard: 'wcagaa',
+            standards: {
+                section: 'Section 508',
+                wcaga: 'WCAG 2.0 A',
+                wcagaa: 'WCAG 2.0 AA',
+                wcagaaa: 'WCAG 2.0 AAA'
+            },
             folderPicker: '',
             imageAlts: '',
 
@@ -47,11 +67,7 @@ var updateDonutChart = window.updateDonutChart;
                 fs.readFile(settingsFile, options, function (err, data) {
                     if (err) {
                         // eslint-disable-next-line
-                        console.warn('Could not read settings file from location:');
-                        console.warn('"' + settingsFile + '"'); // eslint-disable-line
-                        // eslint-disable-next-line
-                        console.warn('Error:');
-                        console.warn(err.message); // eslint-disable-line
+                        console.warn('Settings file not found, probably not a big deal.');
                         return;
                     }
 
@@ -61,18 +77,29 @@ var updateDonutChart = window.updateDonutChart;
                     // If the old settings file is below v2.0.0 delete the settings file
                     if (settings.version && semVer.lt(settings.version, '3.0.0')) {
                         // eslint-disable-next-line
-                        console.log('old settings file');
+                        console.log('Old settings file (Verision ' + settings.version + '). Nothing loaded.');
                         return;
                     }
 
                     for (var key in settings) {
-                        if (typeof(this[key]) !== 'undefined' && key !== 'version') {
+                        if (key !== 'version') {
                             this[key] = settings[key];
                         }
                     }
 
+                    // Give defaults for empty values
+                    if (settings.url === '') {
+                        this.url = 'http://google.com';
+                    }
+                    if (settings.outputFileName === '') {
+                        this.urlKeyup();
+                    }
+                    if (settings.folderPicker === '') {
+                        this.prefillOutput();
+                    }
+
                     this.unlockRun();
-                });
+                }.bind(this));
             },
             saveSettings: function () {
                 var saveData = {
@@ -93,45 +120,17 @@ var updateDonutChart = window.updateDonutChart;
                 var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
                 var settingsJSON = JSON.stringify(saveData, null, 2);
 
-                fs.writeFile(settingsFile, settingsJSON, function (err) {
-                    if (err) {
-                        // eslint-disable-next-line
-                        console.warn('There was an error in attempting to save settings:');
-                        console.warn(settingsFile); // eslint-disable-line
-                        // eslint-disable-next-line
-                        console.warn('Error: ');
-                        console.warn(err.message); // eslint-disable-line
-                    }
-                });
+                this.writeToFile(settingsFile, settingsJSON);
             },
-            prefillData: function () {
-                this.outputType = 'html';
-                this.standard = 'wcagaa';
-
-                if (this.url.length < 1) {
-                    this.url = 'http://google.com';
-                    this.outputFileName = 'google com';
+            deleteSettings: function (bool) {
+                if (bool) {
+                    var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
+                    fs.unlinkSync(settingsFile);
+                    nw.Window.get().reload();
                 }
-
-                if (this.folderPicker.length < 1) {
-                    this.prefillOutput();
-                }
-                // TODO: Remove this at some point
-                ugui.helpers.buildUGUIArgObject();
             },
             prefillOutput: function () {
-                var homePath = '';
-                if (process.platform == 'linux') {
-                    homePath = process.env.HOME;
-                } else if (process.platform == 'win32') {
-                    homePath = process.env.USERPROFILE;
-                } else if (process.platform == 'darwin') {
-                    homePath = '/Users/' + process.env.USER;
-                    if (process.env.HOME) {
-                        homePath = process.env.HOME;
-                    }
-                }
-                this.folderPicker = path.join(homePath, 'Desktop');
+                this.folderPicker = makeDesktopPath();
             },
 
             // Helpers
@@ -154,62 +153,76 @@ var updateDonutChart = window.updateDonutChart;
 
                 var imgAltsParsed = '';
                 if (this.imageAlts) {
-                    imgAltsParsed = this.tryParseJSON(this.imageAlts);
+                    imgAltsParsed = tryParseJSON(this.imageAlts);
                 }
                 var imageAltsInUse = !!this.imageAlts && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) === 'object');
 
-                // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notic), or some valid JSON in the imageAlts box
+                // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notice), or some valid JSON in the imageAlts box
                 if (url && destination && file && (anyButtonEnabled || imageAltsInUse)) {
                     this.submitAllowed = false;
                 } else {
                     this.submitAllowed = true;
                 }
             },
-            tryParseJSON: function (jsonString) {
-                try {
-                    var obj = JSON.parse(jsonString);
-                    if (obj && typeof(obj) === 'object') {
-                        return obj;
-                    }
-                } catch (err) {
-                    // eslint-disable-line no-empty
-                    // If we log the err here it will spam the console anytime the user pastes non-json or types in the box
+            /**
+             * This will override the contents of a file you pass in with
+             * the data you supply. If the file you point to doesn't exist,
+             * it will be created with your supplied data.
+             *
+             * @param  {string}   filePathAndName Path to file
+             * @param  {string}   data            The contents that should be saved
+             * @param  {Function} callback        Optional callback function
+             */
+            writeToFile: function (filePathAndName, data, callback) {
+                // Validate that required arguments are passed and are the correct types
+                if (!filePathAndName) {
+                    // eslint-disable-next-line
+                    console.info('Supply a path to the file you want to create or replace the contents of as the first argument to this function.');
+                    return;
+                } else if (typeof(filePathAndName) !== 'string') {
+                    // eslint-disable-next-line
+                    console.info('File path and name must be passed as a string.');
+                    return;
+                } else if (!data) {
+                    // eslint-disable-next-line
+                    console.info('You must pass in the data to be stored as the second argument to this function.');
+                    return;
+                } else if (typeof(data) !== 'string') {
+                    // eslint-disable-next-line
+                    console.info('The data to be stored must be passed as a string.');
+                    return;
+                } else if (callback && typeof(callback) !== 'function') {
+                    // eslint-disable-next-line
+                    console.info('Your callback must be passed as a function.');
+                    return;
                 }
 
-                return false;
+                // Write to the file the user passed in
+                fs.writeFile(filePathAndName, data, function (err) {
+                    // If there was a problem writing to the file
+                    if (err) {
+                        // eslint-disable-next-line
+                        console.info('There was an error attempting to write data to disk.');
+                        // eslint-disable-next-line
+                        console.warn({
+                            filePathAndName: filePathAndName,
+                            data: data,
+                            error: err.message
+                        });
+                        return;
+                    // After file is saved/updated successfully, run the callback if it was passed in
+                    } else if (callback) {
+                        callback();
+                    }
+                });
             },
 
             // URL Stuff
             urlKeyup: function () {
                 this.reset();
-                this.cleanURL();
+                this.outputFileName = cleanURL(this.url);
                 this.saveSettings();
                 this.unlockRun();
-            },
-            cleanURL: function () {
-                var cleaned = this.url;
-                cleaned = cleaned.replace('https://', '');
-                cleaned = cleaned.replace('http://', '');
-                cleaned = cleaned.replace('www.', '');
-                cleaned = cleaned.replace('.html', '');
-                cleaned = cleaned.replace('.htm', '');
-                cleaned = cleaned.replace('.php', '');
-                cleaned = cleaned.replace('.aspx', '');
-                cleaned = cleaned.replace('.asp', '');
-                cleaned = cleaned.replace('.cfm', '');
-                cleaned = cleaned.split('.').join(' ');
-                cleaned = cleaned.split('/').join(' ');
-                cleaned = cleaned.split('?').join(' ');
-                cleaned = cleaned.split('&').join(' ');
-                cleaned = cleaned.split('|').join(' ');
-                cleaned = cleaned.split('=').join(' ');
-                cleaned = cleaned.split('*').join(' ');
-                cleaned = cleaned.split('\\').join(' ');
-                cleaned = cleaned.split('"').join(' ');
-                cleaned = cleaned.split(':').join(' ');
-                cleaned = cleaned.split('<').join(' ');
-                cleaned = cleaned.split('>').join(' ');
-                this.outputFileName = cleaned;
             },
 
             // Output Folder stuff
@@ -231,6 +244,12 @@ var updateDonutChart = window.updateDonutChart;
                 this.reset();
                 this.saveSettings();
                 showHideImageAltsBox();
+            },
+            standardName: function () {
+                return this.standards[this.standard];
+            },
+            outputTypeName: function () {
+                return this.outputTypes[this.outputType];
             },
 
             // Error/Warning/Notice Buttons
@@ -271,37 +290,13 @@ var updateDonutChart = window.updateDonutChart;
         }
     });
 
-    // Prefill for now
-    app.prefillData();
-
+    app.prefillOutput();
 
     $('.navbar-brand img').on('contextmenu', function (evt) {
         evt.preventDefault();
         evt.stopPropagation();
         nw.Window.get().showDevTools();
     });
-
-
-
-
-
-    function keyBindings () {
-        document.onkeydown = function (pressed) {
-        // Check CMD+Shift+X and cut
-        // Check CMD+Shift+V and paste
-        // Check CMD+Shift+C and copy
-            if (pressed.metaKey && pressed.keyCode === 88) {
-                document.execCommand('cut');
-                return false;
-            } else if (pressed.metaKey && pressed.keyCode === 67) {
-                document.execCommand('copy');
-                return false;
-            } else if (pressed.metaKey && pressed.keyCode === 86) {
-                document.execCommand('paste');
-                return false;
-            }
-        };
-    }
 
     if (process.platform === 'darwin') {
         keyBindings();
@@ -584,11 +579,10 @@ var updateDonutChart = window.updateDonutChart;
         window.imageStats = {};
         window.imgAltsParsed = [];
 
-        var imgAltsVal = app.imageAlts;
         // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
-        if (imgAltsVal && app.outputType === 'csv') {
+        if (app.imageAlts && app.outputType !== 'csv') {
             // This will output an error if JSON is invalid, or if there is no text
-            window.imgAltsParsed = app.tryParseJSON(imgAltsVal);
+            window.imgAltsParsed = tryParseJSON(app.imageAlts);
             // If the text is valid JSON
             if (window.imgAltsParsed.length > 0 && typeof(window.imgAltsParsed) == 'object') {
                 $('#imageAltsModal').fadeIn('slow');
@@ -605,8 +599,6 @@ var updateDonutChart = window.updateDonutChart;
     function runPa11y () {
         $('#spinner').fadeIn('slow');
         app.reset();
-
-        ugui.helpers.buildUGUIArgObject();
 
         var filetype = 'html';
         var ext = '.html';
@@ -702,117 +694,30 @@ var updateDonutChart = window.updateDonutChart;
 
             // JSON
             if (app.outputType === 'json') {
-                var outputJSON = {};
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    outputJSON.images = window.imageStats;
-                }
-                outputJSON.results = results;
-                outputJSON = JSON.stringify(outputJSON, null, 2);
+                var outputJSON = formatJSON(window.imageStats, results);
 
-                ugui.helpers.writeToFile(file, outputJSON);
+                app.writeToFile(file, outputJSON);
+
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (app.outputType === 'csv') {
+                var outputCSV = formatCSV(window.imageStats, results);
 
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
-                    console.log(window.imageStats); // eslint-disable-line no-console
-                }
-
-                var json2csv = require('json2csv');
-                var fields = [];
-                for (var key in results[0]) {
-                    fields.push(key);
-                }
-                var outputCSV = json2csv({
-                    'data': results,
-                    'fields': fields
-                });
-
-                ugui.helpers.writeToFile(file, outputCSV);
+                app.writeToFile(file, outputCSV);
 
                 successMessage(file, filetype);
             // Markdown
             } else if (app.outputType === 'md') {
-                var output = '# ' + app.url + '\n\n';
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    output = output + '## Image Accessibility\n\n';
-                    output = output + '**Total Images:** ' + window.imageStats.totalImages + '  \n';
-                    output = output + '**Descriptive Alt Text:** ' + window.imageStats.descriptive + '  \n';
-                    output = output + '**Non-descriptive Alt Text:** ' + window.imageStats.nondescriptive + '  \n';
-                    output = output + '**Percent of images with Descriptive Alt Text:** ' + window.imageStats.descriptivePercent + '%  \n';
-                    output = output + '**Alt Text Under 100 Characters:** ' + window.imageStats.under100Char + '  \n';
-                    output = output + '**Percent of images with fewer than 100 Characters of Alt Text:** ' + window.imageStats.under100CharPercent + '%  \n';
-                    output = output + '**Images Under 100KB:** ' + window.imageStats.under100KB + '  \n';
-                    output = output + '**Percent of images Under 100 Kilobytes in size:** ' + window.imageStats.under100KBPercent + '%  \n';
-                    output = output + '**Images That Loaded:** ' + window.imageStats.imagesLoaded + '  \n';
-                    output = output + '**Percent of Images that Loaded:** ' + window.imageStats.imagesLoadedPercent + '%  \n';
-                    output = output + '**Total File Size In Bytes:** ' + window.imageStats.totalFileSizeInBytes + '  \n';
-                    output = output + '**Total File Size In Kilobytes:** ' + window.imageStats.totalFileSizeInKB + '  \n\n';
-                }
-                output = output + '## Results\n\n';
-                var hr = '\n* * *\n\n';
-                for (i = 0; i < results.length; i++) {
-                    var item = results[i];
-                    var code = '**Code:** ' + item.code + '  \n';
-                    var type = '**Type:** ' + item.type + '  \n';
-                    var typeCode = '**Type Code:** ' + item.typeCode + '  \n';
-                    var message = '**Message:** ' + item.message + '  \n';
-                    var selector = '**Selector:** `' + item.selector + '`  \n';
-                    var context = '**Context:**\n```\n' + item.context + '\n```\n';
-                    output = output + code + type + typeCode + message + selector + context;
-                    if (i < results.length - 1) {
-                        output = output + hr;
-                    }
-                }
+                var output = formatMD(window.imageStats, results, app.url);
 
-                ugui.helpers.writeToFile(file, output);
+                app.writeToFile(file, output);
 
                 successMessage(file, filetype);
             // XML
             } else if (app.outputType === 'xml') {
-                var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
+                var outputXML = formatXML(window.imageStats, results);
 
-                var imgAlts = '';
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    imgAlts =
-                        '  <imagealts>\n' +
-                        '    <totalimages>' + window.imageStats.totalImages + '</totalimages>\n' +
-                        '    <descriptive>' + window.imageStats.descriptive + '</descriptive>\n' +
-                        '    <nondescriptive>' + window.imageStats.nondescriptive + '</nondescriptive>\n' +
-                        '    <under100char>' + window.imageStats.under100Char + '</under100char>\n' +
-                        '    <under100kb>' + window.imageStats.under100KB + '</under100kb>\n' +
-                        '    <imagesloaded>' + window.imageStats.imagesLoaded + '</imagesloaded>\n' +
-                        '    <totalfilesizeinbytes>' + window.imageStats.totalFileSizeInBytes + '</totalfilesizeinbytes>\n' +
-                        '    <totalfilesizeinkb>' + window.imageStats.totalFileSizeInKB + '</totalfilesizeinkb>\n' +
-                        '    <descriptivepercent>' + window.imageStats.descriptivePercent + '</descriptivepercent>\n' +
-                        '    <under100charpercent>' + window.imageStats.under100CharPercent + '</under100charpercent>\n' +
-                        '    <under100kbpercent>' + window.imageStats.under100KBPercent + '</under100kbpercent>\n' +
-                        '    <imagesloadedpercent>' + window.imageStats.imagesLoadedPercent + '</imagesloadedpercent>\n' +
-                        '  </imagealts>\n';
-                }
-
-                outputXML = outputXML + imgAlts;
-
-                for (i = 0; i < results.length; i++) {
-                    var current = results[i];
-                    var result =
-                        '  <result>\n' +
-                        '    <code>' + current.code + '</code>\n' +
-                        '    <type typecode="' + current.typeCode + '">' + current.type + '</type>\n' +
-                        '    <message>' + current.message + '</message>\n' +
-                        '    <selector><![CDATA[' + current.selector + ']]></selector>\n' +
-                        '    <context><![CDATA[' + current.context + ']]></context>\n' +
-                        '  </result>\n';
-                    outputXML = outputXML + result;
-                }
-                outputXML = outputXML + '</pa11y>\n';
-
-                ugui.helpers.writeToFile(file, outputXML);
+                app.writeToFile(file, outputXML);
 
                 successMessage(file, filetype);
             // HTML
@@ -907,7 +812,7 @@ var updateDonutChart = window.updateDonutChart;
                         '    <div class="row">' + results + '</div>\n';
                     var output = template.replace('<!-- Content goes here -->', content);
 
-                    ugui.helpers.writeToFile(file, output);
+                    app.writeToFile(file, output);
 
                     successMessage(file, filetype);
                 });
@@ -980,4 +885,4 @@ var updateDonutChart = window.updateDonutChart;
 
 
 
-    app.unlockRun();
+    app.loadSettings();
