@@ -14,6 +14,7 @@
 
 //Stuff that effects specific pages
 @import "_app.sass";                  // CSS specifc to the app you create using UGUI
+@import "_modal.sass";                // Modal Vue component
 @import "_spinner.sass";              // 3d spinning cube
 
 //Stuff that goes at the end

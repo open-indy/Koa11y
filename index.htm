@@ -10,7 +10,7 @@
   </head>
 
   <!-- Change the class form dev to prod when you're ready to distribute your application. -->
-  <body role="document" class="prod">
+  <body><div id="app">
 
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -189,55 +189,83 @@
 
 
 
+
+
+
+      <!--
+        /////////////////////////////////////////////////////////////////
+        //                                                             //
+        //                       MODAL TEMPLATE                        //
+        //                                                             //
+        /////////////////////////////////////////////////////////////////
+      -->
+      <script type="text/x-template" id="modal-template">
+        <transition name="modal">
+          <div class="modal" @click="$emit('close')">
+            <div class="modal-dialog">
+              <div class="modal-content" @click.stop>
+                <div class="modal-header" v-if="this.$slots.header">
+                  <span class="glyphicon glyphicon-remove pull-right" @click="$emit('close')"></span>
+                  <slot name="header"></slot>
+                </div>
+                <div class="modal-body" v-if="this.$slots.body">
+                  <slot name="body"></slot>
+                </div>
+                <div class="modal-footer" v-if="this.$slots.footer">
+                  <slot name="footer"></slot>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </script>
+
+
       <!--
         /////////////////////////////////////////////////////////////////
         //                                                             //
         //                         ABOUT MODAL                         //
         //                                                             //
         /////////////////////////////////////////////////////////////////
-        // This content is displayed when the user clicks Help in the  //
-        // top navigation, then About. Some parts of the about modal   //
-        // are automatically replaced by the content defined in your   //
-        // package.json file, such as Application Name and Version.    //
-        /////////////////////////////////////////////////////////////////
       -->
 
-      <div id="aboutModal" class="modal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <span class="glyphicon glyphicon-remove pull-right" data-dismiss="modal" aria-hidden="true"></span>
-              <h4>About</h4>
-            </div>
-            <div class="modal-body">
+      <modal v-if="aboutModal" @close="aboutModal = false">
+        <h4 slot="header" class="poatao">About</h4>
+        <div slot="body" class="panel panel-primary">
 
-              <div class="panel panel-primary">
+          <div class="panel-heading">
+            <span class="pull-right versionApp" title="Version">V2.0.0</span>
+            <h3 class="panel-title">About <span class="applicationTitle">Koa11y</span></h3>
+          </div>
 
-                <div class="panel-heading">
-                  <span class="pull-right versionApp" title="Version">V2.0.0</span>
-                  <h3 class="panel-title">About <span class="applicationTitle">Koa11y</span></h3>
-                </div>
+          <div class="panel-body">
+            <p class="well well-sm">
+              This program will load an invisible (headless) browser and go to the URL you've supplied to test the page for accessibility issues. Then it outputs any issues to a file.
+            </p>
+            <p>
+              Contributors to Koa11y:
+                <a class="external-link" href="http://github.com/TheJaredWilcurt">The Jared Wilcurt</a>,
+                <a class="external-link" href="http://github.com/">Rob Gaston</a>.<br />
 
-                <div class="panel-body">
-                  <p class="well well-sm">
-                    This program will load an invisible (headless) browser and go to the URL you've supplied to test the page for accessibility issues. Then it outputs any issues to a file.
-                  </p>
-                  <p>
-                    <span class="applicationTitle">Koa11y</span> was created by The Jared Wilcurt.<br />
-                    Koa11y uses Pa11y under the hood to automate checking your page for issues. For more information visit: <a href="http://pa11y.org" class="external-link">Pa11y.org</a>.<br />
-                    Koala Logo designed by <a href="mailto:cha.schmidt@gmail.com" title="cha.schmidt@gmail.com" class="external-link">Charlotte Schmidt</a>.<br /><br />
-                    <div class="text-center">
-                      <a href="http://thejaredwilcurt.github.io/Koa11y" class="external-link">Visit the Koa11y website.</a>
-                    </div>
-                  </p>
-                </div>
+              Koala Logo designed by <a href="mailto:cha.schmidt@gmail.com" title="cha.schmidt@gmail.com" class="external-link">Charlotte Schmidt</a>.<br /><br />
 
-              </div>
-
-            </div>
+              Koa11y is completely open source and built upon other open source technologies. Koa11y is made with
+                <a class="external-link" href="http://pa11y.org">Pa11y</a>,
+                <a class="external-link" href="http://nwjs.io">NW.js</a>,
+                <a class="external-link" href="http://vuejs.org">Vue.js</a>,
+                <a class="external-link" href="http://jquery.com">jQuery</a>,
+                <a class="external-link" href="http://sass-lang.com">Sass</a>,
+                <a class="external-link" href="http://getbootstrap.com">Bootstrap</a>,
+                <a class="external-link" href="https://bootswatch.com/flatly">Bootswatch (Flatly)</a>,
+                <a class="external-link" href="http://behigh.github.io/bootstrap_dropdowns_enhancement">Bootstrap Dropdowns Enhancements</a>,
+                <a class="external-link" href="https://github.com/b1rdex/nw-contextmenu">nw-contextmenu</a>.
+            </p>
+            <p class="text-center">
+              <a href="https://open-indy.github.io/Koa11y" class="external-link">Visit the Koa11y website.</a>
+            </p>
           </div>
         </div>
-      </div>
+      </modal>
 
       <div id="spinner" style="display: none;">
         <div class="stage">
@@ -250,7 +278,7 @@
         </div>
       </div>
 
-      <div id="imageAltsModal" class="modal">
+      <div id="imageAltsModal" class="modal" style="display: none">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -299,5 +327,5 @@
     <script type="text/javascript" src="_scripts/ugui.js"></script>
     <script type="text/javascript" src="_scripts/app.js"></script>
     <script type="text/javascript" src="_scripts/delete-settings.js"></script>
-  </body>
+  </div></body>
 </html>

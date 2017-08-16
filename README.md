@@ -12,11 +12,18 @@ To download Koa11y, visit the website:
 
 * * *
 
-Koa11y is built on top of:
+Koa11y is built with:
 
 * [Pa11y](http://pa11y.org)
 * [UGUI](http://ugui.io)
 * [NW.js](http://nwjs.io)
+* [Vue.js](http://vuejs.org)
+* [jQuery](http://jquery.com)
+* [Sass](http://sass-lang.com)
+* [Bootstrap](http://getbootstrap.com)
+* [Bootswatch (Flatly)](https://bootswatch.com/flatly)
+* [Bootstrap Dropdowns Enhancements](http://behigh.github.io/bootstrap_dropdowns_enhancement)
+* [nw-contextmenu](https://github.com/b1rdex/nw-contextmenu)
 
 * * *
 

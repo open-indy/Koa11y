@@ -20,8 +20,13 @@ var formatXML = require('./_outputs/format-XML');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
 
+    // register modal component
+    Vue.component('modal', {
+        template: '#modal-template'
+    });
+
     var app = new Vue({
-        el: '#pa11y',
+        el: '#app',
         data: {
             version: '3.0.0',
 
@@ -54,7 +59,9 @@ var formatXML = require('./_outputs/format-XML');
                 notices: 0
             },
 
-            submitAllowed: false
+            submitAllowed: false,
+
+            aboutModal: false
         },
         methods: {
             // Settings and defaults
@@ -286,6 +293,16 @@ var formatXML = require('./_outputs/format-XML');
                 setTimeout(function () {
                     $('#results .alert').fadeOut('slow');
                 }, 700);
+            }
+        },
+        watch: {
+            aboutModal: function (newVal) {
+                var className = 'modal-open';
+                if (newVal) {
+                    document.body.classList.add(className);
+                } else {
+                    document.body.classList.remove(className);
+                }
             }
         }
     });
