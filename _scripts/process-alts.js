@@ -1,5 +1,5 @@
 /* eslint-disable */
-// This file is just a sample for testin the image alts feature.
+// This file is just a sample for testing the image alts feature.
 
 [
     { "src": "http://scout-app.io/_img/scout-app-logo.svg", "alt": "Scout-App 2 Logo featuring Scout the Puppy." },

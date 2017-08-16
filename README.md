@@ -15,7 +15,6 @@ To download Koa11y, visit the website:
 Koa11y is built with:
 
 * [Pa11y](http://pa11y.org)
-* [UGUI](http://ugui.io)
 * [NW.js](http://nwjs.io)
 * [Vue.js](http://vuejs.org)
 * [jQuery](http://jquery.com)
@@ -29,7 +28,7 @@ Koa11y is built with:
 
 # Development/Code Contributing
 
-Koa11y is written in JavaScript, Sass, and HTML. It uses [NW.js](http://docs.nwjs.io/en/latest) to interact with the OS and to be cross-platform. It uses part of the [UGUI](http://ugui.io/api) api for system commands and common tasks (like saving/loading settings).
+Koa11y is written in JavaScript, Sass, and HTML. It uses [NW.js](http://docs.nwjs.io/en/latest) to interact with the OS and to be cross-platform.
 
 ## To Open Dev Tools in Koa11y
 

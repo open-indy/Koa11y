@@ -28,31 +28,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="#about">About</a></li>
-            <li><a href="#exit">Exit</a></li>
-          <!--
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">File <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#save" class="save-ugui-settings">Save Settings</a></li>
-                <li><a href="#load" class="load-ugui-settings">Load Settings</a></li>
-              </ul>
-            </li>
-            <li class="dropdown devNav">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">View <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#fullscreen">Fullscreen</a></li>
-                <li class="devNav"><a href="#console">Console</a></li>
-                <li class="divider"></li>
-                <li class="devNav"><a href="#cmdoutput">Command Line Output</a></li>
-              </ul>
-            </li>
-            <li class="dropdown navHelp">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-              </ul>
-            </li>
-          -->
+            <li><a href="#about" @click="aboutModal = true">About</a></li>
+            <li><a href="#exit" @click="nw.Window.get().close()">Exit</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -88,18 +65,6 @@
 
 
 
-
-
-      <!--
-        /////////////////////////////////////////////////////////////////
-        //                                                             //
-        //                      CLI FORM ELEMENTS                      //
-        //                                                             //
-        /////////////////////////////////////////////////////////////////
-        // All form elements used to send commands to your executable  //
-        // must be placed in the argsForm below.                       //
-        /////////////////////////////////////////////////////////////////
-      -->
 
       <section>
         <form id="pa11y" role="form-inline">
@@ -318,13 +283,11 @@
     </div> <!-- end container -->
 
 
-    <!-- UGUI requires jQuery 1.9.1 or above. -->
     <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.bootstrap-3.2.0.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.bootstrap-slider.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.simple-donut.js"></script>
-    <script type="text/javascript" src="_scripts/ugui.js"></script>
     <script type="text/javascript" src="_scripts/app.js"></script>
     <script type="text/javascript" src="_scripts/delete-settings.js"></script>
   </div></body>

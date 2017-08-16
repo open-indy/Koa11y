@@ -15,4 +15,5 @@ function keyBindings () {
         }
     };
 }
+
 module.exports = keyBindings;
