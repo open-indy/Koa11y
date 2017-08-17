@@ -1,4 +1,4 @@
-function formatJSON(imageStats, results) {
+function formatJSON (imageStats, results) {
     var outputJSON = {};
     // Ensure that the imageStats Object is not empty
    if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)) {
