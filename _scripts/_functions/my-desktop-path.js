@@ -1,4 +1,5 @@
-function makeDesktopPath() {
+function makeDesktopPath () {
+    var path = require('path');
     var homePath = '';
     if (process.platform == 'linux') {
         homePath = process.env.HOME;

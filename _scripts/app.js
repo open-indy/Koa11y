@@ -1,8 +1,9 @@
 /* eslint-disable no-multi-spaces */
+/* eslint-disable indent */ // TODO: Fix this after merging Rob's stuff
 // Testing line ending
 var nw = require('nw.gui');
 var $ = window.$;
-var ugui = window.ugui;
+var Vue = window.Vue;
 var updateDonutChart = window.updateDonutChart;
 var keyBindings = require('./_functions/key-bindings');
 var tryParseJSON = require('./_functions/try-parse-json');
@@ -14,19 +15,332 @@ var formatMD = require('./_outputs/format-MD');
 var formatXML = require('./_outputs/format-XML');
 var formatHTML = require('./_outputs/format-HTML');
 
-// Wait for the document to load, then load settings for the user, then run the app.
-$(document).ready(function () {
-    ugui.helpers.loadSettings(runApp);
-});
-
-// Container for your app's custom JS
-function runApp () {
-
     var fs = require('fs-extra');
     var path = require('path');
     var base64Img = require('base64-img');
     var appData = nw.App.dataPath;
     var temp = path.join(appData, 'temp');
+
+    // register modal component
+    Vue.component('modal', {
+        template: '#modal-template'
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            version: '3.0.0',
+
+            url: 'http://google.com',
+            outputFileName: 'google com',
+            outputType: 'html',
+            outputTypes: {
+                html: 'HTML',
+                csv: 'CSV',
+                json: 'JSON',
+                md: 'Markdown',
+                xml: 'XML'
+            },
+            standard: 'wcagaa',
+            standards: {
+                section: 'Section 508',
+                wcaga: 'WCAG 2.0 A',
+                wcagaa: 'WCAG 2.0 AA',
+                wcagaaa: 'WCAG 2.0 AAA'
+            },
+            folderPicker: '',
+            imageAlts: '',
+
+            errorsButton: true,
+            warningsButton: true,
+            noticesButton: true,
+            badges: {
+                errors: 0,
+                warnings: 0,
+                notices: 0
+            },
+
+            submitAllowed: false,
+
+            aboutModal: false,
+
+            notifications: ''
+        },
+        methods: {
+            // Settings and defaults
+            loadSettings: function () {
+                var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
+                var options = {
+                    encoding: 'utf-8'
+                };
+
+                fs.readFile(settingsFile, options, function (err, data) {
+                    if (err) {
+                        // eslint-disable-next-line
+                        console.warn('Settings file not found, probably not a big deal.');
+                        return;
+                    }
+
+                    var semVer = require('semver');
+                    var settings = JSON.parse(data);
+
+                    // If the old settings file is below v2.0.0 delete the settings file
+                    if (settings.version && semVer.lt(settings.version, '3.0.0')) {
+                        // eslint-disable-next-line
+                        console.log('Old settings file (Verision ' + settings.version + '). Nothing loaded.');
+                        return;
+                    }
+
+                    for (var key in settings) {
+                        if (key !== 'version') {
+                            this[key] = settings[key];
+                        }
+                    }
+
+                    // Give defaults for empty values
+                    if (settings.url === '') {
+                        this.url = 'http://google.com';
+                    }
+                    if (settings.outputFileName === '') {
+                        this.urlKeyup();
+                    }
+                    if (settings.folderPicker === '') {
+                        this.prefillOutput();
+                    }
+
+                    this.unlockRun();
+                }.bind(this));
+            },
+            saveSettings: function () {
+                var saveData = {
+                    url: this.url,
+                    outputFileName: this.outputFileName,
+                    folderPicker: this.folderPicker,
+
+                    outputType: this.outputType,
+                    standard: this.standard,
+
+                    errorsButton: this.errorsButton,
+                    warningsButton: this.warningsButton,
+                    noticesButton: this.noticesButton,
+
+                    version: this.version
+                };
+
+                var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
+                var settingsJSON = JSON.stringify(saveData, null, 2);
+
+                this.writeToFile(settingsFile, settingsJSON);
+            },
+            deleteSettings: function (bool) {
+                if (bool) {
+                    var settingsFile = path.join(nw.App.dataPath, 'koa11y-settings.json');
+                    fs.unlinkSync(settingsFile);
+                    nw.Window.get().reload();
+                }
+            },
+            prefillOutput: function () {
+                this.folderPicker = makeDesktopPath();
+            },
+
+            // Alerts
+            successMessage: function (file, ext) {
+                var filetype = ext.toUpperCase();
+                if (filetype == 'MARKDOWN') {
+                    filetype = 'Markdown';
+                }
+                // TODO: Handle this in a more Vue way
+                var message =
+                    '<div class="alert alert-info alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>' +
+                            '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
+                        '</h4>' +
+                        '<p>' + file + '</p>' +
+                    '</div>';
+                this.notifications = message;
+            },
+            errorMessage: function (error) {
+                // TODO: Handle this in a more Vue way
+                var markup =
+                    '<div class="alert alert-danger alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>' +
+                            '<p>Pa11y Error:</p>' +
+                        '</h4>' +
+                        '<p>' + error + '</p>' +
+                    '</div>';
+                this.notifications = markup;
+            },
+
+            // Helpers
+            reset: function () {
+                // TODO: Rename #results to #notifications or something
+                // Put all potential DOM elements that could be displayed
+                // there into the DOM by default. Hide/Show them based
+                // on Vue. Then remove this .empty() line.
+                $('#results').empty();
+                this.badges.errors = 0;
+                this.badges.warnings = 0;
+                this.badges.notices = 0;
+            },
+            unlockRun: function () {
+                var url = this.url;
+                var destination = this.folderPicker;
+                var file = this.outputFileName;
+
+                var anyButtonEnabled = (this.errorsButton || this.warningsButton || this.noticesButton);
+
+                var imgAltsParsed = '';
+                if (this.imageAlts) {
+                    imgAltsParsed = tryParseJSON(this.imageAlts);
+                }
+                var imageAltsInUse = !!this.imageAlts && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) === 'object');
+
+                // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notice), or some valid JSON in the imageAlts box
+                if (url && destination && file && (anyButtonEnabled || imageAltsInUse)) {
+                    this.submitAllowed = false;
+                } else {
+                    this.submitAllowed = true;
+                }
+            },
+            /**
+             * This will override the contents of a file you pass in with
+             * the data you supply. If the file you point to doesn't exist,
+             * it will be created with your supplied data.
+             *
+             * @param  {string}   filePathAndName Path to file
+             * @param  {string}   data            The contents that should be saved
+             * @param  {Function} callback        Optional callback function
+             */
+            writeToFile: function (filePathAndName, data, callback) {
+                // Validate that required arguments are passed and are the correct types
+                if (!filePathAndName) {
+                    // eslint-disable-next-line
+                    console.info('Supply a path to the file you want to create or replace the contents of as the first argument to this function.');
+                    return;
+                } else if (typeof(filePathAndName) !== 'string') {
+                    // eslint-disable-next-line
+                    console.info('File path and name must be passed as a string.');
+                    return;
+                } else if (!data) {
+                    // eslint-disable-next-line
+                    console.info('You must pass in the data to be stored as the second argument to this function.');
+                    return;
+                } else if (typeof(data) !== 'string') {
+                    // eslint-disable-next-line
+                    console.info('The data to be stored must be passed as a string.');
+                    return;
+                } else if (callback && typeof(callback) !== 'function') {
+                    // eslint-disable-next-line
+                    console.info('Your callback must be passed as a function.');
+                    return;
+                }
+
+                // Write to the file the user passed in
+                fs.writeFile(filePathAndName, data, function (err) {
+                    // If there was a problem writing to the file
+                    if (err) {
+                        // eslint-disable-next-line
+                        console.info('There was an error attempting to write data to disk.');
+                        // eslint-disable-next-line
+                        console.warn({
+                            filePathAndName: filePathAndName,
+                            data: data,
+                            error: err.message
+                        });
+                        return;
+                    // After file is saved/updated successfully, run the callback if it was passed in
+                    } else if (callback) {
+                        callback();
+                    }
+                });
+            },
+
+            // URL Stuff
+            urlKeyup: function () {
+                this.reset();
+                this.outputFileName = cleanURL(this.url);
+                this.saveSettings();
+                this.unlockRun();
+            },
+
+            // Output Folder stuff
+            outputFolderIcon: function () {
+                var outputTextField = this.$refs.outputFolderBrowse;
+                outputTextField.click();
+            },
+            outputFolderSet: function (evt) {
+                this.folderPicker = evt.currentTarget.value;
+                this.outputFolderChanged();
+            },
+            outputFolderChanged: function () {
+                this.reset();
+                this.saveSettings();
+            },
+
+            // Dropdowns (Standards/File Format)
+            dropdownChanged: function () {
+                this.reset();
+                this.saveSettings();
+                showHideImageAltsBox();
+            },
+            standardName: function () {
+                return this.standards[this.standard];
+            },
+            outputTypeName: function () {
+                return this.outputTypes[this.outputType];
+            },
+
+            // Error/Warning/Notice Buttons
+            toggleButton: function (button) {
+                event.preventDefault();
+                this.reset();
+
+                this[button] = !this[button];
+
+                app.saveSettings();
+                this.unlockRun();
+            },
+
+            clipboard: function (evt) {
+                evt.preventDefault();
+                var data = fs.readFileSync('_scripts/imgalts5.min.js', 'binary');
+                var dummy = document.createElement('textarea');
+                dummy.setAttribute('id', 'dummy');
+                document.body.appendChild(dummy);
+                var dumNode = document.getElementById('dummy');
+                dumNode.value = data;
+                dumNode.select();
+                document.execCommand('copy');
+                document.body.removeChild(dumNode);
+
+                // TODO: Embed this in the #results directly and use Vue/CSS to show/fadeout
+                var message =
+                    '<div class="alert alert-info alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>Copied to Clipboard</h4>' +
+                    '</div>';
+                $('#results').html(message);
+
+                setTimeout(function () {
+                    $('#results .alert').fadeOut('slow');
+                }, 700);
+            }
+        },
+        watch: {
+            aboutModal: function (newVal) {
+                var className = 'modal-open';
+                if (newVal) {
+                    document.body.classList.add(className);
+                } else {
+                    document.body.classList.remove(className);
+                }
+            }
+        }
+    });
+
+    app.prefillOutput();
 
     $('.navbar-brand img').on('contextmenu', function (evt) {
         evt.preventDefault();
@@ -38,138 +352,14 @@ function runApp () {
         keyBindings();
     }
 
-    function unlockRun () {
-        ugui.helpers.buildUGUIArgObject();
-        var url = ugui.args.url.value;
-        var dest = ugui.args.folderPicker.value;
-        var file = ugui.args.output.value;
-        var errorsButton = (ugui.args.badgeError.value === 'true');
-        var warningsButton = (ugui.args.badgeWarning.value === 'true');
-        var noticesButton = (ugui.args.badgeNotice.value === 'true');
-        var imgAltsVal = $('#imagealts').val();
-        var imgAltsParsed = '';
-        if (imgAltsVal) {
-            imgAltsParsed = tryParseJSON(imgAltsVal);
-        }
-        // To unlock you need a URL/Destination/Filename and at least one button pressed (err/warn/notic), or some valid JSON in the imageAlts box
-        if (url && dest && file && ((errorsButton || warningsButton || noticesButton) || (!!imgAltsVal && (imgAltsParsed.length > 0) && (typeof(imgAltsParsed) == 'object')))) {
-            $('#run').prop('disabled', false);
-        } else {
-            $('#run').prop('disabled', true);
-        }
-    }
-
-    function urlKeyup () {
-        reset();
-        // Cleaned string
-        var url = $('#url').val();
-        url = cleanURL(url);
-        $('#output').val(url);
-        ugui.helpers.saveSettings();
-        unlockRun();
-    }
-    $('#url').change(urlKeyup);
-    $('#url').keyup(urlKeyup);
-
-    $('#output').change(unlockRun);
-    $('#output').keyup(unlockRun);
-    $('#imagealts').change(unlockRun);
-    $('#imagealts').keyup(unlockRun);
-
-    function prefillURL () {
-        $('#url').val('http://google.com');
-        urlKeyup();
-    }
-    function prefillOutput () {
-        var myDesktopPath = makeDesktopPath();
-        $('#folderPicker').val(myDesktopPath);
-    }
-    function prefillData () {
-        ugui.helpers.buildUGUIArgObject();
-        if (!ugui.args.url.value) {
-            prefillURL();
-        }
-        if (!ugui.args.folderPicker.value) {
-            prefillOutput();
-        }
-    }
-    prefillData();
-
-    function reset () {
-        $('#results').empty();
-        $('#button-badges .badge').html('0');
-    }
-
-    function successMessage (file, ext) {
-        var filetype = ext.toUpperCase();
-        if (filetype == 'MARKDOWN') {
-            filetype = 'Markdown';
-        }
-        var message =
-            '<div class="alert alert-info alert-dismissible" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                '<h4>' +
-                    '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
-                '</h4>' +
-                '<p>' + file + '</p>' +
-            '</div>';
-        $('#results').html(message);
-    }
-    function errorMessage (error) {
-        var markup =
-            '<div class="alert alert-danger alert-dismissible" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                '<h4>' +
-                    '<p>Pa11y Error:</p>' +
-                '</h4>' +
-                '<p>' + error + '</p>' +
-            '</div>';
-        $('#results').html(markup);
-    }
 
     $('#imageAltsModal .modal-header .glyphicon-remove').click(function () {
         $('#imageAltsModal').slideUp('slow');
     });
 
-    $('#outputFolderIcon').click(function () {
-        $('#outputFolderBrowse').click();
-    });
-
-    $('#outputFolderBrowse').change(function () {
-        reset();
-        var userDir = $(this).val();
-        $('#folderPicker').val(userDir);
-        ugui.helpers.saveSettings();
-    });
-
-    if (ugui.args.badgeError.value == 'false') {
-        $('#button-badges .btn-danger').addClass('disabled');
-    }
-    if (ugui.args.badgeWarning.value == 'false') {
-        $('#button-badges .btn-warning').addClass('disabled');
-    }
-    if (ugui.args.badgeNotice.value == 'false') {
-        $('#button-badges .btn-primary').addClass('disabled');
-    }
-
-    $('#button-badges .btn-danger, #button-badges .btn-warning, #button-badges .btn-primary').click(function () {
-        reset();
-
-        if ($(this).hasClass('disabled')) {
-            $(this).removeClass('disabled');
-            $(this).val('true');
-        } else {
-            $(this).addClass('disabled');
-            $(this).val('false');
-        }
-
-        ugui.helpers.buildUGUIArgObject();
-        ugui.helpers.saveSettings();
-        unlockRun();
-    });
 
     function showHideImageAltsBox () {
-        if (ugui.args.outputcsv.htmlticked) {
+        if (app.outputType === 'csv') {
             $('#imageAltsSection').slideUp(480);
         } else {
             $('#imageAltsSection').slideDown(480);
@@ -177,39 +367,6 @@ function runApp () {
     }
 
     showHideImageAltsBox();
-
-    $('input[name="standard"], input[name="outputtype"]').change(function () {
-        reset();
-        ugui.helpers.saveSettings();
-        showHideImageAltsBox();
-    });
-
-    function clipboard (data) {
-        $('#clipboard').click(function (evt) {
-            evt.preventDefault();
-            var dummy = document.createElement('textarea');
-            dummy.setAttribute('id', 'dummy');
-            document.body.appendChild(dummy);
-            var dumNode = document.getElementById('dummy');
-            dumNode.value = data;
-            dumNode.select();
-            document.execCommand('copy');
-            document.body.removeChild(dumNode);
-
-            var message =
-                '<div class="alert alert-info alert-dismissible" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                    '<h4>Copied to Clipboard</h4>' +
-                '</div>';
-            $('#results').html(message);
-
-            setTimeout(function () {
-                $('#results .alert').fadeOut('slow');
-            }, 700);
-        });
-    }
-
-    clipboard(fs.readFileSync('_scripts/imgalts5.min.js', 'binary'));
 
     /**
      * Process an array of objects, each containing the src and alt data for images.
@@ -446,11 +603,10 @@ function runApp () {
         window.imageStats = {};
         window.imgAltsParsed = [];
 
-        var imgAltsVal = $('#imagealts').val();
         // If there is text in the textarea and we aren't on CSV which doesn't support image stats output
-        if (imgAltsVal && !ugui.args.outputcsv.htmlticked) {
+        if (app.imageAlts && app.outputType !== 'csv') {
             // This will output an error if JSON is invalid, or if there is no text
-            window.imgAltsParsed = tryParseJSON(imgAltsVal);
+            window.imgAltsParsed = tryParseJSON(app.imageAlts);
             // If the text is valid JSON
             if (window.imgAltsParsed.length > 0 && typeof(window.imgAltsParsed) == 'object') {
                 $('#imageAltsModal').fadeIn('slow');
@@ -466,37 +622,35 @@ function runApp () {
 
     function runPa11y () {
         $('#spinner').fadeIn('slow');
-        reset();
-
-        ugui.helpers.buildUGUIArgObject();
+        app.reset();
 
         var filetype = 'html';
         var ext = '.html';
-        if (ugui.args.outputcsv.htmlticked) {
+        if (app.outputType === 'csv') {
             filetype = 'csv';
             ext = '.csv';
-        } else if (ugui.args.outputhtml.htmlticked) {
+        } else if (app.outputType === 'html') {
             filetype = 'html';
             ext = '.html';
-        } else if (ugui.args.outputjson.htmlticked) {
+        } else if (app.outputType === 'json') {
             filetype = 'json';
             ext = '.json';
-        } else if (ugui.args.outputmd.htmlticked) {
+        } else if (app.outputType === 'md') {
             filetype = 'markdown';
             ext = '.md';
-        } else if (ugui.args.outputxml.htmlticked) {
+        } else if (app.outputType === 'xml') {
             filetype = 'xml';
             ext = '.xml';
         }
 
         var standard = 'WCAG2AA';
-        if (ugui.args.standardsection.htmlticked) {
+        if (app.standard === 'section') {
             standard = 'Section508';
-        } else if (ugui.args.standardwcaga.htmlticked) {
+        } else if (app.standard === 'wcaga') {
             standard = 'WCAG2A';
-        } else if (ugui.args.standardwcagaa.htmlticked) {
+        } else if (app.standard === 'wcagaa') {
             standard = 'WCAG2AA';
-        } else if (ugui.args.standardwcagaaa.htmlticked) {
+        } else if (app.standard === 'wcagaaa') {
             standard = 'WCAG2AAA';
         }
 
@@ -511,9 +665,9 @@ function runApp () {
             ignore.push('notice');
         }
 
-        var url = ugui.args.url.value;
-        var folderPicker = ugui.args.folderPicker.value;
-        var fileName = ugui.args.output.value;
+        var url = app.url;
+        var folderPicker = app.folderPicker;
+        var fileName = app.outputFileName;
         var file = path.join(folderPicker, fileName + ext);
 
         var pa11y = require('pa11y');
@@ -535,7 +689,7 @@ function runApp () {
             if (error) {
                 // eslint-disable-next-line no-console
                 console.error(error);
-                errorMessage(error.message);
+                app.errorMessage(error.message);
                 return;
             }
 
@@ -557,38 +711,39 @@ function runApp () {
                     badges.notices = badges.notices + 1;
                 }
             }
-            $('#button-row .btn-danger span').text(badges.errors);
-            $('#button-row .btn-warning span').text(badges.warnings);
-            $('#button-row .btn-primary span').text(badges.notices);
+
+            app.badges.errors = badges.errors;
+            app.badges.warnings = badges.warnings;
+            app.badges.notices = badges.notices;
 
             // JSON
-            if (ugui.args.outputjson.htmlticked) {
+            if (app.outputType === 'json') {
                 var outputJSON = formatJSON(window.imageStats, results);
 
-                ugui.helpers.writeToFile(file, outputJSON);
-                
-                $('#results').html(successMessage(file, filetype));
+                app.writeToFile(file, outputJSON);
+
+                $('#results').html(app.successMessage(file, filetype));
             // CSV
-            } else if (ugui.args.outputcsv.htmlticked) {
+            } else if (app.outputType === 'csv') {
                 var outputCSV = formatCSV(window.imageStats, results);
 
-                ugui.helpers.writeToFile(file, outputCSV);
+                app.writeToFile(file, outputCSV);
 
-                successMessage(file, filetype);
+                app.successMessage(file, filetype);
             // Markdown
-            } else if (ugui.args.outputmd.htmlticked) {
-                var outputMD = formatMD(window.imageStats, results, ugui.args.url.value);
+            } else if (app.outputType === 'md') {
+                var outputMD = formatMD(window.imageStats, results, app.url);
 
-                ugui.helpers.writeToFile(file, outputMD);
+                app.writeToFile(file, outputMD);
 
-                successMessage(file, filetype);
+                app.successMessage(file, filetype);
             // XML
-            } else if (ugui.args.outputxml.htmlticked) {
-                outputXML = formatXML(window.imageStats, results);
+            } else if (app.outputType === 'xml') {
+                var outputXML = formatXML(window.imageStats, results);
 
-                ugui.helpers.writeToFile(file, outputXML);
+                app.writeToFile(file, outputXML);
 
-                successMessage(file, filetype);
+                app.successMessage(file, filetype);
             // HTML
             } else {
                 var enabledButtons = [];
@@ -606,9 +761,8 @@ function runApp () {
 
                 var outputHTML = formatHTML(window.imageStats, results, url, buttons);
 
-                ugui.helpers.writeToFile(file, outputHTML);
-
-                successMessage(file, filetype);
+                app.writeToFile(file, outputHTML);
+                app.successMessage(file, filetype);
             }
         });
     }
@@ -627,6 +781,7 @@ function runApp () {
      * @param  {Function} callback Callback to run upon PhantomJS script finishing
      * @return {Null}              Currently nothing, just console logs.
      */
+    /*
     // eslint-disable-next-line
     function phantomImgAlts (url, callback) {
         if (!url) {
@@ -645,14 +800,14 @@ function runApp () {
             if (err) {
                 // eslint-disable-next-line
                 console.log(err);
-                errorMessage(err);
+                app.errorMessage(err);
                 return;
             }
 
             if (stderr) {
                 // eslint-disable-next-line
                 console.log(stderr);
-                errorMessage(stderr);
+                app.errorMessage(stderr);
                 return;
             }
 
@@ -670,7 +825,11 @@ function runApp () {
             }
         });
     }
+    */
 
-    unlockRun();
 
-} // end runApp();
+
+
+
+
+    app.loadSettings();

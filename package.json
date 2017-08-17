@@ -51,6 +51,7 @@
         "plugin": true
     },
     "dependencies": {
+        "vue": "^2.4.1",
         "pa11y": "4.11.0",
         "phantomjs-prebuilt": "^2.1.14",
         "json2csv": "3.7.3",
