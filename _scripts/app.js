@@ -4,6 +4,15 @@ var nw = require('nw.gui');
 var $ = window.$;
 var ugui = window.ugui;
 var updateDonutChart = window.updateDonutChart;
+var keyBindings = require('./_functions/key-bindings');
+var tryParseJSON = require('./_functions/try-parse-json');
+var cleanURL = require('./_functions/clean-url');
+var makeDesktopPath = require('./_functions/my-desktop-path');
+var formatJSON = require('./_outputs/format-JSON');
+var formatCSV = require('./_outputs/format-CSV');
+var formatMD = require('./_outputs/format-MD');
+var formatXML = require('./_outputs/format-XML');
+var formatHTML = require('./_outputs/format-HTML');
 
 // Wait for the document to load, then load settings for the user, then run the app.
 $(document).ready(function () {
@@ -25,69 +34,9 @@ function runApp () {
         nw.Window.get().showDevTools();
     });
 
-    function tryParseJSON (jsonString) {
-        try {
-            var obj = JSON.parse(jsonString);
-            if (obj && typeof obj === 'object') {
-                return obj;
-            }
-        } catch (err) {
-            // eslint-disable-line no-empty
-            // If we log the err here it will spam the console anytime the user pastes non-json or types in the box
-        }
-
-        return false;
-    }
-
-    function cleanURL () {
-        var url = $('#url').val();
-        url = url.replace('https://', '');
-        url = url.replace('http://', '');
-        url = url.replace('www.', '');
-        url = url.replace('.html', '');
-        url = url.replace('.htm', '');
-        url = url.replace('.php', '');
-        url = url.replace('.aspx', '');
-        url = url.replace('.asp', '');
-        url = url.replace('.cfm', '');
-        url = url.split('.').join(' ');
-        url = url.split('/').join(' ');
-        url = url.split('?').join(' ');
-        url = url.split('&').join(' ');
-        url = url.split('|').join(' ');
-        url = url.split('=').join(' ');
-        url = url.split('*').join(' ');
-        url = url.split('\\').join(' ');
-        url = url.split('"').join(' ');
-        url = url.split(':').join(' ');
-        url = url.split('<').join(' ');
-        url = url.split('>').join(' ');
-        return url;
-    }
-
-    function keyBindings () {
-        document.onkeydown = function (pressed) {
-        // Check CMD+Shift+X and cut
-        // Check CMD+Shift+V and paste
-        // Check CMD+Shift+C and copy
-            if (pressed.metaKey && pressed.keyCode === 88) {
-                document.execCommand('cut');
-                return false;
-            } else if (pressed.metaKey && pressed.keyCode === 67) {
-                document.execCommand('copy');
-                return false;
-            } else if (pressed.metaKey && pressed.keyCode === 86) {
-                document.execCommand('paste');
-                return false;
-            }
-        };
-    }
-
     if (process.platform === 'darwin') {
         keyBindings();
     }
-    
-    
 
     function unlockRun () {
         ugui.helpers.buildUGUIArgObject();
@@ -113,7 +62,8 @@ function runApp () {
     function urlKeyup () {
         reset();
         // Cleaned string
-        var url = cleanURL();
+        var url = $('#url').val();
+        url = cleanURL(url);
         $('#output').val(url);
         ugui.helpers.saveSettings();
         unlockRun();
@@ -131,18 +81,7 @@ function runApp () {
         urlKeyup();
     }
     function prefillOutput () {
-        var homePath = '';
-        if (process.platform == 'linux') {
-            homePath = process.env.HOME;
-        } else if (process.platform == 'win32') {
-            homePath = process.env.USERPROFILE;
-        } else if (process.platform == 'darwin') {
-            homePath = '/Users/' + process.env.USER;
-            if (process.env.HOME) {
-                homePath = process.env.HOME;
-            }
-        }
-        var myDesktopPath = path.join(homePath, 'Desktop');
+        var myDesktopPath = makeDesktopPath();
         $('#folderPicker').val(myDesktopPath);
     }
     function prefillData () {
@@ -624,215 +563,52 @@ function runApp () {
 
             // JSON
             if (ugui.args.outputjson.htmlticked) {
-                var outputJSON = {};
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    outputJSON.images = window.imageStats;
-                }
-                outputJSON.results = results;
-                outputJSON = JSON.stringify(outputJSON, null, 2);
+                var outputJSON = formatJSON(window.imageStats, results);
 
                 ugui.helpers.writeToFile(file, outputJSON);
+                
                 $('#results').html(successMessage(file, filetype));
             // CSV
             } else if (ugui.args.outputcsv.htmlticked) {
-
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
-                    console.log(window.imageStats); // eslint-disable-line no-console
-                }
-
-                var json2csv = require('json2csv');
-                var fields = [];
-                for (var key in results[0]) {
-                    fields.push(key);
-                }
-                var outputCSV = json2csv({
-                    'data': results,
-                    'fields': fields
-                });
+                var outputCSV = formatCSV(window.imageStats, results);
 
                 ugui.helpers.writeToFile(file, outputCSV);
 
                 successMessage(file, filetype);
             // Markdown
             } else if (ugui.args.outputmd.htmlticked) {
-                var output = '# ' + ugui.args.url.value + '\n\n';
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    output = output + '## Image Accessibility\n\n';
-                    output = output + '**Total Images:** ' + window.imageStats.totalImages + '  \n';
-                    output = output + '**Descriptive Alt Text:** ' + window.imageStats.descriptive + '  \n';
-                    output = output + '**Non-descriptive Alt Text:** ' + window.imageStats.nondescriptive + '  \n';
-                    output = output + '**Percent of images with Descriptive Alt Text:** ' + window.imageStats.descriptivePercent + '%  \n';
-                    output = output + '**Alt Text Under 100 Characters:** ' + window.imageStats.under100Char + '  \n';
-                    output = output + '**Percent of images with fewer than 100 Characters of Alt Text:** ' + window.imageStats.under100CharPercent + '%  \n';
-                    output = output + '**Images Under 100KB:** ' + window.imageStats.under100KB + '  \n';
-                    output = output + '**Percent of images Under 100 Kilobytes in size:** ' + window.imageStats.under100KBPercent + '%  \n';
-                    output = output + '**Images That Loaded:** ' + window.imageStats.imagesLoaded + '  \n';
-                    output = output + '**Percent of Images that Loaded:** ' + window.imageStats.imagesLoadedPercent + '%  \n';
-                    output = output + '**Total File Size In Bytes:** ' + window.imageStats.totalFileSizeInBytes + '  \n';
-                    output = output + '**Total File Size In Kilobytes:** ' + window.imageStats.totalFileSizeInKB + '  \n\n';
-                }
-                output = output + '## Results\n\n';
-                var hr = '\n* * *\n\n';
-                for (i = 0; i < results.length; i++) {
-                    var item = results[i];
-                    var code = '**Code:** ' + item.code + '  \n';
-                    var type = '**Type:** ' + item.type + '  \n';
-                    var typeCode = '**Type Code:** ' + item.typeCode + '  \n';
-                    var message = '**Message:** ' + item.message + '  \n';
-                    var selector = '**Selector:** `' + item.selector + '`  \n';
-                    var context = '**Context:**\n```\n' + item.context + '\n```\n';
-                    output = output + code + type + typeCode + message + selector + context;
-                    if (i < results.length - 1) {
-                        output = output + hr;
-                    }
-                }
+                var outputMD = formatMD(window.imageStats, results, ugui.args.url.value);
 
-                ugui.helpers.writeToFile(file, output);
+                ugui.helpers.writeToFile(file, outputMD);
 
                 successMessage(file, filetype);
             // XML
             } else if (ugui.args.outputxml.htmlticked) {
-                var outputXML = '<?xml version="1.0" encoding="UTF-8"?>\n<pa11y>\n';
-
-                var imgAlts = '';
-                // Ensure that the imageStats Object is not empty
-                if (!$.isEmptyObject(window.imageStats)) {
-                    imgAlts =
-                        '  <imagealts>\n' +
-                        '    <totalimages>' + window.imageStats.totalImages + '</totalimages>\n' +
-                        '    <descriptive>' + window.imageStats.descriptive + '</descriptive>\n' +
-                        '    <nondescriptive>' + window.imageStats.nondescriptive + '</nondescriptive>\n' +
-                        '    <under100char>' + window.imageStats.under100Char + '</under100char>\n' +
-                        '    <under100kb>' + window.imageStats.under100KB + '</under100kb>\n' +
-                        '    <imagesloaded>' + window.imageStats.imagesLoaded + '</imagesloaded>\n' +
-                        '    <totalfilesizeinbytes>' + window.imageStats.totalFileSizeInBytes + '</totalfilesizeinbytes>\n' +
-                        '    <totalfilesizeinkb>' + window.imageStats.totalFileSizeInKB + '</totalfilesizeinkb>\n' +
-                        '    <descriptivepercent>' + window.imageStats.descriptivePercent + '</descriptivepercent>\n' +
-                        '    <under100charpercent>' + window.imageStats.under100CharPercent + '</under100charpercent>\n' +
-                        '    <under100kbpercent>' + window.imageStats.under100KBPercent + '</under100kbpercent>\n' +
-                        '    <imagesloadedpercent>' + window.imageStats.imagesLoadedPercent + '</imagesloadedpercent>\n' +
-                        '  </imagealts>\n';
-                }
-
-                outputXML = outputXML + imgAlts;
-
-                for (i = 0; i < results.length; i++) {
-                    var current = results[i];
-                    var result =
-                        '  <result>\n' +
-                        '    <code>' + current.code + '</code>\n' +
-                        '    <type typecode="' + current.typeCode + '">' + current.type + '</type>\n' +
-                        '    <message>' + current.message + '</message>\n' +
-                        '    <selector><![CDATA[' + current.selector + ']]></selector>\n' +
-                        '    <context><![CDATA[' + current.context + ']]></context>\n' +
-                        '  </result>\n';
-                    outputXML = outputXML + result;
-                }
-                outputXML = outputXML + '</pa11y>\n';
+                outputXML = formatXML(window.imageStats, results);
 
                 ugui.helpers.writeToFile(file, outputXML);
 
                 successMessage(file, filetype);
             // HTML
             } else {
-                var returnedErrors = '';
-                var returnedWarnings = '';
-                var returnedNotices = '';
-                var panelColor = '';
-                for (i = 0; i < results.length; i++) {
-                    var resultsType = results[i].type;
-                    if (resultsType == 'warning') {
-                        panelColor = 'warning';
-                    } else if (resultsType == 'error') {
-                        panelColor = 'danger';
-                    } else if (resultsType == 'notice') {
-                        panelColor = 'primary';
-                    }
-
-                    var theContext = results[i].context;
-                    theContext = theContext.split('<').join('&lt;');
-                    var theMessage = results[i].message;
-                    theMessage = theMessage.replace('. Recommendation: ', '. <strong>Recommendation:</strong> ');
-                    var entry =
-                      '<div class="panel panel-' + panelColor + '">\n' +
-                        '<div class="panel-heading">' + results[i].code + '</div>\n' +
-                        '<div class="panel-body">\n' +
-                          '<strong class="text-capitalize">' + results[i].type + ':</strong> ' + theMessage + '<br /><br />\n' +
-                          '<pre><code>' + theContext + '</code></pre>\n' +
-                        '</div>\n' +
-                        '<div class="panel-footer text-sm"><h4><small>' + results[i].selector + '</small></h4></div>\n' +
-                      '</div>\n';
-
-                    if (resultsType == 'error') {
-                        returnedErrors = returnedErrors + entry;
-                    } else if (resultsType == 'warning') {
-                        returnedWarnings = returnedWarnings + entry;
-                    } else if (resultsType == 'notice') {
-                        returnedNotices = returnedNotices + entry;
+                var enabledButtons = [];
+                var buttonElements = document.getElementById('button-badges').children;
+                for (var keys in buttonElements) {
+                    if (typeof(buttonElements[keys]) === 'object') {
+                        var val = buttonElements[keys].outerHTML;
+                        // If not disabled
+                        if (val.indexOf('disabled') === -1) {
+                            enabledButtons.push(val);
+                        }
                     }
                 }
+                var buttons = enabledButtons.join('');
 
-                $.get('_markup/template.html', function (template) {
-                    var results = returnedErrors + returnedWarnings + returnedNotices;
-                    var buttons = '';
-                    $('#button-badges button:not(".disabled")').each(function () {
-                        buttons = buttons + $(this).prop('outerHTML') + '\n';
-                    });
+                var outputHTML = formatHTML(window.imageStats, results, url, buttons);
 
-                    var imgAlts = '';
+                ugui.helpers.writeToFile(file, outputHTML);
 
-                    // Ensure that the imageStats Object is not empty
-                    if (!$.isEmptyObject(window.imageStats)) {
-                        var totalImages = window.imageStats.totalImages;
-                        var descriptive = window.imageStats.descriptive;
-                        var descriptivePercent = window.imageStats.descriptivePercent;
-                        var under100Char = window.imageStats.under100Char;
-                        var under100CharPercent = window.imageStats.under100CharPercent;
-                        var under100KB = window.imageStats.under100KB;
-                        var under100KBPercent = window.imageStats.under100KBPercent;
-                        var imagesLoaded = window.imageStats.imagesLoaded;
-                        var imagesLoadedPercent = window.imageStats.imagesLoadedPercent;
-                        var totalFileSizeInKB = window.imageStats.totalFileSizeInKB;
-                        var descriptiveStyle = 'success glyphicon-ok';
-                        var under100CharStyle = 'success glyphicon-ok';
-                        var under100KBStyle = 'success glyphicon-ok';
-                        var imagesLoadedStyle = 'success glyphicon-ok';
-                        if (descriptivePercent  < 100) { descriptiveStyle  = 'danger glyphicon-remove'; }
-                        if (under100CharPercent < 100) { under100CharStyle = 'danger glyphicon-remove'; }
-                        if (under100KBPercent   < 100) { under100KBStyle   = 'danger glyphicon-remove'; }
-                        if (imagesLoadedPercent < 100) { imagesLoadedStyle = 'danger glyphicon-remove'; }
-
-                        imgAlts =
-                          '<div class="row">' +
-                            '<div class="panel panel-primary">' +
-                              '<div class="panel-heading">Image Accessibility</div>' +
-                              '<div class="panel-body">' +
-                                '<p><i class="glyphicon text-' + descriptiveStyle  + '"></i> <strong>' + descriptivePercent  + '%</strong> of images on the page had descriptive ALT text. <strong>(' + descriptive + '/' + totalImages + ')</strong></p>' +
-                                '<p><i class="glyphicon text-' + under100CharStyle + '"></i> <strong>' + under100CharPercent + '%</strong> of ALTs were under 100 characters. <strong>(' + under100Char + '/' + totalImages + ')</strong></p>' +
-                                '<p><i class="glyphicon text-' + under100KBStyle   + '"></i> <strong>' + under100KBPercent   + '%</strong> of images were under 100KB in size. <strong>(' + under100KB + '/' + totalImages + ')</strong></p>' +
-                                '<p><i class="glyphicon text-' + imagesLoadedStyle + '"></i> <strong>' + imagesLoadedPercent + '%</strong> of images loaded with a total image payload of <strong>' + totalFileSizeInKB + 'KB (' + imagesLoaded + '/' + totalImages + ')</strong></p>' +
-                              '</div>' +
-                            '</div>' +
-                          '</div>';
-                    }
-
-                    var content =
-                        '    <div class="row">\n' +
-                        '      <span id="buttons">' + buttons + '</span>\n' +
-                        '      <h1>' + url + '</h1>\n' +
-                        '    </div>\n' +
-                             imgAlts + '\n' +
-                        '    <div class="row">' + results + '</div>\n';
-                    var output = template.replace('<!-- Content goes here -->', content);
-
-                    ugui.helpers.writeToFile(file, output);
-
-                    successMessage(file, filetype);
-                });
+                successMessage(file, filetype);
             }
         });
     }
