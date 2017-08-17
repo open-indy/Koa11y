@@ -61,7 +61,9 @@ var formatXML = require('./_outputs/format-XML');
 
             submitAllowed: false,
 
-            aboutModal: false
+            aboutModal: false,
+
+            notifications: ''
         },
         methods: {
             // Settings and defaults
@@ -138,6 +140,36 @@ var formatXML = require('./_outputs/format-XML');
             },
             prefillOutput: function () {
                 this.folderPicker = makeDesktopPath();
+            },
+
+            // Alerts
+            successMessage: function (file, ext) {
+                var filetype = ext.toUpperCase();
+                if (filetype == 'MARKDOWN') {
+                    filetype = 'Markdown';
+                }
+                // TODO: Handle this in a more Vue way
+                var message =
+                    '<div class="alert alert-info alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>' +
+                            '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
+                        '</h4>' +
+                        '<p>' + file + '</p>' +
+                    '</div>';
+                this.notifications = message;
+            },
+            errorMessage: function (error) {
+                // TODO: Handle this in a more Vue way
+                var markup =
+                    '<div class="alert alert-danger alert-dismissible" role="alert">' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                        '<h4>' +
+                            '<p>Pa11y Error:</p>' +
+                        '</h4>' +
+                        '<p>' + error + '</p>' +
+                    '</div>';
+                this.notifications = markup;
             },
 
             // Helpers
@@ -319,32 +351,6 @@ var formatXML = require('./_outputs/format-XML');
         keyBindings();
     }
 
-    function successMessage (file, ext) {
-        var filetype = ext.toUpperCase();
-        if (filetype == 'MARKDOWN') {
-            filetype = 'Markdown';
-        }
-        var message =
-            '<div class="alert alert-info alert-dismissible" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                '<h4>' +
-                    '<p>Your <strong>' + filetype + '</strong> file has been saved.</p>' +
-                '</h4>' +
-                '<p>' + file + '</p>' +
-            '</div>';
-        $('#results').html(message);
-    }
-    function errorMessage (error) {
-        var markup =
-            '<div class="alert alert-danger alert-dismissible" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-                '<h4>' +
-                    '<p>Pa11y Error:</p>' +
-                '</h4>' +
-                '<p>' + error + '</p>' +
-            '</div>';
-        $('#results').html(markup);
-    }
 
     $('#imageAltsModal .modal-header .glyphicon-remove').click(function () {
         $('#imageAltsModal').slideUp('slow');
@@ -682,7 +688,7 @@ var formatXML = require('./_outputs/format-XML');
             if (error) {
                 // eslint-disable-next-line no-console
                 console.error(error);
-                errorMessage(error.message);
+                app.errorMessage(error.message);
                 return;
             }
 
@@ -715,28 +721,28 @@ var formatXML = require('./_outputs/format-XML');
 
                 app.writeToFile(file, outputJSON);
 
-                $('#results').html(successMessage(file, filetype));
+                $('#results').html(app.successMessage(file, filetype));
             // CSV
             } else if (app.outputType === 'csv') {
                 var outputCSV = formatCSV(window.imageStats, results);
 
                 app.writeToFile(file, outputCSV);
 
-                successMessage(file, filetype);
+                app.successMessage(file, filetype);
             // Markdown
             } else if (app.outputType === 'md') {
                 var output = formatMD(window.imageStats, results, app.url);
 
                 app.writeToFile(file, output);
 
-                successMessage(file, filetype);
+                app.successMessage(file, filetype);
             // XML
             } else if (app.outputType === 'xml') {
                 var outputXML = formatXML(window.imageStats, results);
 
                 app.writeToFile(file, outputXML);
 
-                successMessage(file, filetype);
+                app.successMessage(file, filetype);
             // HTML
             } else {
                 var returnedErrors = '';
@@ -831,7 +837,7 @@ var formatXML = require('./_outputs/format-XML');
 
                     app.writeToFile(file, output);
 
-                    successMessage(file, filetype);
+                    app.successMessage(file, filetype);
                 });
             }
         });
@@ -870,14 +876,14 @@ var formatXML = require('./_outputs/format-XML');
             if (err) {
                 // eslint-disable-next-line
                 console.log(err);
-                errorMessage(err);
+                app.errorMessage(err);
                 return;
             }
 
             if (stderr) {
                 // eslint-disable-next-line
                 console.log(stderr);
-                errorMessage(stderr);
+                app.errorMessage(stderr);
                 return;
             }
 
