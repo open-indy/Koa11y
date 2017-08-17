@@ -11,6 +11,7 @@ window.deleteSettingsFile = function (bool) {
 
     fs.remove(settingsFile, function (err) {
         if (err) {
+            // eslint-disable-next-line
             console.log(err);
         } else {
             nw.Window.get().reload();
