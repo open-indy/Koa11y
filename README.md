@@ -21,7 +21,6 @@ Koa11y is built with:
 * [Sass](http://sass-lang.com)
 * [Bootstrap](http://getbootstrap.com)
 * [Bootswatch (Flatly)](https://bootswatch.com/flatly)
-* [Bootstrap Dropdowns Enhancements](http://behigh.github.io/bootstrap_dropdowns_enhancement)
 * [nw-contextmenu](https://github.com/b1rdex/nw-contextmenu)
 
 * * *

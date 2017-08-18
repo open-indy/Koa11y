@@ -196,12 +196,12 @@
       -->
 
       <modal v-if="aboutModal" @close="aboutModal = false">
-        <h4 slot="header" class="poatao">About</h4>
+        <h4 slot="header">About</h4>
         <div slot="body" class="panel panel-primary">
 
           <div class="panel-heading">
-            <span class="pull-right versionApp" title="Version">V2.0.0</span>
-            <h3 class="panel-title">About <span class="applicationTitle">Koa11y</span></h3>
+            <span class="pull-right" title="Version">V{{ version }}</span>
+            <h3 class="panel-title">About Koa11y</h3>
           </div>
 
           <div class="panel-body">
@@ -287,7 +287,6 @@
     <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.bootstrap-3.2.0.min.js"></script>
-    <script type="text/javascript" src="_scripts/ven.bootstrap-slider.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.simple-donut.js"></script>
     <script type="text/javascript" src="_scripts/app.js"></script>
     <script type="text/javascript" src="_scripts/delete-settings.js"></script>
