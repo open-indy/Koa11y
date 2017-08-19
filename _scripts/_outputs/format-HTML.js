@@ -48,7 +48,7 @@ function formatHTML (imageStats, results, url, buttons) {
     var imgAlts = '';
 
     // Ensure that the imageStats Object is not empty
-    if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)) {
+    if (!(Object.keys(imageStats).length === 0)) {
         var totalImages = imageStats.totalImages;
         var descriptive = imageStats.descriptive;
         var descriptivePercent = imageStats.descriptivePercent;

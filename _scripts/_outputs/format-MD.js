@@ -2,7 +2,7 @@ function formatMD (imageStats, results, urlValue) {
 
     var output = '# ' + urlValue + '\n\n';
     // Ensure that the imageStats Object is not empty
-    if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)){
+    if (!(Object.keys(imageStats).length === 0)){
         output = output + '## Image Accessibility\n\n';
         output = output + '**Total Images:** ' + imageStats.totalImages + '  \n';
         output = output + '**Descriptive Alt Text:** ' + imageStats.descriptive + '  \n';
