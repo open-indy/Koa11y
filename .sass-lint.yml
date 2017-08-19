@@ -168,6 +168,8 @@ rules:
         - outline
         - outline-offset
         - overflow
+        - overflow-x
+        - overflow-y
         - perspective
         - pointer-events
         - -webkit-transform

@@ -63,6 +63,20 @@ var formatHTML = require('./_outputs/format-HTML');
             submitAllowed: false,
 
             aboutModal: false,
+            contributors: [
+                { name: 'The Jared Wilcurt',   url: 'http://TheJaredWilcurt.com'               },
+                { name: 'Rob Gaston',          url: 'https://github.com/robgaston1'            }
+            ],
+            technologies: [
+                { name: 'Pa11y',               url: 'http://pa11y.org'                         },
+                { name: 'NW.js',               url: 'http://nwjs.io'                           },
+                { name: 'Vue.js',              url: 'http://vuejs.org'                         },
+                { name: 'jQuery',              url: 'http://jquery.com'                        },
+                { name: 'Sass',                url: 'http://sass-lang.com'                     },
+                { name: 'Bootstrap',           url: 'http://getbootstrap.com'                  },
+                { name: 'Bootswatch (Flatly)', url: 'https://bootswatch.com/flatly'            },
+                { name: 'nw-contextmenu',      url: 'https://github.com/b1rdex/nw-contextmenu' }
+            ],
 
             notifications: ''
         },
@@ -204,6 +218,11 @@ var formatHTML = require('./_outputs/format-HTML');
                     this.submitAllowed = true;
                 }
             },
+            externalLink: function (item) {
+                event.preventDefault();
+                // Open in user's default browser
+                nw.Shell.openExternal(item.url);
+            },
             /**
              * This will override the contents of a file you pass in with
              * the data you supply. If the file you point to doesn't exist,
@@ -299,7 +318,7 @@ var formatHTML = require('./_outputs/format-HTML');
 
                 this[button] = !this[button];
 
-                app.saveSettings();
+                this.saveSettings();
                 this.unlockRun();
             },
 
