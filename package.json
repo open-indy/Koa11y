@@ -51,13 +51,13 @@
         "plugin": true
     },
     "dependencies": {
-        "vue": "^2.4.1",
-        "pa11y": "4.11.0",
-        "phantomjs-prebuilt": "^2.1.14",
-        "json2csv": "3.7.3",
         "base64-img": "^1.0.3",
         "fs-extra": "^3.0.1",
-        "semver": "^5.3.x"
+        "json2csv": "3.7.3",
+        "pa11y": "4.11.0",
+        "phantomjs-prebuilt": "^2.1.14",
+        "semver": "^5.3.x",
+        "vue": "^2.4.1"
     },
     "devDependencies": {
         "nw": "0.14.7-sdk",
