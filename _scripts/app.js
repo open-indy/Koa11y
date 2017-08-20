@@ -777,7 +777,7 @@ var formatHTML = require('./_outputs/format-HTML');
                     }
                 }
                 var buttons = enabledButtons.join('');
-                
+
                 var outputHTML = formatHTML(window.imageStats, results, url, buttons);
 
                 app.writeToFile(file, outputHTML);
