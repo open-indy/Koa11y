@@ -4,6 +4,7 @@
 var nw = require('nw.gui');
 var $ = window.$;
 var Vue = window.Vue;
+var httpVueLoader = window.httpVueLoader;
 var updateDonutChart = window.updateDonutChart;
 var keyBindings = require('./_functions/key-bindings');
 var tryParseJSON = require('./_functions/try-parse-json');
@@ -28,6 +29,9 @@ Vue.component('modal', {
 
 var app = new Vue({
     el: '#app',
+    components: {
+        'modal': httpVueLoader('_scripts/_templates/modal.vue')
+    },
     data: {
         version: '3.0.0',
 
