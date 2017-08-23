@@ -210,21 +210,16 @@
             </p>
             <p>
               Contributors to Koa11y:
-                <a class="external-link" href="http://github.com/TheJaredWilcurt">The Jared Wilcurt</a>,
-                <a class="external-link" href="http://github.com/">Rob Gaston</a>.<br />
+                <span v-for="(contributor, index) in contributors">
+                  <a @click="externalLink(contributor)" href="#">{{ contributor.name }}</a><span v-if="index < contributors.length - 1">, </span>
+                </span>.<br />
 
               Koala Logo designed by <a href="mailto:cha.schmidt@gmail.com" title="cha.schmidt@gmail.com" class="external-link">Charlotte Schmidt</a>.<br /><br />
 
               Koa11y is completely open source and built upon other open source technologies. Koa11y is made with
-                <a class="external-link" href="http://pa11y.org">Pa11y</a>,
-                <a class="external-link" href="http://nwjs.io">NW.js</a>,
-                <a class="external-link" href="http://vuejs.org">Vue.js</a>,
-                <a class="external-link" href="http://jquery.com">jQuery</a>,
-                <a class="external-link" href="http://sass-lang.com">Sass</a>,
-                <a class="external-link" href="http://getbootstrap.com">Bootstrap</a>,
-                <a class="external-link" href="https://bootswatch.com/flatly">Bootswatch (Flatly)</a>,
-                <a class="external-link" href="http://behigh.github.io/bootstrap_dropdowns_enhancement">Bootstrap Dropdowns Enhancements</a>,
-                <a class="external-link" href="https://github.com/b1rdex/nw-contextmenu">nw-contextmenu</a>.
+                <span v-for="(tech, index) in technologies">
+                  <a @click="externalLink(tech)" href="#">{{ tech.name }}</a><span v-if="index < technologies.length - 1">, </span>
+                </span>.
             </p>
             <p class="text-center">
               <a href="https://open-indy.github.io/Koa11y" class="external-link">Visit the Koa11y website.</a>

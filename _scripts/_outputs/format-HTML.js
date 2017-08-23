@@ -1,3 +1,5 @@
+/* eslint-disable no-multi-spaces */
+
 var fs = require('fs-extra');
 
 function formatHTML (imageStats, results, url, buttons) {
@@ -5,6 +7,7 @@ function formatHTML (imageStats, results, url, buttons) {
     var returnedWarnings = '';
     var returnedNotices = '';
     var panelColor = '';
+
     for (var i = 0; i < results.length; i++) {
         var resultsType = results[i].type;
         if (resultsType == 'warning') {
@@ -40,13 +43,12 @@ function formatHTML (imageStats, results, url, buttons) {
 
     var template = fs.readFileSync('_markup/template.html', 'utf8');
 
-    console.log(template);
-    var results = returnedErrors + returnedWarnings + returnedNotices;
+    results = returnedErrors + returnedWarnings + returnedNotices;
 
     var imgAlts = '';
 
     // Ensure that the imageStats Object is not empty
-    if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)) {
+    if (!(Object.keys(imageStats).length === 0)) {
         var totalImages = imageStats.totalImages;
         var descriptive = imageStats.descriptive;
         var descriptivePercent = imageStats.descriptivePercent;

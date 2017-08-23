@@ -3,7 +3,7 @@ function formatXML (imageStats, results) {
 
     var imgAlts = '';
     // Ensure that the imageStats Object is not empty
-    if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)) {
+    if (!(Object.keys(imageStats).length === 0)) {
         imgAlts =
             '  <imagealts>\n' +
             '    <totalimages>' + imageStats.totalImages + '</totalimages>\n' +

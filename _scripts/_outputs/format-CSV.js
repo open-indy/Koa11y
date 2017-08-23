@@ -1,6 +1,6 @@
 function formatCSV (imageStats, results) {
     // Ensure that the imageStats Object is not empty
-    if (!(Object.keys(imageStats).length === 0 && imageStats.constructor === Object)) {
+    if (!(Object.keys(imageStats).length === 0)) {
         // TODO: I don't know how to structure the data for CSV so that it can also contain ImgAlts data
         console.log(window.imageStats); // eslint-disable-line no-console
     }
