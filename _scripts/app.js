@@ -22,15 +22,15 @@ var base64Img = require('base64-img');
 var appData = nw.App.dataPath;
 var temp = path.join(appData, 'temp');
 
-// register modal component
-Vue.component('modal', {
-    template: '#modal-template'
-});
+// register components
+Vue.component('modal');
+Vue.component('simple-donut');
 
 var app = new Vue({
     el: '#app',
     components: {
-        'modal': httpVueLoader('_scripts/_templates/modal.vue')
+        'modal': httpVueLoader('_scripts/_templates/modal.vue'),
+        'simple-donut': httpVueLoader('_scripts/_templates/simple-donut.vue')
     },
     data: {
         version: '3.0.0',
