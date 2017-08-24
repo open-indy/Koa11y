@@ -113,8 +113,6 @@
               <span class="glyphicon glyphicon-folder-open pull-right outputFolderIcon" title="Browse" @click="outputFolderIcon"></span>
               <input class="hide" @change="outputFolderSet" type="file" id="outputFolderBrowse" ref="outputFolderBrowse" nwdirectory="nwdirectory" nwworkingdir="..." />
             </div>
-
-
           </div>
 
           <div class="row" id="imageAltsSection">
@@ -158,33 +156,6 @@
 
 
 
-      <!--
-        /////////////////////////////////////////////////////////////////
-        //                                                             //
-        //                       MODAL TEMPLATE                        //
-        //                                                             //
-        /////////////////////////////////////////////////////////////////
-      -->
-      <script type="text/x-template" id="modal-template">
-        <transition name="modal">
-          <div class="modal" @click="$emit('close')">
-            <div class="modal-dialog">
-              <div class="modal-content" @click.stop>
-                <div class="modal-header" v-if="this.$slots.header">
-                  <span class="glyphicon glyphicon-remove pull-right" @click="$emit('close')"></span>
-                  <slot name="header"></slot>
-                </div>
-                <div class="modal-body" v-if="this.$slots.body">
-                  <slot name="body"></slot>
-                </div>
-                <div class="modal-footer" v-if="this.$slots.footer">
-                  <slot name="footer"></slot>
-                </div>
-              </div>
-            </div>
-          </div>
-        </transition>
-      </script>
 
 
       <!--
@@ -280,6 +251,7 @@
 
 
     <script type="text/javascript" src="node_modules/vue/dist/vue.min.js"></script>
+    <script type="text/javascript" src="node_modules/http-vue-loader/src/httpVueLoader.js"></script>
     <script type="text/javascript" src="_scripts/ven.jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.bootstrap-3.2.0.min.js"></script>
     <script type="text/javascript" src="_scripts/ven.simple-donut.js"></script>
