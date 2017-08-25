@@ -82,9 +82,20 @@ function formatHTML (imageStats, results, url, buttons) {
           '</div>';
     }
 
+    var buttonMarkup = '';
+    if (buttons.errors.enabled) {
+        buttonMarkup = buttonMarkup + '<button class="btn btn-sm btn-danger">Errors <span class="badge">' + buttons.errors.amount + '</span></button>';
+    }
+    if (buttons.warnings.enabled) {
+        buttonMarkup = buttonMarkup + '<button class="btn btn-sm btn-warning">Warnings <span class="badge">' + buttons.warnings.amount + '</span></button>';
+    }
+    if (buttons.notices.enabled) {
+        buttonMarkup = buttonMarkup + '<button class="btn btn-sm btn-primary">Notices <span class="badge">' + buttons.notices.amount + '</span></button>';
+    }
+
     var content =
         '    <div class="row">\n' +
-        '      <span id="buttons">' + buttons + '</span>\n' +
+        '      <span id="buttons">' + buttonMarkup + '</span>\n' +
         '      <h1>' + url + '</h1>\n' +
         '    </div>\n' +
              imgAlts + '\n' +

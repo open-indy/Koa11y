@@ -769,18 +769,20 @@ function runPa11y () {
             app.successMessage(file, filetype);
         // HTML
         } else {
-            var enabledButtons = [];
-            var buttonElements = document.getElementById('button-badges').children;
-            for (var keys in buttonElements) {
-                if (typeof(buttonElements[keys]) === 'object') {
-                    var val = buttonElements[keys].outerHTML;
-                    // If not disabled
-                    if (val.indexOf('disabled') === -1) {
-                        enabledButtons.push(val);
-                    }
+            var buttons = {
+                errors: {
+                    enabled: app.errorsButton,
+                    amount: app.badges.errors
+                },
+                warnings: {
+                    enabled: app.warningsButton,
+                    amount: app.badges.warnings
+                },
+                notices: {
+                    enabled: app.noticesButton,
+                    amount: app.badges.notices
                 }
-            }
-            var buttons = enabledButtons.join('');
+            };
 
             var outputHTML = formatHTML(window.imageStats, results, url, buttons);
 
