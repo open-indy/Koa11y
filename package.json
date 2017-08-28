@@ -63,14 +63,18 @@
     "devDependencies": {
         "nw": "0.14.7-sdk",
         "eslint": "^3.8.1",
-        "sass-lint": "^1.10.2"
+        "sass-lint": "^1.10.2",
+        "nw-builder": "^3.4.1",
+        "rcedit": "^0.9.0",
+        "7zip-bin": "^2.2.3"
     },
     "scripts": {
         "start": "nw .",
+        "build": "node build-script.js",
         "phantomjs": "phantomjs",
         "phantomjs-prebuilt": "phantomjs-prebuilt",
-        "lint": "eslint --config=.eslintrc.js _scripts/**/*.js sasslinter.js",
-        "fix": "eslint --fix --config=.eslintrc.js _scripts/**/*.js sasslinter.js",
+        "lint": "eslint --config=.eslintrc.js _scripts/**/*.js sasslinter.js build-script.js",
+        "fix": "eslint --fix --config=.eslintrc.js _scripts/**/*.js sasslinter.js build-script.js",
         "sasslint": "node sasslinter.js"
     },
     "license": "MIT",

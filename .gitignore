@@ -34,3 +34,5 @@ node_modules
 .idea/
 NW.lnk
 results/
+build/
+cache/
