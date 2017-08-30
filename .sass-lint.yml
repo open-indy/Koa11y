@@ -151,12 +151,14 @@ rules:
         - list-style-position
         - list-style-type
         - speak
+        - src
         - text-align
         - text-decoration
         - text-overflow
         - text-rendering
         - text-shadow
         - text-transform
+        - unicode-range
         - white-space
         - word-break
 
