@@ -99,31 +99,52 @@ function updateExe (done) {
         'product-version': nwBuildSettings.appVersion
     };
 
-    rcedit(executable, options, function (a, b, c) {
-        if (a) {
-            console.log(a);
-        }
-        if (b) {
-            console.log(b);
-        }
-        if (c) {
-            console.log(c);
-        }
-        if (typeof(done) === 'function') {
-            done();
-        }
-    });
+    if (process.platform !== 'win32') {
+        done();
+    } else {
+        rcedit(executable, options, function (a, b, c) {
+            if (a) {
+                console.log(a);
+            }
+            if (b) {
+                console.log(b);
+            }
+            if (c) {
+                console.log(c);
+            }
+            if (typeof(done) === 'function') {
+                done();
+            }
+        });
+    }
 }
 
 function copyManifest () {
     var manifest = fs.readJsonSync('./package.json');
     manifest.devDependencies = {};
     var output = JSON.stringify(manifest, null, 2);
-    fs.writeFileSync('./build/' + nwBuildSettings.appName + '/win32/package.json', output);
+    if (process.platform === 'win32') {
+        fs.writeFileSync('./build/' + nwBuildSettings.appName + '/win32/package.json', output);
+    } else if (process.platform === 'linux') {
+        fs.writeFileSync('./build/' + nwBuildSettings.appName + '/linux32/package.json', output);
+        fs.writeFileSync('./build/' + nwBuildSettings.appName + '/linux64/package.json', output);
+    } else if (process.platform === 'darwin') {
+        // Stub
+    }
 }
 
 function changeDirectoryToBuildFolder () {
-    var buildFolder = path.join(process.cwd(), 'build/' + nwBuildSettings.appName + '/win32');
+    var subfolder = '';
+    var sub
+    if (process.platform === 'win32') {
+        subfolder = 'win32';
+    } else if (process.platform === 'linux' && process.arch === 'ia32') {
+        subfolder = 'linux32';
+    } else if (process.platform === 'linux' && process.arch === 'x64') {
+        subfolder = 'linux64';
+    }
+
+    var buildFolder = path.join(process.cwd(), 'build', nwBuildSettings.appName, subfolder);
     process.chdir(buildFolder);
 }
 
@@ -222,9 +243,10 @@ nw.on('log', function (msg) {
 
 nw.build().then(function () {
     console.log(' ∙ NW-Builder Complete');
-
     updateExe(function () {
-        console.log(' ∙ Updated ' + nwBuildSettings.appName + '.exe');
+        if (process.platform === 'win32') {
+            console.log(' ∙ Updated ' + nwBuildSettings.appName + '.exe');
+        }
 
         copyManifest();
         console.log(' ∙ Copied package.json');
@@ -238,6 +260,7 @@ nw.build().then(function () {
         moveFilesIntoPackageNW();
         console.log(' ∙ Finished moving files into package.nw');
 
+    /*
         removeJunk();
         console.log(' ∙ Finished removing junk files');
 
@@ -254,6 +277,7 @@ nw.build().then(function () {
         console.log(' ∙ Zipped app');
 
         console.log(totalBuildTime());
+    */
     });
 }).catch(function (err) {
     console.log('nw-builder err', err);
