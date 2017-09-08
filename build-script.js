@@ -21,7 +21,15 @@ var zip = require('7zip-bin');
 var year = '2017';
 var company = 'Open Indy Brigade';
 var description = 'Find accessibility issues in webpages.';
-var platforms = [ process.platform ];
+
+var platform = process.platform;
+if (process.platform === 'linux' && process.arch === 'ia32') {
+    platform = 'linux32';
+} else if (process.platform === 'linux' && process.arch === 'x64') {
+    platform = 'linux64';
+} else if (process.platform === 'darwin') {
+    platform = 'osx64';
+}
 
 var nwBuildSettings = {
     version: '0.14.7',
@@ -42,7 +50,7 @@ var nwBuildSettings = {
         './LICENSE'
     ],
     winIco: './_img/fav.ico',
-    platforms: platforms,
+    platforms: [ platform ],
     zip: false
 };
 
@@ -86,7 +94,11 @@ var junk = [
 // ///////////////////////// //
 
 function updateExe (done) {
-    var executable = './build/' + nwBuildSettings.appName + '/win32/' + nwBuildSettings.appName + '.exe';
+    var extension = '';
+    if (platform === 'win32') {
+        extension = '.exe';
+    }
+    var executable = './build/' + nwBuildSettings.appName + '/' + platform + '/' + nwBuildSettings.appName + extension;
 
     var options = {
         'version-string': {
@@ -99,9 +111,7 @@ function updateExe (done) {
         'product-version': nwBuildSettings.appVersion
     };
 
-    if (process.platform !== 'win32') {
-        done();
-    } else {
+    if (platform === 'win32') {
         rcedit(executable, options, function (a, b, c) {
             if (a) {
                 console.log(a);
@@ -116,6 +126,27 @@ function updateExe (done) {
                 done();
             }
         });
+    } else if (platform === 'linux64' || platform === 'linux32') {
+        exec('chmod +x ' + executable);
+
+        var fileName = 'Koa11y.desktop';
+        var fileData =
+            '[Desktop Entry]\n' +
+            'Type=Application\n' +
+            'Terminal=true\n' +
+            'Name=Run ' + nwBuildSettings.appName + '\n' +
+            'Icon=utilities-terminal\n' +
+            'Exec=gnome-terminal -e "bash -c \'./' + nwBuildSettings.appName + ';$SHELL\'"\n' +
+            'Categories=Application;';
+        var filePath = './build/' + nwBuildSettings.appName + '/' + platform + '/' + fileName;
+        fs.writeFileSync(filePath, fileData);
+
+        // TODO: On Linux auto-make the exe runnable, or a runnable .desktop file
+
+        exec('chmod +x ' + filePath);
+        done();
+    } else {
+        done();
     }
 }
 
@@ -123,28 +154,11 @@ function copyManifest () {
     var manifest = fs.readJsonSync('./package.json');
     manifest.devDependencies = {};
     var output = JSON.stringify(manifest, null, 2);
-    if (process.platform === 'win32') {
-        fs.writeFileSync('./build/' + nwBuildSettings.appName + '/win32/package.json', output);
-    } else if (process.platform === 'linux') {
-        fs.writeFileSync('./build/' + nwBuildSettings.appName + '/linux32/package.json', output);
-        fs.writeFileSync('./build/' + nwBuildSettings.appName + '/linux64/package.json', output);
-    } else if (process.platform === 'darwin') {
-        // Stub
-    }
+    fs.writeFileSync('./build/' + nwBuildSettings.appName + '/' + platform + '/package.json', output);
 }
 
 function changeDirectoryToBuildFolder () {
-    var subfolder = '';
-    var sub
-    if (process.platform === 'win32') {
-        subfolder = 'win32';
-    } else if (process.platform === 'linux' && process.arch === 'ia32') {
-        subfolder = 'linux32';
-    } else if (process.platform === 'linux' && process.arch === 'x64') {
-        subfolder = 'linux64';
-    }
-
-    var buildFolder = path.join(process.cwd(), 'build', nwBuildSettings.appName, subfolder);
+    var buildFolder = path.join(process.cwd(), 'build', nwBuildSettings.appName, platform);
     process.chdir(buildFolder);
 }
 
@@ -175,7 +189,15 @@ function removeJunk () {
 }
 
 function runApp () {
-    exec(nwBuildSettings.appName + '.exe');
+    var extension = '';
+    if (platform === 'win32') {
+        extension = '.exe';
+    }
+    if (platform === 'win32') {
+        exec(nwBuildSettings.appName + extension);
+    } else {
+        console.log('WARNING: WE STILL DON\'T KNOW HOW TO AUTO RUN EXE ON LINUX');
+    }
 }
 
 function goUpOneDirectory () {
@@ -231,6 +253,13 @@ function totalBuildTime () {
 
 
 // ///////////////////////// //
+//           CLEAN           //
+// ///////////////////////// //
+
+fs.removeSync('./build');
+
+
+// ///////////////////////// //
 //         EXECUTION         //
 // ///////////////////////// //
 
@@ -260,7 +289,6 @@ nw.build().then(function () {
         moveFilesIntoPackageNW();
         console.log(' ∙ Finished moving files into package.nw');
 
-    /*
         removeJunk();
         console.log(' ∙ Finished removing junk files');
 
@@ -270,6 +298,7 @@ nw.build().then(function () {
         goUpOneDirectory();
         console.log(' ∙ Went up one directory');
 
+    /*
         renameBuiltFolder();
         console.log(' ∙ Renamed built folder');
 
