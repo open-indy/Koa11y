@@ -3,16 +3,26 @@
     "version": "2.0.0",
     "author": "The Jared Wilcurt",
     "description": "Check if a website has accessibility issues.",
-    "keywords": [ "Accessibility", "standards", "automated", "WCAG", "Section 508" ],
-    "maintainers": [{
-        "name": "TheJaredWilcurt",
-        "email": "TheJaredWilcurt@noreply.github.com",
-        "web": "http://github.com/TheJaredWilcurt"
-    }],
-    "repository": [{
-        "type": "git",
-        "url": "git://github.com/TheJaredWilcurt/Koa11y.git"
-    }],
+    "keywords": [
+        "Accessibility",
+        "standards",
+        "automated",
+        "WCAG",
+        "Section 508"
+    ],
+    "maintainers": [
+        {
+            "name": "TheJaredWilcurt",
+            "email": "TheJaredWilcurt@noreply.github.com",
+            "web": "http://github.com/TheJaredWilcurt"
+        }
+    ],
+    "repository": [
+        {
+            "type": "git",
+            "url": "git://github.com/TheJaredWilcurt/Koa11y.git"
+        }
+    ],
     "bugs": "https://github.com/TheJaredWilcurt/Koa11y/issues",
     "main": "index.htm",
     "window": {
@@ -52,8 +62,9 @@
         "semver": "^5.3.x"
     },
     "devDependencies": {
-        "nw": "^0.12.3",
         "eslint": "^3.8.1",
+        "nw": "^0.12.3",
+        "pre-commit": "^1.2.2",
         "sass-lint": "^1.10.2"
     },
     "scripts": {
@@ -65,8 +76,14 @@
         "sasslint": "node sasslinter.js"
     },
     "license": "MIT",
-    "licenses": [{
-        "type": "MIT",
-        "url": "https://github.com/TheJaredWilcurt/Koa11y/blob/master/LICENSE"
-    }]
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://github.com/TheJaredWilcurt/Koa11y/blob/master/LICENSE"
+        }
+    ],
+    "precommit": [
+        "lint",
+        "sasslint"
+    ]
 }

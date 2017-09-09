@@ -64,6 +64,7 @@ rules:
     - 1
     - ignore-custom-properties: true
       order:
+        - unicode-range
         - content
 
         - position
