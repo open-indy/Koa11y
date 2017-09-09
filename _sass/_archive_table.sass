@@ -9,9 +9,9 @@
         background: #660086
         color: #FFF
 
-.new-release td
-    border-top: 2px solid $accent-color !important
-
-.latest-release td
-    border-top: 0px !important
-
+// Specificity increased to fight bootstrap
+table tbody
+    .new-release td
+        border-top: 2px solid $accent-color
+    .latest-release td
+        border-top: 0px

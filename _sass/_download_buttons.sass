@@ -43,7 +43,7 @@
 .linux.arch32 .dl-btn-lin64,
 .linux.arch64 .dl-btn-lin,
 .linux.arch64 .dl-btn-lin32
-    display: none !important
+    display: none
 
 .linux .dl-btn-lin
     padding: 10px 0px 0px 0px
@@ -68,20 +68,14 @@
             color: #000
         @else
             color: #FFF
+        &:hover,
+        &:active,
+        &:visited,
+        &:focus
+            text-decoration: none
 
 .dl-btn-lin a
     display: inline-block
     width: 50%
     padding: 2px 0px 6px 0px
     font-size: 30px
-
-.dl-btn-win,
-.dl-btn-osx,
-.dl-btn-lin,
-.dl-btn-lin32,
-.dl-btn-lin64
-    a:hover,
-    a:active,
-    a:visited,
-    a:focus
-        text-decoration: none
