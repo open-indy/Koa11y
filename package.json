@@ -28,6 +28,7 @@
     "dependencies": {},
     "devDependencies": {
         "eslint": "^3.8.1",
+        "pre-commit": "^1.2.2",
         "sass-lint": "^1.10.2"
     },
     "scripts": {
@@ -42,5 +43,9 @@
             "type": "MIT",
             "url": "https://github.com/open-indy/Koa11y/blob/master/LICENSE"
         }
+    ],
+    "pre-commit": [
+        "lint",
+        "sasslint"
     ]
 }
