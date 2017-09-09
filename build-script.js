@@ -298,7 +298,11 @@ nw.build().then(function () {
         goUpOneDirectory();
         console.log(' ∙ Went up one directory');
 
-    /*
+        if (platform !== 'win32') {
+            // This is as far as we've gotten on implementing the build for non-windows
+            return;
+        }
+
         renameBuiltFolder();
         console.log(' ∙ Renamed built folder');
 
@@ -306,7 +310,6 @@ nw.build().then(function () {
         console.log(' ∙ Zipped app');
 
         console.log(totalBuildTime());
-    */
     });
 }).catch(function (err) {
     console.log('nw-builder err', err);
