@@ -1,13 +1,15 @@
-/////////////////////////////////////////////////////////////////
+/* eslint-disable no-ternary */
+
+// /////////////////////////////////////////////////////////// //
 //                                                             //
 //                 CSS CROSS-BROWSER SELECTOR                  //
 //                                                             //
-/////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////// //
 // Adds the OS, browser, and rendering engine to the the HTML  //
 // tag as a class, allowing you to easily target specific      //
 // browsers with CSS when they have unique rendering issues.   //
 // See: _crossbrowser.scss                                     //
-/////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////// //
 
 // CSS Browser Selector 0.6.1
 // Originally written by Rafael Lima (http://rafael.adm.br)
@@ -16,13 +18,6 @@
 //
 // Co-maintained by:
 // https://github.com/verbatim/css_browser_selector
-
-showLog = true;
-function log (message) {
-    if (window.console && showLog) {
-        console.log(message);
-    }
-}
 
 function css_browser_selector (u) {
     var uaInfo = {};
@@ -79,7 +74,7 @@ function css_browser_selector (u) {
                 + (/Android (.+); (.+) Build/i.test(ua)
                     ? ' ' + dv + ((RegExp.$2).replace(/ /g, '_')).replace(/-/g, '_')
                     : '')
-            ) //android
+            ) // android
         : is('chrome') ? w + ' ' + c + (/chrome\/((\d+)(\.(\d+))(\.\d+)*)/.test(ua) ? ' ' + c + RegExp.$2 + ((RegExp.$4 > 0) ? ' ' + c + RegExp.$2 + '_' + RegExp.$4 : '') : '')
         : is('iron') ? w + ' iron'
         : is('applewebkit/') ?
@@ -88,14 +83,14 @@ function css_browser_selector (u) {
                     ? ' ' + s + RegExp.$2 + ' ' + s + RegExp.$2 + RegExp.$3.replace('.', '_')
                     : (/ Safari\/(\d+)/i.test(ua)
                         ?
-                        ((RegExp.$1 == '419' || RegExp.$1 == '417' || RegExp.$1 == '416' || RegExp.$1 == '412' ) ? ' '+ s + '2_0'
-                            : RegExp.$1 == '312' ? ' '+ s + '1_3'
-                            : RegExp.$1 == '125' ? ' '+ s + '1_2'
-                            : RegExp.$1 == '85' ? ' '+ s + '1_0'
+                        ((RegExp.$1 == '419' || RegExp.$1 == '417' || RegExp.$1 == '416' || RegExp.$1 == '412') ? ' ' + s + '2_0'
+                            : RegExp.$1 == '312' ? ' ' + s + '1_3'
+                            : RegExp.$1 == '125' ? ' ' + s + '1_2'
+                            : RegExp.$1 == '85' ? ' ' + s + '1_0'
                             : '')
                         : '')
                     )
-            ) //applewebkit
+            ) // applewebkit
         : is('mozilla/') ? g
         : '',
 
@@ -109,14 +104,14 @@ function css_browser_selector (u) {
                 (
                     /CPU( iPhone)? OS (\d+[_|\.]\d+([_|\.]\d+)*)/i.test(ua) ?
                     'ios' + version('ios', RegExp.$2) : ''
-                ) + ' ' + (/(ip(ad|od|hone))/gi.test(ua) ? RegExp.$1 : '' )
-            ) //'iphone'
-        //: is('ipod') ? 'ipod'
-        //: is('ipad') ? 'ipad'
+                ) + ' ' + (/(ip(ad|od|hone))/gi.test(ua) ? RegExp.$1 : '')
+            ) // 'iphone'
+        // : is('ipod') ? 'ipod'
+        // : is('ipad') ? 'ipad'
         : is('playbook') ? 'playbook'
         : is('kindle|silk') ? 'kindle'
         : is('playbook') ? 'playbook'
-        : is('mac') ? 'mac' + (/mac os x ((\d+)[.|_](\d+))/.test(ua) ? (' mac' + (RegExp.$2) + ' mac' + (RegExp.$1).replace('.', '_')) : '' )
+        : is('mac') ? 'mac' + (/mac os x ((\d+)[.|_](\d+))/.test(ua) ? (' mac' + (RegExp.$2) + ' mac' + (RegExp.$1).replace('.', '_')) : '')
         : is('win') ? 'win' +
             (is('windows nt 6.2') ? ' win8'
                 : is('windows nt 6.1') ? ' win7'
@@ -143,13 +138,13 @@ function css_browser_selector (u) {
         uaInfo.orientation = ((w < h) ? 'portrait' : 'landscape');
         // remove previous min-width, max-width, client-width, client-height, and orientation
         html.className = html.className.replace(/ ?orientation_\w+/g, '').replace(/ [min|max|cl]+[w|h]_\d+/g, '');
-        for (var i = (allScreens-1); i >= 0; i--) {
+        for (var i = (allScreens - 1); i >= 0; i--) {
             if (w >= screens[i]) {
                 uaInfo.maxw = screens[i];
                 break;
             }
         }
-        widthClasses = '';
+        var widthClasses = '';
         for (var info in uaInfo) {
             widthClasses += ' ' + info + '_' + uaInfo[info];
         }

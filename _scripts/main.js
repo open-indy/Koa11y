@@ -1,3 +1,5 @@
+/* global $ */
+
 $(document).ready(function () {
     String.prototype.startsWith = function (str) {
         return this.slice(0, str.length) == str;
@@ -32,14 +34,14 @@ $(document).ready(function () {
         for (var i = 0; i < data.length; i++) {
             var currentRelease = data[i];
             var version = currentRelease.tag_name;
-            var versionNumber = version.split('v')[1];
+            // var versionNumber = version.split('v')[1];
             var dateTime = currentRelease.created_at;
             var date = dateTime.split('T')[0];
             var release = '<a href="https://github.com/open-indy/Koa11y/releases/tag/' + version + '" title="View release notes">' + date + '</a>';
             var downloadURL = '#';
             var downloads = 'N/A';
             var sizeMB = 'N/A';
-            var downloadAndVersion = 'Koa11y ' + version;
+            // var downloadAndVersion = 'Koa11y ' + version;
             if (currentRelease.assets.length > 0) {
                 for (var j = 0; j < currentRelease.assets.length; j++) {
                     var asset = currentRelease.assets[j];
@@ -50,19 +52,19 @@ $(document).ready(function () {
                     var MB = KB / 1024;
                     sizeMB = '<span title="' + numberWithCommas(Math.round(KB)) + ' KB">' + (Math.round(MB * 10) / 10) + ' MB</span>';
                     var name = asset.name;
-                    download = '<a href="' + downloadURL + '" title="Download this version">' + name + '</a>';
+                    var download = '<a href="' + downloadURL + '" title="Download this version">' + name + '</a>';
                     totalDownloads.push(downloads);
-                    //If file is bigger than 15MB
-                    if ( Bytes > 15000000 ) {
-                        if ( name.toLowerCase().startsWith('w') ) {
+                    // If file is bigger than 15MB
+                    if (Bytes > 15000000) {
+                        if (name.toLowerCase().startsWith('w')) {
                             win.push(downloads);
-                        } else if ( name.toLowerCase().startsWith('l') ) {
+                        } else if (name.toLowerCase().startsWith('l')) {
                             lin.push(downloads);
-                        } else if ( name.toLowerCase().startsWith('o') ) {
+                        } else if (name.toLowerCase().startsWith('o')) {
                             osx.push(downloads);
                         }
                     }
-                    //Make the line between releases thicker
+                    // Make the line between releases thicker
                     var tr = '<tr>';
                     if (j == 0 && i == 0) {
                         tr = '<tr class="latest-release">';
@@ -110,9 +112,9 @@ $(document).ready(function () {
         $('#total').html('<p>The official releases of Koa11y have been downloaded <strong>' + downloadCount + ' times</strong>.</p>');
         var withoutCLI = downloadCountWIN + downloadCountLIN + downloadCountOSX;
 
-        $('#os .win').width( Math.round( (downloadCountWIN / withoutCLI) * 100) + '%' ).attr('title', downloadCountWIN + ' downloads');
-        $('#os .lin').width( Math.round( (downloadCountLIN / withoutCLI) * 100) + '%' ).attr('title', downloadCountLIN + ' downloads');
-        $('#os .osx').width( Math.round( (downloadCountOSX / withoutCLI) * 100) + '%' ).attr('title', downloadCountOSX + ' downloads');
+        $('#os .win').width(Math.round((downloadCountWIN / withoutCLI) * 100) + '%').attr('title', downloadCountWIN + ' downloads');
+        $('#os .lin').width(Math.round((downloadCountLIN / withoutCLI) * 100) + '%').attr('title', downloadCountLIN + ' downloads');
+        $('#os .osx').width(Math.round((downloadCountOSX / withoutCLI) * 100) + '%').attr('title', downloadCountOSX + ' downloads');
         $('#os').css('visibility', 'visible');
 
 
@@ -120,6 +122,7 @@ $(document).ready(function () {
         if (data && data.length > 0) {
             var latestVersion = data[0].tag_name.split('v')[1];
             var baseURL = 'https://github.com/open-indy/Koa11y/releases/download/v' + latestVersion + '/';
+            /* eslint-disable space-in-parens, no-multi-spaces */
             $('.dl-btn-win a').attr(               'href', baseURL + 'WIN_Koa11y_'   + latestVersion + '.zip');
             $('.dl-btn-osx a').attr(               'href', baseURL + 'OSX_Koa11y_'   + latestVersion + '.zip');
             $('.dl-btn-lin32 a').attr(             'href', baseURL + 'LIN32_Koa11y_' + latestVersion + '.zip');
