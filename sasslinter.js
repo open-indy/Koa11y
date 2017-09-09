@@ -72,6 +72,7 @@ for (var i = 0; i < results.length; i++) {
 
 if (msgCount > 0) {
     console.log('Total: ' + msgCount);
+    throw 'Sass Lint Failed';
 } else {
     console.log('Sass Lint Passed');
 }
