@@ -33,7 +33,7 @@ var app = new Vue({
         'simple-donut': httpVueLoader('_scripts/_templates/simple-donut.vue')
     },
     data: {
-        version: '3.0.0',
+        version: '4.0.0',
 
         url: 'http://google.com',
         outputFileName: 'google com',

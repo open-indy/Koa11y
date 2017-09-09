@@ -35,7 +35,7 @@ var nwBuildSettings = {
     version: '0.14.7',
     flavor: 'normal',
     appName: 'Koa11y',
-    appVersion: '3.0.0',
+    appVersion: '4.0.0',
     files: [
         './_fonts/**/*',
         './_img/**/*',
