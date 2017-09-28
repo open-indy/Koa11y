@@ -42,6 +42,10 @@
         "frame": true,
         "as_desktop": false
     },
+    "engines": {
+        "node": "5.12.0",
+        "npm": "3.8.6"
+    },
     "nodejs": true,
     "single-instance": true,
     "node-main": "_scripts/node.js",

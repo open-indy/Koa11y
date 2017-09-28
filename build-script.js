@@ -154,7 +154,11 @@ function copyManifest () {
     var manifest = fs.readJsonSync('./package.json');
     manifest.devDependencies = {};
     var output = JSON.stringify(manifest, null, 2);
-    fs.writeFileSync('./build/' + nwBuildSettings.appName + '/' + platform + '/package.json', output);
+    var buildPackagePath = './build/' + nwBuildSettings.appName + '/' + platform + '/package.json';
+    if (process.platform === 'darwin') {
+        buildPackagePath = path.join('.', 'build', nwBuildSettings.appName, platform, nwBuildSettings.appName + '.app', 'Contents', 'Resources', 'app.nw', 'package.json');
+    }
+    fs.writeFileSync(buildPackagePath, output);
 }
 
 function changeDirectoryToBuildFolder () {
@@ -277,12 +281,12 @@ nw.build().then(function () {
             console.log(' ∙ Updated ' + nwBuildSettings.appName + '.exe');
         }
 
+        copyManifest();
+        console.log(' ∙ Copied package.json');
+
         if (process.platform === 'darwin') {
             return;
         }
-
-        copyManifest();
-        console.log(' ∙ Copied package.json');
 
         changeDirectoryToBuildFolder();
         console.log(' ∙ cd to build folder');
