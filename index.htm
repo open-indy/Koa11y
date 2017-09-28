@@ -182,14 +182,14 @@
             <p>
               Contributors to Koa11y:
                 <span v-for="(contributor, index) in contributors">
-                  <a @click="externalLink(contributor)" href="#">{{ contributor.name }}</a><span v-if="index < contributors.length - 1">, </span>
+                  <a @click="externalLink(contributor.url)" href="#">{{ contributor.name }}</a><span v-if="index < contributors.length - 1">, </span>
                 </span>.<br />
 
               Koala Logo designed by <a href="mailto:cha.schmidt@gmail.com" title="cha.schmidt@gmail.com" class="external-link">Charlotte Schmidt</a>.<br /><br />
 
               Koa11y is completely open source and built upon other open source technologies. Koa11y is made with
                 <span v-for="(tech, index) in technologies">
-                  <a @click="externalLink(tech)" href="#">{{ tech.name }}</a><span v-if="index < technologies.length - 1">, </span>
+                  <a @click="externalLink(tech.url)" href="#">{{ tech.name }}</a><span v-if="index < technologies.length - 1">, </span>
                 </span>.
             </p>
             <p class="text-center">

@@ -222,10 +222,10 @@ var app = new Vue({
                 this.submitAllowed = true;
             }
         },
-        externalLink: function (item) {
+        externalLink: function (url) {
             event.preventDefault();
             // Open in user's default browser
-            nw.Shell.openExternal(item.url);
+            nw.Shell.openExternal(url);
         },
         /**
          * This will override the contents of a file you pass in with
