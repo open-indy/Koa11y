@@ -154,7 +154,11 @@ function copyManifest () {
     var manifest = fs.readJsonSync('./package.json');
     manifest.devDependencies = {};
     var output = JSON.stringify(manifest, null, 2);
-    fs.writeFileSync('./build/' + nwBuildSettings.appName + '/' + platform + '/package.json', output);
+    var buildPackagePath = './build/' + nwBuildSettings.appName + '/' + platform + '/package.json';
+    if (process.platform === 'darwin') {
+        buildPackagePath = path.join('.', 'build', nwBuildSettings.appName, platform, nwBuildSettings.appName + '.app', 'Contents', 'Resources', 'app.nw', 'package.json');
+    }
+    fs.writeFileSync(buildPackagePath, output);
 }
 
 function changeDirectoryToBuildFolder () {
@@ -205,7 +209,9 @@ function goUpOneDirectory () {
 }
 
 function renameBuiltFolder () {
-    fs.renameSync('./win32/', './' + nwBuildSettings.appName);
+    // win32 => Koa11y
+    // linux64 => Koa11y
+    fs.renameSync('./' + platform, './' + nwBuildSettings.appName);
 }
 
 function zipApp () {
@@ -220,8 +226,12 @@ function zipApp () {
         buildInput = path.join(nwBuildSettings.appName + '.app');
         outputZip = path.join('OSX_' + filename);
     } else if (process.platform === 'linux') {
-        buildInput = path.join('linux64');
-        outputZip = path.join('LIN64_' + filename);
+        buildInput = path.join(nwBuildSettings.appName);
+        if (process.arch === 'x64') {
+            outputZip = path.join('LIN64_' + filename);
+        } else if (process.arch === 'ia32' || process.arch === 'x86') {
+            outputZip = path.join('LIN32_' + filename);
+        }
     }
 
     fs.removeSync(outputZip);
@@ -230,13 +240,7 @@ function zipApp () {
     // -tzip = create a zip formatted file
     // -mx=9 = use maximum compression
     // -y    = auto answer yes to all prompts
-    exec(zipExe + ' a -tzip -mx=9 -y "' + outputZip + '" "' + buildInput) + '"';
-    if (process.platform === 'linux') {
-        buildInput = path.join('linux32');
-        outputZip = path.join('LIN32_' + filename);
-        fs.removeSync(outputZip);
-        exec(zipExe + ' a -tzip -mx=9 -y ' + outputZip + ' ' + buildInput);
-    }
+    exec(zipExe + ' a -tzip -mx=9 -y "' + outputZip + '" "' + buildInput + '"');
 }
 
 function totalBuildTime () {
@@ -280,6 +284,10 @@ nw.build().then(function () {
         copyManifest();
         console.log(' ∙ Copied package.json');
 
+        if (process.platform === 'darwin') {
+            return;
+        }
+
         changeDirectoryToBuildFolder();
         console.log(' ∙ cd to build folder');
 
@@ -297,11 +305,6 @@ nw.build().then(function () {
 
         goUpOneDirectory();
         console.log(' ∙ Went up one directory');
-
-        if (platform !== 'win32') {
-            // This is as far as we've gotten on implementing the build for non-windows
-            return;
-        }
 
         renameBuiltFolder();
         console.log(' ∙ Renamed built folder');

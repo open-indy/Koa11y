@@ -42,6 +42,10 @@
         "frame": true,
         "as_desktop": false
     },
+    "engines": {
+        "node": "5.12.0",
+        "npm": "3.8.6"
+    },
     "nodejs": true,
     "single-instance": true,
     "node-main": "_scripts/node.js",
@@ -57,7 +61,7 @@
         "json2csv": "3.7.3",
         "pa11y": "4.11.0",
         "phantomjs-prebuilt": "^2.1.14",
-        "semver": "^5.3.x",
+        "semver": "^5.4.1",
         "vue": "^2.4.1"
     },
     "devDependencies": {
