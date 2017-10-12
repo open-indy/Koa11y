@@ -84,8 +84,7 @@ var junk = [
     'package.nw/node_modules/hawk/images/',
     'package.nw/node_modules/pa11y/example/',
     'package.nw/node_modules/pa11y/test/',
-    'package.nw/node_modules/es6-promise/es6-promise.d.ts',
-    '_style'
+    'package.nw/node_modules/es6-promise/es6-promise.d.ts'
 ];
 
 
@@ -190,6 +189,9 @@ function moveFilesIntoPackageNW () {
 
 function removeJunk () {
     console.log(' ∙ Started removing junk files');
+    if (process.platform !== 'darwin') {
+        junk.push('_style');
+    }
     junk.forEach(function (item) {
         var file = path.join(process.cwd(), item);
         fs.removeSync(file);
