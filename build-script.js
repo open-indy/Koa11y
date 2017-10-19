@@ -144,6 +144,9 @@ function updateExe (done) {
 
         exec('chmod +x ' + filePath);
         done();
+    } else if (process.platform === 'darwin') {
+        // TODO: Copy files from image folder into app contents (.icns)
+        done();
     } else {
         done();
     }
