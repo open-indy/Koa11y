@@ -145,7 +145,8 @@ function updateExe (done) {
         exec('chmod +x ' + filePath);
         done();
     } else if (process.platform === 'darwin') {
-        // TODO: Copy files from image folder into app contents (.icns)
+        fs.copySync('./_img/app.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/app.icns');
+        fs.copySync('./_img/document.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/document.icns');
         done();
     } else {
         done();
@@ -155,6 +156,7 @@ function updateExe (done) {
 function copyManifest () {
     var manifest = fs.readJsonSync('./package.json');
     manifest.devDependencies = {};
+    manifest.name = nwBuildSettings.appName;
     var output = JSON.stringify(manifest, null, 2);
     var buildPackagePath = './build/' + nwBuildSettings.appName + '/' + platform + '/package.json';
     if (process.platform === 'darwin') {
