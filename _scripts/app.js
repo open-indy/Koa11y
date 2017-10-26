@@ -367,11 +367,13 @@ var app = new Vue({
 
 app.prefillOutput();
 
+/*
 $('.navbar-brand img').on('contextmenu', function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
     nw.Window.get().showDevTools();
 });
+*/
 
 if (process.platform === 'darwin') {
     keyBindings();
