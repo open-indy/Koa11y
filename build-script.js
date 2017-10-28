@@ -84,8 +84,7 @@ var junk = [
     'package.nw/node_modules/hawk/images/',
     'package.nw/node_modules/pa11y/example/',
     'package.nw/node_modules/pa11y/test/',
-    'package.nw/node_modules/es6-promise/es6-promise.d.ts',
-    '_style'
+    'package.nw/node_modules/es6-promise/es6-promise.d.ts'
 ];
 
 
@@ -145,6 +144,10 @@ function updateExe (done) {
 
         exec('chmod +x ' + filePath);
         done();
+    } else if (process.platform === 'darwin') {
+        fs.copySync('./_img/app.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/app.icns');
+        fs.copySync('./_img/document.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/document.icns');
+        done();
     } else {
         done();
     }
@@ -153,6 +156,7 @@ function updateExe (done) {
 function copyManifest () {
     var manifest = fs.readJsonSync('./package.json');
     manifest.devDependencies = {};
+    manifest.name = nwBuildSettings.appName;
     var output = JSON.stringify(manifest, null, 2);
     var buildPackagePath = './build/' + nwBuildSettings.appName + '/' + platform + '/package.json';
     if (process.platform === 'darwin') {
@@ -163,6 +167,9 @@ function copyManifest () {
 
 function changeDirectoryToBuildFolder () {
     var buildFolder = path.join(process.cwd(), 'build', nwBuildSettings.appName, platform);
+    if (process.platform === 'darwin') {
+        buildFolder = path.join(process.cwd(), 'build', nwBuildSettings.appName, platform, nwBuildSettings.appName + '.app', 'Contents', 'Resources', 'app.nw');
+    }
     process.chdir(buildFolder);
 }
 
@@ -171,20 +178,25 @@ function npmInstallBuildFolder () {
 }
 
 function moveFilesIntoPackageNW () {
-    console.log(' ∙ Started moving files into package.nw');
-    nwBuildSettings.files.forEach(function (file) {
-        var src = file.replace('/**/*', '');
-        var dest = path.join('package.nw', src);
+    if (process.platform !== 'darwin') {
+        console.log(' ∙ Started moving files into package.nw');
+        nwBuildSettings.files.forEach(function (file) {
+            var src = file.replace('/**/*', '');
+            var dest = path.join('package.nw', src);
 
-        fs.moveSync(src, dest);
-        console.log('  ∙ moved ' + src.replace('./', ''));
-    });
-    fs.moveSync('./node_modules', path.join('.', 'package.nw', 'node_modules'));
-    console.log('  ∙ moved node_modules');
+            fs.moveSync(src, dest);
+            console.log('  ∙ moved ' + src.replace('./', ''));
+        });
+        fs.moveSync('./node_modules', path.join('.', 'package.nw', 'node_modules'));
+        console.log('  ∙ moved node_modules');
+    }
 }
 
 function removeJunk () {
     console.log(' ∙ Started removing junk files');
+    if (process.platform !== 'darwin') {
+        junk.push('_style');
+    }
     junk.forEach(function (item) {
         var file = path.join(process.cwd(), item);
         fs.removeSync(file);
@@ -193,12 +205,10 @@ function removeJunk () {
 }
 
 function runApp () {
-    var extension = '';
     if (platform === 'win32') {
-        extension = '.exe';
-    }
-    if (platform === 'win32') {
-        exec(nwBuildSettings.appName + extension);
+        exec(nwBuildSettings.appName + '.exe');
+    } else if (process.platform === 'darwin') {
+        exec('open ' + nwBuildSettings.appName + '.app');
     } else {
         console.log('WARNING: WE STILL DON\'T KNOW HOW TO AUTO RUN EXE ON LINUX');
     }
@@ -284,10 +294,6 @@ nw.build().then(function () {
         copyManifest();
         console.log(' ∙ Copied package.json');
 
-        if (process.platform === 'darwin') {
-            return;
-        }
-
         changeDirectoryToBuildFolder();
         console.log(' ∙ cd to build folder');
 
@@ -300,14 +306,24 @@ nw.build().then(function () {
         removeJunk();
         console.log(' ∙ Finished removing junk files');
 
+        if (process.platform === 'darwin') {
+            // go up 4 folders to get to the folder that holds YourAppName.app
+            for (var i = 0; i < 4; i++) {
+                goUpOneDirectory();
+            }
+            console.log(' ∙ Went up four directories');
+        }
+
         runApp();
         console.log(' ∙ Ran app');
 
-        goUpOneDirectory();
-        console.log(' ∙ Went up one directory');
+        if (process.platform !== 'darwin') {
+            goUpOneDirectory();
+            console.log(' ∙ Went up one directory');
 
-        renameBuiltFolder();
-        console.log(' ∙ Renamed built folder');
+            renameBuiltFolder();
+            console.log(' ∙ Renamed built folder');
+        }
 
         zipApp();
         console.log(' ∙ Zipped app');

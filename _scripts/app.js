@@ -69,7 +69,9 @@ var app = new Vue({
         aboutModal: false,
         contributors: [
             { name: 'The Jared Wilcurt',   url: 'http://TheJaredWilcurt.com'               },
-            { name: 'Rob Gaston',          url: 'https://github.com/robgaston1'            }
+            { name: 'Rob Gaston',          url: 'https://github.com/robgaston1'            },
+            { name: 'Marissa Staller',     url: 'https://github.com/mardisworld'           },
+            { name: 'James Boyer',         url: 'https://github.com/jamesboyer92'          }
         ],
         technologies: [
             { name: 'Pa11y',               url: 'http://pa11y.org'                         },
@@ -365,11 +367,13 @@ var app = new Vue({
 
 app.prefillOutput();
 
+/*
 $('.navbar-brand img').on('contextmenu', function (evt) {
     evt.preventDefault();
     evt.stopPropagation();
     nw.Window.get().showDevTools();
 });
+*/
 
 if (process.platform === 'darwin') {
     keyBindings();
