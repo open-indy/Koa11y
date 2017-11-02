@@ -25,12 +25,14 @@ var temp = path.join(appData, 'temp');
 // register components
 Vue.component('modal');
 Vue.component('simple-donut');
+Vue.component('test');
 
 var app = new Vue({
     el: '#app',
     components: {
         'modal': httpVueLoader('_scripts/_templates/modal.vue'),
-        'simple-donut': httpVueLoader('_scripts/_templates/simple-donut.vue')
+        'simple-donut': httpVueLoader('_scripts/_templates/simple-donut.vue'),
+        'test': httpVueLoader('_scripts/_templates/test.vue')
     },
     data: {
         version: '4.0.0',
