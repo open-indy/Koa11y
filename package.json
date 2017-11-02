@@ -71,7 +71,8 @@
         "nw-builder": "^3.5.1",
         "pre-commit": "^1.2.2",
         "rcedit": "^0.9.0",
-        "sass-lint": "^1.12.1"
+        "sass-lint": "^1.12.1",
+        "uikit": "^3.0.0-beta.32"
     },
     "scripts": {
         "start": "nw .",

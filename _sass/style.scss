@@ -7,6 +7,11 @@
 //@import "_meyer.sass";              // Resets browser defaults so browsers render pages the same
 //@import "_normalize.sass";          // Removes inconsistencies in the way different browsers render items by default. Bootstrap comes with Normalize.
 
+// Plugins
+@import "_ven.uikit-var.sass";
+@import "../node_modules/uikit/src/scss/variables.scss";
+@import "../node_modules/uikit/src/scss/uikit.scss";
+
 //Stuff that effects every page
 @import "_main.sass";                 // Main CSS for the app
 @import "_header.sass";               // CSS for the header and navigation at the top of the app.
