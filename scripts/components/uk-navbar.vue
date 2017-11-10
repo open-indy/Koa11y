@@ -1,6 +1,10 @@
 <template>
+  <div>
   <nav class="uk-navbar-container" uk-navbar>
     <div class="uk-navbar-left">
+      <a class="uk-navbar-item uk-logo" href="#">
+        <img src="../../img/logo.png" alt="Koa11y Koala Logo">
+      </a>
       <ul class="uk-navbar-nav">
 
         <li v-for="item in items" class="uk-active">
@@ -19,6 +23,7 @@
       </ul>
     </div>
   </nav>
+</div>
 </template>
 
 <script>
@@ -37,8 +42,11 @@ module.exports = {
               name: 'Exit'
             }
           ]
+        },
+        {
+          name: 'About'
         }
-      ];
+      ]
     };
   },
   methods: {

@@ -27,7 +27,7 @@
     "main": "index4.htm",
     "window": {
         "title": "Koa11y",
-        "icon": "_img/icon32.png",
+        "icon": "img/icon32.png",
         "resizable": true,
         "visible": true,
         "transparent": false,
@@ -48,7 +48,7 @@
     },
     "nodejs": true,
     "single-instance": true,
-    "node-main": "_scripts/node.js",
+    "node-main": "scripts/node.js",
     "webkit": {
         "page-cache": false,
         "java": false,
@@ -79,8 +79,8 @@
         "build": "node build-script.js",
         "phantomjs": "phantomjs",
         "phantomjs-prebuilt": "phantomjs-prebuilt",
-        "lint": "eslint --config=.eslintrc.js _scripts/**/*.js sasslinter.js build-script.js",
-        "fix": "eslint --fix --config=.eslintrc.js _scripts/**/*.js sasslinter.js build-script.js",
+        "lint": "eslint --config=.eslintrc.js scripts/**/*.js sasslinter.js build-script.js",
+        "fix": "eslint --fix --config=.eslintrc.js scripts/**/*.js sasslinter.js build-script.js",
         "sasslint": "node sasslinter.js"
     },
     "license": "MIT",

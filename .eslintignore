@@ -1,10 +1,10 @@
 
-_scripts/imgalts.js
-_scripts/imgalts.min.js
-_scripts/imgalts5.js
-_scripts/imgalts5.min.js
-_scripts/ven.bootstrap-3.2.0.min.js
-_scripts/ven.bootstrap-slider.min.js
-_scripts/ven.dropdowns-enhancement.js
-_scripts/ven.jquery-2.1.1.min.js
-_scripts/ven.simple-donut.js
+scripts/imgalts.js
+scripts/imgalts.min.js
+scripts/imgalts5.js
+scripts/imgalts5.min.js
+scripts/ven.bootstrap-3.2.0.min.js
+scripts/ven.bootstrap-slider.min.js
+scripts/ven.dropdowns-enhancement.js
+scripts/ven.jquery-2.1.1.min.js
+scripts/ven.simple-donut.js

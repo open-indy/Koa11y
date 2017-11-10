@@ -37,19 +37,19 @@ var nwBuildSettings = {
     appName: 'Koa11y',
     appVersion: '4.0.0',
     files: [
-        './_fonts/**/*',
-        './_img/**/*',
-        './_markup/**/*',
-        './_scripts/**/*',
-        './_style/style.css',
-        './_style/ven.bootstrap.css',
-        './_style/ven.bootstrap/bootstrap.css',
-        './_style/ven.bootswatch/flatly.min.css',
+        './fonts/**/*',
+        './img/**/*',
+        './markup/**/*',
+        './scripts/**/*',
+        './style/style.css',
+        './style/ven.bootstrap.css',
+        './style/ven.bootstrap/bootstrap.css',
+        './style/ven.bootswatch/flatly.min.css',
         './index.htm',
         './package.json',
         './LICENSE'
     ],
-    winIco: './_img/fav.ico',
+    winIco: './img/fav.ico',
     platforms: [ platform ],
     zip: false
 };
@@ -145,8 +145,8 @@ function updateExe (done) {
         exec('chmod +x ' + filePath);
         done();
     } else if (process.platform === 'darwin') {
-        fs.copySync('./_img/app.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/app.icns');
-        fs.copySync('./_img/document.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/document.icns');
+        fs.copySync('./img/app.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/app.icns');
+        fs.copySync('./img/document.icns', './build/' + nwBuildSettings.appName + '/osx64/' + nwBuildSettings.appName + '.app/Contents/Resources/document.icns');
         done();
     } else {
         done();
@@ -195,7 +195,7 @@ function moveFilesIntoPackageNW () {
 function removeJunk () {
     console.log(' ∙ Started removing junk files');
     if (process.platform !== 'darwin') {
-        junk.push('_style');
+        junk.push('style');
     }
     junk.forEach(function (item) {
         var file = path.join(process.cwd(), item);

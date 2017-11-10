@@ -4,8 +4,10 @@
 
 //Stuff that goes at the start
 @import "_var.sass";                  // Sass Variables and Mixins - Does not effect page, but other Sass files reference this file.
-//@import "_meyer.sass";              // Resets browser defaults so browsers render pages the same
-//@import "_normalize.sass";          // Removes inconsistencies in the way different browsers render items by default. Bootstrap comes with Normalize.
+
+// Since we are only rendering CSS in one browser, do we even need these?
+// @import "_meyer.sass";              // Resets browser defaults so browsers render pages the same
+// @import "_normalize.sass";          // Removes inconsistencies in the way different browsers render items by default. Bootstrap comes with Normalize.
 
 // Plugins
 @import "_ven.uikit-var.sass";

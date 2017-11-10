@@ -6,15 +6,15 @@ var $ = window.$;
 var Vue = window.Vue;
 var httpVueLoader = window.httpVueLoader;
 var updateDonutChart = window.updateDonutChart;
-var keyBindings = require('./_functions/key-bindings');
-var tryParseJSON = require('./_functions/try-parse-json');
-var cleanURL = require('./_functions/clean-url');
-var makeDesktopPath = require('./_functions/my-desktop-path');
-var formatJSON = require('./_outputs/format-JSON');
-var formatCSV = require('./_outputs/format-CSV');
-var formatMD = require('./_outputs/format-MD');
-var formatXML = require('./_outputs/format-XML');
-var formatHTML = require('./_outputs/format-HTML');
+var keyBindings = require('./functions/key-bindings.js');
+var tryParseJSON = require('./functions/try-parse-json');
+var cleanURL = require('./functions/clean-url');
+var makeDesktopPath = require('./functions/my-desktop-path');
+var formatJSON = require('./outputs/format-JSON');
+var formatCSV = require('./outputs/format-CSV');
+var formatMD = require('./outputs/format-MD');
+var formatXML = require('./outputs/format-XML');
+var formatHTML = require('./outputs/format-HTML');
 
 var fs = require('fs-extra');
 var path = require('path');
@@ -26,13 +26,15 @@ var temp = path.join(appData, 'temp');
 Vue.component('modal');
 Vue.component('simple-donut');
 Vue.component('test');
+Vue.component('uk-navbar');
 
 var app = new Vue({
     el: '#app',
     components: {
-        'modal': httpVueLoader('_scripts/_templates/modal.vue'),
-        'simple-donut': httpVueLoader('_scripts/_templates/simple-donut.vue'),
-        'test': httpVueLoader('_scripts/_templates/test.vue')
+        'uk-navbar': httpVueLoader('scripts/components/uk-navbar.vue'),
+        'modal': httpVueLoader('scripts/components/modal.vue'),
+        'simple-donut': httpVueLoader('scripts/components/simple-donut.vue'),
+        'test': httpVueLoader('scripts/components/test.vue')
     },
     data: {
         version: '4.0.0',
@@ -332,7 +334,7 @@ var app = new Vue({
 
         clipboard: function (evt) {
             evt.preventDefault();
-            var data = fs.readFileSync('_scripts/imgalts5.min.js', 'binary');
+            var data = fs.readFileSync('scripts/imgalts5.min.js', 'binary');
             var dummy = document.createElement('textarea');
             dummy.setAttribute('id', 'dummy');
             document.body.appendChild(dummy);
@@ -520,7 +522,7 @@ function loadImagesInModal () {
         if (file.path && fs.existsSync(file.path)) {
             src = 'file://' + file.path;
         } else if (file.src.length < 1) {
-            src = '_img/broken.png';
+            src = 'img/broken.png';
         }
         if (alt) {
             var image =
@@ -825,7 +827,7 @@ function phantomImgAlts (url, callback) {
     var phantomjs = require('phantomjs-prebuilt');
     var binPath = phantomjs.path;
 
-    var childArgs = [path.join(process.cwd(), '_scripts', 'phantom-imgalts.js'), url];
+    var childArgs = [path.join(process.cwd(), 'scripts', 'phantom-imgalts.js'), url];
 
     exec(binPath, childArgs, function (err, stdout, stderr) {
         if (err) {
