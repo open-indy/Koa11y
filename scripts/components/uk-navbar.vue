@@ -7,13 +7,13 @@
       </a>
       <ul class="uk-navbar-nav">
 
-        <li v-for="item in items" class="uk-active">
-          <a href="#" @hover="item.showSub = true">{{ item.name }}</a>
-          <div v-if="item.sub" class="uk-navbar-dropdown">
+        <li v-for="item in items" @mouseEnter="showDropdown(item)" @mouseLeave="hideDropdown(item)" class="uk-active">
+          <a href="#" @click="ukNavClick(item)">{{ item.name }}</a>
+          <div v-if="item.sub" class="uk-navbar-dropdown" :style="dropDownVisible(item)">
             <ul class="uk-nav uk-navbar-dropdown-nav">
 
               <li v-for="subItem in item.sub" class="uk-active">
-                <a href="#">{{ subItem.name }}</a>
+                <a href="#" @click="ukNavClick(subItem)">{{ subItem.name }}</a>
               </li>
 
             </ul>
@@ -44,12 +44,44 @@ module.exports = {
           ]
         },
         {
-          name: 'About'
+          name: 'About',
+          showSub: false
         }
       ]
     };
   },
   methods: {
+    ukNavClick: function (item) {
+      var navItem = 'nav' + item.name.replace(/ /g, '').trim();
+      this[navItem]();
+    },
+    navFile: function () {
+      console.log('File');
+    },
+    navAbout: function () {
+      console.log('About');
+    },
+    navNew: function () {
+      console.log('New');
+    },
+    navExit: function () {
+      nw.Window.get().close();
+    },
+    showDropdown: function (item) {
+      if (item.sub) {
+        item.showSub = true;
+      }
+    },
+    hideDropdown: function (item) {
+      item.showSub = false;
+    },
+    dropDownVisible: function (item) {
+      var style = '';
+      if (item.showSub) {
+        style = 'display: block;';
+      }
+      return style;
+    }
   }
 };
 </script>
