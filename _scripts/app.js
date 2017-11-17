@@ -37,6 +37,7 @@ var app = new Vue({
 
         url: 'http://google.com',
         outputFileName: 'google com',
+        engine: 'pa11y',
         outputType: 'html',
         outputTypes: {
             html: 'HTML',
@@ -646,6 +647,10 @@ $('#run').click(function (evt) {
         runPa11y();
     }
 });
+
+function runEngine() {
+    if this.
+}
 
 function runPa11y () {
     $('#spinner').fadeIn('slow');
