@@ -61,6 +61,7 @@
         "json2csv": "3.7.3",
         "pa11y": "4.11.0",
         "phantomjs-prebuilt": "^2.1.14",
+        "request-progress": "^3.0.0",
         "semver": "^5.4.1",
         "vue": "^2.4.1"
     },

@@ -620,7 +620,7 @@ $('#imageAltsModal .modal-footer .btn').click(function () {
         };
 
         $('#imageAltsModal').slideUp('slow');
-        runPa11y();
+        runEngine();
     }
 });
 
@@ -641,15 +641,22 @@ $('#run').click(function (evt) {
             $('#imageAltsDonut').fadeIn('fast');
             processAltsScript(loadImagesInModal);
         } else {
-            runPa11y();
+            runEngine();
         }
     } else {
-        runPa11y();
+        runEngine();
     }
 });
 
 function runEngine() {
-    if this.
+    console.log(app.engine);
+    if (app.engine == 'pa11y') {
+        runPa11y();
+    } else runAxe();
+}
+
+function runAxe() {
+    console.log('Running Axe');
 }
 
 function runPa11y () {
