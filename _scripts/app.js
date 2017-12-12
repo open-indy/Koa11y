@@ -36,6 +36,8 @@ var app = new Vue({
         version: '3.0.0',
 
         url: 'http://google.com',
+        username: '',
+        password: '',
         outputFileName: 'google com',
         outputType: 'html',
         outputTypes: {
@@ -71,7 +73,8 @@ var app = new Vue({
             { name: 'The Jared Wilcurt',   url: 'http://TheJaredWilcurt.com'               },
             { name: 'Rob Gaston',          url: 'https://github.com/robgaston1'            },
             { name: 'Marissa Staller',     url: 'https://github.com/mardisworld'           },
-            { name: 'James Boyer',         url: 'https://github.com/jamesboyer92'          }
+            { name: 'James Boyer',         url: 'https://github.com/jamesboyer92'          },
+            { name: 'Daniel Ruf',          url: 'https://github.com/DanielRuf'             }
         ],
         technologies: [
             { name: 'Pa11y',               url: 'http://pa11y.org'                         },
@@ -134,6 +137,8 @@ var app = new Vue({
         saveSettings: function () {
             var saveData = {
                 url: this.url,
+                username: this.username,
+                password: this.password,
                 outputFileName: this.outputFileName,
                 folderPicker: this.folderPicker,
 
@@ -700,15 +705,26 @@ function runPa11y () {
     var pa11y = require('pa11y');
     var phantomjs = require('phantomjs-prebuilt');
 
-    var test = pa11y({
-        'phantomjs': {
-            'path': phantomjs.path
-        },
-        'allowedStandards': [standard],
-        'standard': standard,
-        'reporter': filetype,
-        'ignore': ignore
+    var pallyOptions = Object.assign({}, {
+            'phantomjs': {
+                'path': phantomjs.path
+            },
+            'allowedStandards': [standard],
+            'standard': standard,
+            'reporter': filetype,
+            'ignore': ignore
     });
+    if(app.username && app.password){
+        pallyOptions = Object.assign(pallyOptions, {
+            'page': {
+                'settings': {
+                    'userName': app.username,
+                    'password': app.password
+                }
+            }
+        })
+    }
+    var test = pa11y(pallyOptions);
 
     test.run(url, function (error, results) {
         $('#spinner').fadeOut('slow');
