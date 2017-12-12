@@ -21,8 +21,8 @@ if (system.args.length < 2) {
                     if (i > 0) {
                         output = output + ', ';
                     }
-                    src = img.src.split('\"').join('\\\"').split('\'').join('\\\'');
-                    alt = img.alt.split('\"').join('\\\"').split('\'').join('\\\'');
+                    src = img.src.split('"').join('\\"').split('\'').join('\\\'');
+                    alt = img.alt.split('"').join('\\"').split('\'').join('\\\'');
                     output = output + '{ "src": "' + src + '", "alt": "' + alt + '" }';
                 }
                 output = output + ']';

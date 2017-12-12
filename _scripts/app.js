@@ -714,7 +714,7 @@ function runPa11y () {
             'reporter': filetype,
             'ignore': ignore
     });
-    if(app.username && app.password){
+    if (app.username && app.password) {
         pallyOptions = Object.assign(pallyOptions, {
             'page': {
                 'settings': {
@@ -722,7 +722,7 @@ function runPa11y () {
                     'password': app.password
                 }
             }
-        })
+        });
     }
     var test = pa11y(pallyOptions);
 
