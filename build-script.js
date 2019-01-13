@@ -55,6 +55,7 @@ var nwBuildSettings = {
 };
 
 var junk = [
+    'package-lock.json',
     'd3dcompiler_47.dll',
     'dbghelp.dll',
     'libEGL.dll',
