@@ -77,7 +77,7 @@ $(document).ready(function () {
                           '<td>' + download + '</td>' +
                           '<td>' + sizeMB + '</td>' +
                           '<td>' + release + '</td>' +
-                          '<td>' + downloads + '</td>' +
+                          '<td>' + (downloads.toLocaleString && downloads.toLocaleString() || downloads) + '</td>' +
                         '</tr>'
                     );
                 }
@@ -88,7 +88,7 @@ $(document).ready(function () {
                       '<td>' + download + '</td>' +
                       '<td>' + sizeMB + '</td>' +
                       '<td>' + release + '</td>' +
-                      '<td>' + downloads + '</td>' +
+                      '<td>' + (downloads.toLocaleString && downloads.toLocaleString() || downloads) + '</td>' +
                     '</tr>'
                 );
             }
