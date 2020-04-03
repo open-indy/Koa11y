@@ -109,7 +109,7 @@ $(document).ready(function () {
         for (var n = 0; n < osx.length; n++) {
             downloadCountOSX = downloadCountOSX + osx[n];
         }
-        $('#total').html('<p>The official releases of Koa11y have been downloaded <strong>' + downloadCount + ' times</strong>.</p>');
+        $('#total').html('<p>The official releases of Koa11y have been downloaded <strong>' + downloadCount.toLocaleString() + ' times</strong>.</p>');
         var withoutCLI = downloadCountWIN + downloadCountLIN + downloadCountOSX;
 
         $('#os .win').width(Math.round((downloadCountWIN / withoutCLI) * 100) + '%').attr('title', downloadCountWIN + ' downloads');
