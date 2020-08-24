@@ -1,3 +1,9 @@
+# Maintenance Notice:
+
+This project was started as a volunteer effort by a group of people in Indianapolis, IN. After two years of working on it, it became harder and harder to pull in and retain talent to work on it consistently. Though there were passionate individuals interested, many lived an hour or more away and couldn't meet in person weekly to work on it. Attempts were made to work remotely, but efforts languished. Years have passed with little work on this project. Though we had big plans, higher priorities have won out. The last release of Koa11y still works as a basic reporting tool, however the built in A11y guidelines are already out of date. The project remains online, for others to reference or fork. the released version may not be compatible with the latest Unix based OS's that do not prioritize backwards compatibility.
+
+* * *
+
 <img src="http://open-indy.github.io/Koa11y/_img/wordmark.png" alt="Koa11y Logo">
 
 # Koa11y
