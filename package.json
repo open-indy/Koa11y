@@ -68,7 +68,7 @@
         "7zip-bin": "^2.2.7",
         "eslint": "^4.10.0",
         "nw": "0.14.7-sdk",
-        "nw-builder": "^3.5.1",
+        "nw-builder": "^3.8.6",
         "pre-commit": "^1.2.2",
         "rcedit": "^0.9.0",
         "sass-lint": "^1.12.1",
